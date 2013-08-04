@@ -33,6 +33,7 @@ var AppPreferencePlugin = module.exports = {
 		// fetch have optional dict parameter
 		// so, you can access parameter via store (dict, key, value), or store (key, value)
 		var dict  = '';
+		var self = this;
 		// dict, key, value at least
 		if (arguments.length >= 3 && typeof arguments[2] != 'function') {
 			dict  = key;
@@ -44,14 +45,28 @@ var AppPreferencePlugin = module.exports = {
 
 		value = JSON.stringify (value);
 
+		function _successCallback () {
+			self._cb.store.forEach (function (callback) {
+				callback (dict, key, value);
+			});
+			if (successCallback) successCallback ();
+		}
+
 		var execStatus = cordova.exec (
-			successCallback || function () {}, errorCallback || function () {},
-			"applicationPreferences", "setSetting", [{
+			_successCallback, errorCallback || function () {},
+			"AppPreferences", "setSetting", [{
 				key:   key,
 				dict:  dict,
 				value: value
 			}]
 		);
+	},
+	_eventSupported: {store: 1},
+	_cb: {store: []},
+	addEventListener: function (eventName, callback) {
+		if (!this._eventSupported[eventName]) return false;
+		if (!this._cb[eventName]) this._cb[eventName] = [];
+		this._cb[eventName].push (callback);
 	}
 
 };
