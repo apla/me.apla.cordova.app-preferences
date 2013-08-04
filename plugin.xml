@@ -8,8 +8,10 @@
     <license>Apache</license>
     <keywords>cordova,tabbar,toolbar</keywords>
 
-    <js-module src="www/apppreferences.js" name="apppreferences">
-        <clobbers target="apppreferences" />
+    <asset src="www/AppPreferencesTask.js" target="task/AppPreferences.js" />
+
+    <js-module src="www/AppPreferences.js" name="apppreferences">
+        <clobbers target="plugins.AppPreferences" />
     </js-module>
 
     <!-- android -->
@@ -20,8 +22,8 @@
             </feature>
         </config-file>
 
-        <source-file src="src/android/AppPreferences.java" target-dir="src/me/apla/cordova/" />
-    </platform-->
+        <source-file src="src/android/AppPreferences.java" target-dir="src/me/apla/cordova" />
+    </platform>
 
     <!-- ios -->
     <platform name="ios">
