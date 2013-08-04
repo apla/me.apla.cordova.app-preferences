@@ -93,7 +93,11 @@
 	if (settingsDict) {
 		target = [[defaults dictionaryForKey:settingsDict] mutableCopy];
 		if (!target) {
-			target = [[[NSMutableDictionary alloc] init] autorelease];
+			target = [[NSMutableDictionary alloc] init];
+#if __has_feature(objc_arc)
+#else
+			[target autorelease];
+#endif
 		}
 	}
 		
