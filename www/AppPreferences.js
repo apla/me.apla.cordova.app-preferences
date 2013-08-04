@@ -48,7 +48,7 @@ AppPreferencePlugin.prototype.store = function(key, value, successCallback, erro
 	value = JSON.stringify (value);
 
 	var execStatus = cordova.exec (
-		successCallback, errorCallback || function () {},
+		successCallback || function () {}, errorCallback || function () {},
 		"applicationPreferences", "setSetting", [{
 			key:   key,
 			dict:  dict,
