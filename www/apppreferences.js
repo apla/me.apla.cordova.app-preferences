@@ -39,7 +39,7 @@ AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dic
  * @param {String} dict Dictionary for key (OPTIONAL)
  * @param {String} key Key
  */
-AppPreferences.prototype.getValue = platform.getValue || function (
+AppPreferences.prototype.fetch = platform.fetch || function (
 	successCallback, errorCallback, dict, key
 	) {
 
@@ -64,7 +64,7 @@ AppPreferences.prototype.getValue = platform.getValue || function (
 
 		var execStatus = cordova.exec (
 			_successCallback, errorCallback,
-			"AppPreferences", "getValue", [args]
+			"AppPreferences", "fetch", [args]
 		);
 };
 
@@ -77,7 +77,7 @@ AppPreferences.prototype.getValue = platform.getValue || function (
  * @param {String} key Key
  * @param {String} value Value
  */
-AppPreferences.prototype.setValue = platform.setValue || function (
+AppPreferences.prototype.store = platform.store || function (
 	successCallback, errorCallback, dict, key, value
 	) {
 
@@ -90,11 +90,9 @@ AppPreferences.prototype.setValue = platform.setValue || function (
 
 		args.value = JSON.stringify (args.value);
 
-		console.log('PREFERENCE SET');
-
 		var execStatus = cordova.exec (
 			successCallback, errorCallback,
-			"AppPreferences", "setValue", [args]
+			"AppPreferences", "store", [args]
 		);
 };
 

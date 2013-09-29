@@ -2,7 +2,7 @@ function AppPreferencesW8() {
 
 }
 
-AppPreferencesW8.prototype.getValue = function(successCallback, errorCallback, dict, key) {
+AppPreferencesW8.prototype.fetch = function(successCallback, errorCallback, dict, key) {
 
 	var self = this;
 
@@ -44,7 +44,7 @@ AppPreferencesW8.prototype.getValue = function(successCallback, errorCallback, d
     // exec(successCallback, errorCallback, "Device", "getDeviceInfo", []);
 };
 
-AppPreferencesW8.prototype.setValue = function(successCallback, errorCallback, dict, key, value) {
+AppPreferencesW8.prototype.store = function(successCallback, errorCallback, dict, key, value) {
 
 	var self = this;
 

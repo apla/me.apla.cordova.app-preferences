@@ -36,7 +36,7 @@ namespace WPCordovaClassLib.Cordova.Commands
 			}
 		}
 
-        public void getValue (string argsString)
+        public void fetch (string argsString)
         {
 			AppPreferenceArgs preference;
             string value;
@@ -60,7 +60,7 @@ namespace WPCordovaClassLib.Cordova.Commands
             DispatchCommandResult(new PluginResult(PluginResult.Status.OK, value));
         }
 
-        public void setValue (string argsString)
+        public void store (string argsString)
         {
 			AppPreferenceArgs preference;
 			string optionsString = JSON.JsonHelper.Deserialize<string[]> (argsString)[0];

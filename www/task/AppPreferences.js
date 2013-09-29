@@ -11,7 +11,7 @@ define (function (require, exports, module) {
 	
 	util.extend (AppPreferenceTask.prototype, { 
 		
-		get: function () {
+		fetch: function () {
 			var self  = this;
 			
 			console.log('MOBRO PREFERENCE GET PREPARE');
@@ -53,9 +53,9 @@ define (function (require, exports, module) {
 			// }
 			
 			var cordovaModule = cordova.require ('me.apla.cordova.apppreferences.apppreferences');
-			cordovaModule.getValue (successCallback, errorCallback, this.forKey, this.inDict);
+			cordovaModule.fetch (successCallback, errorCallback, this.forKey, this.inDict);
 		},
-		set: function () {
+		store: function () {
 			var self = this;
 			
 			var args   = {};
@@ -91,8 +91,8 @@ define (function (require, exports, module) {
 				return;
 			}
 			
-			var cordovaModule = cordova.require ('me.apla.cordova.apppreferences.apppreferences');
-			cordovaModule.setValue (successCallback, errorCallback, this.forKey, this.inDict, this.value);
+			var cordovaModule = cordova.require ('me.apla.cordova.app-preferences.apppreferences');
+			cordovaModule.store (successCallback, errorCallback, this.forKey, this.inDict, this.value);
 		}
 
 	});

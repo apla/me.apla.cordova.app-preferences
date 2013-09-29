@@ -11,7 +11,7 @@
 
 @implementation AppPreferences
 
-- (void)getValue:(CDVInvokedUrlCommand*)command
+- (void)fetch:(CDVInvokedUrlCommand*)command
 {
 	
 	CDVPluginResult* result = nil;
@@ -67,7 +67,7 @@
 	}
 }
 
-- (void)setValue:(CDVInvokedUrlCommand*)command
+- (void)store:(CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* result;
 

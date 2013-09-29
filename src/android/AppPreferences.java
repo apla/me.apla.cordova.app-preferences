@@ -30,7 +30,7 @@ public class AppPreferences extends CordovaPlugin {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.cordova.getActivity());
 
         try {
-            if (action.equals("getValue")) {
+            if (action.equals("fetch")) {
                 JSONObject options = args.getJSONObject (0);
                 String key = args.getString("key");
                 if (sharedPrefs.contains(key)) {
@@ -40,7 +40,7 @@ public class AppPreferences extends CordovaPlugin {
                 } else {
                     callbackContext.sendPluginResult(createErrorObj(NO_PROPERTY, "No such property called " + key));
                 }
-            } else if (action.equals("setValue")) {
+            } else if (action.equals("store")) {
                 JSONObject options = args.getJSONObject (0);
                 String key    = args.getString("key");
                 String value  = args.getString("value");

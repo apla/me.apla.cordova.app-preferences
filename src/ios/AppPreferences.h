@@ -12,8 +12,8 @@
 
 @interface AppPreferences : CDVPlugin 
 
-- (void)getValue:(CDVInvokedUrlCommand*)command;
-- (void)setValue:(CDVInvokedUrlCommand*)command;
+- (void)fetch:(CDVInvokedUrlCommand*)command;
+- (void)store:(CDVInvokedUrlCommand*)command;
 - (NSString*)getValueFromBundle:(NSString*)settingsName;
 
 
