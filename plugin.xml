@@ -9,7 +9,7 @@
     <license>Apache</license>
     <keywords>preferences</keywords>
 
-    <js-module src="www/apppreferences.js" name="apppreferences">
+    <js-module src="www/apppreferences.js" name="module">
         <clobbers target="plugins.AppPreferences" />
     </js-module>
 
