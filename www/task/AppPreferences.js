@@ -72,12 +72,6 @@ define (function (require, exports, module) {
 			console.log (this.value);
 
 			var successCallback = function (response) {
-				var result;
-				try {
-					result = JSON.parse (response);
-				} catch (e) {
-					result = response;
-				}
 				self.completed ();
 			};
 

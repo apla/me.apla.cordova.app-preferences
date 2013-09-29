@@ -81,7 +81,7 @@ AppPreferences.prototype.store = platform.store || function (
 	successCallback, errorCallback, dict, key, value
 	) {
 
-		var args = this.prepareKey ('get', dict, key, value);
+		var args = this.prepareKey ('set', dict, key, value);
 
 		if (!args.key || !args.value) {
 			errorCallback ();
