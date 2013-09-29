@@ -1,9 +1,11 @@
 //
-//  applicationPreferences.m
+//  AppPreferences.m
 //  
 //
 //  Created by Tue Topholm on 31/01/11.
 //  Copyright 2011 Sugee. All rights reserved.
+//
+//  Modified by Ivan Baktsheev, 2012-2013
 //
 // THIS HAVEN'T BEEN TESTED WITH CHILD PANELS YET.
 
@@ -50,7 +52,7 @@
 		}
 		
 		if(returnVar == nil) {
-			returnVar = [self getValueFromBundle:settingsName]; //Parsing Root.plist
+			returnVar = [self getSettingFromBundle:settingsName]; //Parsing Root.plist
 			
 //			if (returnVar == nil)
 //				@throw [NSException exceptionWithName:nil reason:@"Key not found" userInfo:nil];;
@@ -128,7 +130,7 @@
 */
 
 
-- (NSString*)getValueFromBundle:(NSString*)settingsName
+- (NSString*)getSettingFromBundle:(NSString*)settingsName
 {
 	NSString *pathStr = [[NSBundle mainBundle] bundlePath];
 	NSString *settingsBundlePath = [pathStr stringByAppendingPathComponent:@"Settings.bundle"];

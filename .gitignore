@@ -1,5 +1,3 @@
-#If ignorance is bliss, then somebody knock the smile off my face
-
 *.csproj.user
 *.suo
 *.cache
@@ -19,3 +17,20 @@ Device-Debug/src
 Device-Release/src
 Simulator-Debug/src
 
+# Xcode
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xcworkspace
+!default.xcworkspace
+xcuserdata
+profile
+*.moved-aside
+DerivedData
+.idea/

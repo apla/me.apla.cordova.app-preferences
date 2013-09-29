@@ -1,9 +1,11 @@
 //
-//  applicationPreferences.h
+//  AppPreferences.h
 //  
 //
 //  Created by Tue Topholm on 31/01/11.
 //  Copyright 2011 Sugee. All rights reserved.
+//
+//  Modified by Ivan Baktsheev, 2012-2013
 //
 
 #import <Foundation/Foundation.h>
@@ -14,7 +16,7 @@
 
 - (void)fetch:(CDVInvokedUrlCommand*)command;
 - (void)store:(CDVInvokedUrlCommand*)command;
-- (NSString*)getValueFromBundle:(NSString*)settingsName;
+- (NSString*)getSettingFromBundle:(NSString*)settingsName;
 
 
 @end
