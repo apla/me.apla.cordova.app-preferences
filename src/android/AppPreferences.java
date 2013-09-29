@@ -31,7 +31,7 @@ public class AppPreferences extends CordovaPlugin {
 
         if (action.equals("fetch")) {
                 JSONObject options = args.getJSONObject (0);
-                String key = args.getString("key");
+                String key = options.getString("key");
             if (sharedPrefs.contains(key)) {
                 String obj = (String) sharedPrefs.getAll().get(key);
                 // JSONObject jsonValue = new JSONObject((Map) obj);
@@ -42,8 +42,8 @@ public class AppPreferences extends CordovaPlugin {
             return true;
         } else if (action.equals("store")) {
             JSONObject options = args.getJSONObject (0);
-            String key    = args.getString("key");
-            String value  = args.getString("value");
+            String key    = options.getString("key");
+            String value  = options.getString("value");
             Editor editor = sharedPrefs.edit();
             editor.putString(key, value);
             if (editor.commit()) {
