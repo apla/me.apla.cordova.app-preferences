@@ -1,7 +1,7 @@
 package me.apla.cordova;
 
-import java.util.Iterator;
-import java.util.Map;
+//import java.util.Iterator;
+//import java.util.Map;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -10,40 +10,47 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
+//import android.content.ActivityNotFoundException;
+//import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 public class AppPreferences extends CordovaPlugin {
 
-    private static final String LOG_TAG = "AppPreferences";
-    private static final int NO_PROPERTY = 0;
-    private static final int NO_PREFERENCE_ACTIVITY = 1;
+//    private static final String LOG_TAG = "AppPreferences";
+//    private static final int NO_PROPERTY = 0;
+//    private static final int NO_PREFERENCE_ACTIVITY = 1;
     private static final int COMMIT_FAILED = 2;
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        String result = "";
+//        String result = "";
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.cordova.getActivity());
 
         if (action.equals("fetch")) {
                 JSONObject options = args.getJSONObject (0);
-                String key = options.getString("key");
+                String key  = options.getString("key");
+                String dict = options.getString("dict");
+                if (dict != "")
+                		key = dict + '.' + key;
             if (sharedPrefs.contains(key)) {
                 String obj = (String) sharedPrefs.getAll().get(key);
                 // JSONObject jsonValue = new JSONObject((Map) obj);
                 callbackContext.success(obj.toString());
             } else {
-                callbackContext.sendPluginResult(new PluginResult (PluginResult.Status.NO_RESULT));
+            		callbackContext.error(0);
+//                callbackContext.sendPluginResult(new PluginResult ());
             }
             return true;
         } else if (action.equals("store")) {
             JSONObject options = args.getJSONObject (0);
             String key    = options.getString("key");
             String value  = options.getString("value");
+            String dict = options.getString("dict");
+            if (dict != "")
+            		key = dict + '.' + key;
             Editor editor = sharedPrefs.edit();
             editor.putString(key, value);
             if (editor.commit()) {
@@ -80,8 +87,12 @@ public class AppPreferences extends CordovaPlugin {
                 callbackContext.error(createErrorObj(COMMIT_FAILED, "Cannot commit change"));
             } 
             return true;
-        } else if (action.equals("removeSetting")) {
-            String key = args.getString(0);             
+        } else if (action.equals("remove")) {
+            JSONObject options = args.getJSONObject (0);
+            String key  = options.getString("key");
+            String dict = options.getString("dict");
+            if (dict != "")
+            		key = dict + '.' + key;
             if (sharedPrefs.contains(key)) {
                 Editor editor = sharedPrefs.edit();
                 editor.remove(key);
