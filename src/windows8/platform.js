@@ -2,6 +2,10 @@ function AppPreferencesW8() {
 
 }
 
+// http://blogs.msdn.com/b/going_metro/archive/2012/04/22/integrating-with-windows-8-settings-charm.aspx
+// http://msdn.microsoft.com/en-us/library/windows/apps/hh770544.aspx
+// http://www.silverlightshow.net/items/Windows-8-Metro-Add-settings-to-your-application.aspx
+
 AppPreferencesW8.prototype.fetch = function(successCallback, errorCallback, dict, key) {
 
 	var self = this;

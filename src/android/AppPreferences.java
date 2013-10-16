@@ -16,6 +16,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
+// http://developer.android.com/guide/topics/ui/settings.html
+// http://stackoverflow.com/questions/4990529/android-a-good-looking-standard-settings-menu
+
 public class AppPreferences extends CordovaPlugin {
 
 //    private static final String LOG_TAG = "AppPreferences";

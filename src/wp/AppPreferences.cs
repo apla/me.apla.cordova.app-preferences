@@ -8,6 +8,10 @@ using System.Collections.Generic;
 namespace WPCordovaClassLib.Cordova.Commands
 {
 
+    // settings gui, the first one
+    // http://msdn.microsoft.com/en-us/library/windowsphone/develop/ff769510(v=vs.105).aspx
+    // http://windowsphone.interoperabilitybridges.com/articles/chapter-7-iphone-to-wp7-application-preference-migration#h2Section3
+
     // http://msdn.microsoft.com/en-us/library/microsoft.phone.net.networkinformation(v=VS.92).aspx
     // http://msdn.microsoft.com/en-us/library/microsoft.phone.net.networkinformation.devicenetworkinformation(v=VS.92).aspx
 
