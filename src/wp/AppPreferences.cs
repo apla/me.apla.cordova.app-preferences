@@ -33,7 +33,7 @@ namespace WPCordovaClassLib.Cordova.Commands
 
 			public string fullKey () {
 				if (this.dict != null) {
-					return string.Concat(this.dict, '.', this.key);
+					return this.dict + '.' + this.key;
 				} else {
 					return this.key;
 				}
@@ -73,7 +73,11 @@ namespace WPCordovaClassLib.Cordova.Commands
 			try {
 				preference = JSON.JsonHelper.Deserialize<AppPreferenceArgs> (optionsString);
 				IsolatedStorageSettings userSettings = IsolatedStorageSettings.ApplicationSettings;
-                userSettings.Add(preference.fullKey(), preference.value);
+				if (userSettings.Contains (preference.fullKey ())) {
+					userSettings[preference.fullKey ()] = preference.value;
+				} else {
+					userSettings.Add (preference.fullKey (), preference.value);
+				}
                 userSettings.Save();
             }
             catch (Exception)
