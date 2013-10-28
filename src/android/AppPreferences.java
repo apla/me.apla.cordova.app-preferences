@@ -18,6 +18,40 @@ import android.preference.PreferenceManager;
 
 // http://developer.android.com/guide/topics/ui/settings.html
 // http://stackoverflow.com/questions/4990529/android-a-good-looking-standard-settings-menu
+// http://androidpartaker.wordpress.com/2010/07/11/android-preferences/
+
+/*
+
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Main">
+        <CheckBoxPreference android:title="Enable Preferences"
+            android:key="EnablePreferences" android:summary="Check to enable Other Preferences" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Other Prefernces">
+        <ListPreference android:title="List Preference"
+            android:key="DayOfWeek" android:dependency="EnablePreferences"
+            android:summary="Selec Day of the Week" android:entries="@array/daysOfWeek"
+            android:entryValues="@array/daysOfWeekValues" />
+        <EditTextPreference android:title="Edit Text Preference"
+            android:key="Name" android:dependency="EnablePreferences"
+            android:summary="Enter Your Name" android:dialogTitle="Enter Your Name"
+            android:defaultValue="Android Partaker"/>
+        <RingtonePreference android:title="Ringtone Preference"
+            android:key="Ringtone" android:dependency="EnablePreferences"
+            android:summary="Select Ringtone" android:ringtoneType="all" />
+    </PreferenceCategory>
+ 
+    <PreferenceCategory android:title="Advance Preference">
+        <PreferenceScreen android:title="Advance Preference">
+ 
+            <EditTextPreference android:title="Enter Text"
+                android:key="Text" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+</PreferenceScreen>
+
+*/
 
 public class AppPreferences extends CordovaPlugin {
 
