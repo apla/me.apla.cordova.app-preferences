@@ -2,12 +2,13 @@
 
 var fs = require('fs');
 var plist = require('plist');
+var libxml = require('libxmljs');
 
 function ucfirst(s) {
 	return s.charAt(0).toUpperCase() + s.substring(1);
 }
 
-var ConfigMap = function(config) {
+function ConfigMap(config) {
 	// iOS
 	if (config.type)
 		switch (config.type) {
@@ -24,7 +25,7 @@ var ConfigMap = function(config) {
 				config.values = [];
 				config.items.forEach(function(a) {
 					config.values.push(a.id || a.value);
-					config.titles.push(a.name || a.title);
+					config.titles.push(a.title || a.name);
 				});
 				delete config.items;
 			break;
@@ -44,17 +45,24 @@ var ConfigMap = function(config) {
 }
 
 
+
 fs.readFile('app-settings.json', function(err, data) {
 	if (err)
 		throw err;
 
-	data = JSON.parse(data);
+	var iosData = JSON.parse(data);
+	var aData = iosData;
+
+
+
+	// build iOS settings bundle
+
 	var items = [];
-	while (data.length) {
-		var src = data.shift();
+	while (iosData.length) {
+		var src = iosData.shift();
 		if (src.type == 'group') {
 			src.items.forEach(function(s) {
-				data.unshift(s);
+				iosData.unshift(s);
 			});
 			delete src['items'];
 		}
@@ -74,7 +82,7 @@ fs.readFile('app-settings.json', function(err, data) {
 			fs.writeFile('platforms/ios/Settings.bundle/Root.plist', xml, function(err) {
 				if (err)
 					throw err;
-				console.log('plist was successfully generated');
+				console.log('ios settings bundle was successfully generated');
 			});
 
 			// Write localization resource file
@@ -88,4 +96,94 @@ fs.readFile('app-settings.json', function(err, data) {
 			});
 		});
 	});
+
+
+
+	// build Android settings XML
+
+	var doc = new libxml.Document();
+	var strings = [];
+	var n = doc
+		.node('PreferenceScreen')
+		.attr({'xmlns:android': 'http://schemas.android.com/apk/res/android'});
+
+
+	var addSettings = function(parent, config) {
+		if (config.type == 'group') {
+			var g = parent
+				.node('PreferenceCategory')
+				.attr({'android:title': config.name || config.title});
+
+			config.items.forEach(function(item) {
+				addSettings(g, item);
+			});
+		} else {
+			var attr = {
+				'android:title': config.title,
+				'android:key': config.name,
+				'android:defaultValue': config['default']
+			}
+
+			switch (config.type) {
+				case 'combo':
+					// Generate resource file
+					var d = new libxml.Document();
+					var res = d.node('resources');
+					var titles = res.node('string-array').attr({name: config.name}),
+					    values = res.node('string-array').attr({name: config.name + 'Values'});
+
+					config.items.forEach(function(item) {
+						titles.node('item', item.name || item.title);
+						values.node('item', item.id || item.value);
+					});
+
+					strings.push({
+						name: config.name,
+						xml: d.toString()
+					});
+
+					attr['android:entries'] = '@array/' + config.name;
+					attr['android:entryValues'] = '@array/' + config.name + 'Values';
+
+					parent
+						.node('ListPreference')
+						.attr(attr)
+				break;
+			}
+		}
+	}
+	aData.forEach(function(item) {
+		addSettings(n, item);
+	});
+
+
+	fs.exists('platforms/android', function(exists) {
+		if (!exists)
+			throw 'platform android not found';
+
+		fs.mkdir('platforms/android/res/xml', function(e) {
+			if (e && e.code != 'EEXIST')
+				throw e;
+
+			// Write settings plist
+			fs.writeFile('platforms/android/res/xml/preference.xml', doc.toString(), function(err) {
+				if (err)
+					throw err;
+				console.log('android preferences file was successfully generated');
+			});
+
+			// Write localization resource file
+			fs.mkdir('platforms/android/res/values', function(e) {
+				if (e && e.code != 'EEXIST')
+					throw e;
+				strings.forEach(function(file) {
+					fs.writeFile('platforms/android/res/values/' + file.name + '.xml', file.xml, function(err) {
+						if (err)
+							throw err;
+					});
+				});
+			});
+		});
+	});
+
 });
