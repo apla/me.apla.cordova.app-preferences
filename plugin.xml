@@ -7,7 +7,8 @@
     <name>AppPreferences</name>
     <description>Application preferences plugin</description>
     <license>Apache</license>
-    <keywords>preferences</keywords>
+    <keywords>preferences, settings</keywords>
+    <repo>https://github.com/apla/me.apla.cordova.app-preferences</repo>
 
     <js-module src="www/apppreferences.js" name="module">
         <clobbers target="plugins.AppPreferences" />
