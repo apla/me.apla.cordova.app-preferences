@@ -7,10 +7,11 @@
     <name>AppPreferences</name>
     <description>Application preferences plugin</description>
     <license>Apache</license>
-    <keywords>preferences</keywords>
+    <keywords>preferences, settings</keywords>
+    <repo>https://github.com/apla/me.apla.cordova.app-preferences</repo>
 
-    <js-module src="www/apppreferences.js" name="appPreferences">
-        <clobbers target="plugins" />
+    <js-module src="www/apppreferences.js">
+        <clobbers target="plugins.appPreferences" />
     </js-module>
 
     <asset src="www/task/AppPreferences.js" target="task/AppPreferences.js" />
