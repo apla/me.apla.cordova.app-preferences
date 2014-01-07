@@ -16,13 +16,18 @@ function AppPreferences() {
 AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dict, key, value) {
 	var argList = [].slice.apply(arguments);
 	argList.shift();
-	if ((mode == 'get' && argList.length == 1) || (mode == 'set' && argList.length == 2)) {
-		argList.unshift (void 0);
+	if (
+		(mode == 'get' && argList.length == 1) ||
+		(mode == 'get' && argList.length == 2 && argList[1] == null) ||
+		(mode == 'set' && argList.length == 2) ||
+		(mode == 'set' && argList.length == 3 && argList[2] == null)
+	) {
+		argList.unshift (undefined);
 	}
 	var args = {
 		key: argList[1]
 	};
-	if (argList[0] !== void 0)
+	if (argList[0] !== undefined)
 		args.dict = argList[0]
 	
 	if (mode == 'set')
@@ -50,14 +55,11 @@ AppPreferences.prototype.fetch = platform.fetch || function (
 			return;
 		}
 
-		console.log('PREFERENCE GET');
-
 		_successCallback = function (_value) {
-			var value;
+			var value = _value;
 			try {
 				value = JSON.parse (_value);
 			} catch (e) {
-				value = _value;
 			}
 			successCallback (value);
 		}

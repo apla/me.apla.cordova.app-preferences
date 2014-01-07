@@ -2,13 +2,14 @@
 
 <plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
     id="me.apla.cordova.app-preferences"
-    version="0.2.2">
+    version="0.2.4">
 
     <name>AppPreferences</name>
     <description>Application preferences plugin</description>
     <license>Apache</license>
     <keywords>preferences, settings</keywords>
     <repo>https://github.com/apla/me.apla.cordova.app-preferences</repo>
+    <issue>https://github.com/apla/me.apla.cordova.app-preferences/issues</issue>
 
     <js-module src="www/apppreferences.js">
         <clobbers target="plugins.appPreferences" />
