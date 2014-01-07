@@ -2,15 +2,15 @@
 
 <plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
     id="me.apla.cordova.app-preferences"
-    version="0.2.0">
+    version="0.2.2">
 
     <name>AppPreferences</name>
     <description>Application preferences plugin</description>
     <license>Apache</license>
     <keywords>preferences</keywords>
 
-    <js-module src="www/apppreferences.js" name="module">
-        <clobbers target="plugins.AppPreferences" />
+    <js-module src="www/apppreferences.js" name="appPreferences">
+        <clobbers target="plugins" />
     </js-module>
 
     <asset src="www/task/AppPreferences.js" target="task/AppPreferences.js" />
