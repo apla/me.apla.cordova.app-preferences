@@ -91,32 +91,42 @@ Titles
 	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
-	NSMutableDictionary *target = nil;
+	id target = defaults;
 	
 	// NSMutableDictionary *mutable = [[dict mutableCopy] autorelease];
 	// NSDictionary *dict = [[mutable copy] autorelease];
 	
-	if (settingsDict) {
-		target = [[defaults dictionaryForKey:settingsDict] mutableCopy];
-	}
-	
 	@try {
-	
-		//At the moment we only return strings
-		//bool: true = 1, false=0
-		NSString *returnVar;
-		if (target) {
-			returnVar = [target objectForKey:settingsName];
-		} else {
-			returnVar = [defaults stringForKey:settingsName];
+
+		if (settingsDict) {
+			target = [defaults dictionaryForKey:settingsDict];
 		}
+
+		NSString *returnVar;
+		id settingsValue = [target objectForKey:settingsName];
 		
-		if(returnVar == nil) {
+		if (settingsValue != nil) {
+			if ([settingsValue isKindOfClass:[NSString class]]) {
+				returnVar = [NSString stringWithFormat:@"\"%@\"", (NSString*)settingsValue];
+			} else if ([settingsValue isKindOfClass:[NSNumber class]]) {
+				if ((NSNumber*)settingsValue == (void*)kCFBooleanFalse || (NSNumber*)settingsValue == (void*)kCFBooleanTrue) {
+//					const char * x = [(NSNumber*)settingsValue objCType];
+					returnVar = [NSString stringWithFormat:@"%@", [(NSNumber*)settingsValue boolValue] == YES ? @"true": @"false"];
+				} else {
+					// TODO: int, float
+					returnVar = [NSString stringWithFormat:@"%@", (NSNumber*)settingsValue];
+				}
+				
+			} else if ([settingsValue isKindOfClass:[NSData class]]) { // NSData
+				returnVar = [[NSString alloc] initWithData:(NSData*)settingsValue encoding:NSUTF8StringEncoding];
+			}
+		} else {
 			returnVar = [self getSettingFromBundle:settingsName]; //Parsing Root.plist
 			
 //			if (returnVar == nil)
 //				@throw [NSException exceptionWithName:nil reason:@"Key not found" userInfo:nil];;
 		}
+		
 		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnVar];
 
 	} @catch (NSException * e) {
@@ -144,10 +154,11 @@ Titles
 	NSString *settingsDict  = [options objectForKey:@"dict"];
     NSString *settingsName  = [options objectForKey:@"key"];
     NSString *settingsValue = [options objectForKey:@"value"];
+	NSString *settingsType  = [options objectForKey:@"type"];
 
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
-	NSMutableDictionary *target;
+	id target = defaults;
 
 	// NSMutableDictionary *mutable = [[dict mutableCopy] autorelease];
 	// NSDictionary *dict = [[mutable copy] autorelease];
@@ -161,20 +172,36 @@ Titles
 #endif
 		}
 	}
-		
+
+	NSError* error = nil;
+	id JSONObj = [NSJSONSerialization JSONObjectWithData:[settingsValue dataUsingEncoding:NSUTF8StringEncoding]
+                                                options:NSJSONReadingAllowFragments
+                                                  error:&error];
+	
+	if (error != nil) {
+        NSLog(@"NSString JSONObject error: %@", [error localizedDescription]);
+    }
+
     @try {
 	
-		if (target) {
-			[target setObject:settingsValue forKey:settingsName];
-			[defaults setValue:target forKey:settingsDict];
+		if ([settingsType isEqual: @"string"] && [JSONObj isKindOfClass:[NSString class]]) {
+			[target setObject:(NSString*)JSONObj forKey:settingsName];
+		} else if ([settingsType  isEqual: @"number"] && [JSONObj isKindOfClass:[NSNumber class]]) {
+			[target setObject:(NSNumber*)JSONObj forKey:settingsName];
+			// setInteger: forKey, setFloat: forKey:
+		} else if ([settingsType  isEqual: @"boolean"]) {
+			[target setObject:[NSNumber numberWithBool:(BOOL)JSONObj] forKey:settingsName];
 		} else {
-			[defaults setObject:settingsValue forKey:settingsName];
+			// data
+			[target setObject:[settingsValue dataUsingEncoding:NSUTF8StringEncoding] forKey:settingsName];
 		}
 		
+		if (target != defaults)
+			[defaults setObject:(NSMutableDictionary*)target forKey:settingsDict];
 		[defaults synchronize];
 
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-			
+		
     } @catch (NSException * e) {
 	
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT messageAsString:[e reason]];

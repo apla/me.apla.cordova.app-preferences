@@ -33,6 +33,7 @@ AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dic
 	if (mode == 'set')
 		args.value = argList[2];
 	
+	// console.log (JSON.stringify (argList), JSON.stringify (args));
 	return args;
 }
 
@@ -90,6 +91,21 @@ AppPreferences.prototype.store = platform.store || function (
 			return;
 		}
 
+		args.type  = typeof args.value;
+
+		// VERY IMPORTANT THING
+		// WP platform has some limitations, so we need to encode all values to JSON.
+		// On plugin side we store value according to it's type.
+		// So, every platform plugin must check for type, decode JSON and store
+		// value decoded for basic types.
+		// TODO: don't think about array of strings, it's android only.
+		// Complex structures must be stored as JSON string.
+		// On iOS strings stored as strings and JSON stored as NSData
+		// Android:
+		// Now, interesting thing: how to differentiate between string value
+		// and complex value, encoded as json and stored as string?
+		// I'm introduce setting named _<preference>_type with value "JSON"
+		// Windows Phone ?
 		args.value = JSON.stringify (args.value);
 
 		var execStatus = cordova.exec (
