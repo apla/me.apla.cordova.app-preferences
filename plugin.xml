@@ -69,5 +69,12 @@
         </js-module>
     </platform-->
 
+    <!-- blackberry10 -->
+    <!-- using localStorage fallback -->
+    <platform name="blackberry10">
+        <js-module src="src/platform.js">
+        </js-module>
+    </platform>
+
 
 </plugin>

@@ -55,7 +55,7 @@ Platforms:
 1. Native execution on iOS using `NSUserDefaults`
 1. Native execution on Android using `android.content.SharedPreferences`
 1. Native execution on Windows Phone using `IsolatedStorageSettings.ApplicationSettings`
-1. (WIP) fallback using `localStorage`
+1. (untested) fallback using `localStorage`
 
 Notes:
 ---
