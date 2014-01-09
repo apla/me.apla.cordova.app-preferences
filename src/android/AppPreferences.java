@@ -3,18 +3,24 @@ package me.apla.cordova;
 //import java.util.Iterator;
 //import java.util.Map;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
+import org.json.JSONTokener;
 
 //import android.content.ActivityNotFoundException;
 //import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 // http://developer.android.com/guide/topics/ui/settings.html
 // http://stackoverflow.com/questions/4990529/android-a-good-looking-standard-settings-menu
@@ -71,13 +77,35 @@ public class AppPreferences extends CordovaPlugin {
                 String key  = options.getString("key");
                 String dict = options.optString("dict");
                 if (dict != "")
-                		key = dict + '.' + key;
+                    key = dict + '.' + key;
+                String returnVal = null;
             if (sharedPrefs.contains(key)) {
-                String obj = (String) sharedPrefs.getAll().get(key);
+                Object obj = sharedPrefs.getAll().get(key);
+                String objClass = obj.getClass().getName();
+                if (objClass.equals("java.lang.Integer")) {
+                    returnVal = obj.toString();
+                } else if (objClass.equals("java.lang.Float") || objClass.equals("java.lang.Double")) {
+                    returnVal = obj.toString();
+                } else if (objClass.equals("java.lang.Boolean")) {
+                    returnVal = (Boolean)obj ? "true" : "false";
+                } else if (objClass.equals("java.lang.String")) {
+                    if (sharedPrefs.contains("_" + key + "_type")) {
+                        // here we have json encoded string
+                        returnVal = (String)obj;
+                    } else {
+                            String fakeArray = new JSONStringer().array().value((String)obj).endArray().toString();
+                            returnVal = fakeArray.substring(1, fakeArray.length()-1);
+                            // returnVal = new JSONStringer().value((String)obj).toString();
+                    }
+                    
+                } else {
+                    Log.d("", "unhandled type: " + objClass);
+                }
                 // JSONObject jsonValue = new JSONObject((Map) obj);
-                callbackContext.success(obj.toString());
+                callbackContext.success(returnVal);
             } else {
-            		callbackContext.error(0);
+//              Log.d("", "no value");
+                    callbackContext.error(0);
 //                callbackContext.sendPluginResult(new PluginResult ());
             }
             return true;
@@ -86,10 +114,39 @@ public class AppPreferences extends CordovaPlugin {
             String key    = options.getString("key");
             String value  = options.getString("value");
             String dict   = options.optString("dict");
+            String type   = options.optString("type");
             if (dict != "")
-            		key = dict + '.' + key;
+                key = dict + '.' + key;
             Editor editor = sharedPrefs.edit();
-            editor.putString(key, value);
+            // editor.putString(key, value);
+            
+                JSONTokener jt = new JSONTokener(value);
+                Object nv = jt.nextValue();
+                String className = nv.getClass().getName();
+            
+//              Log.d("", "value is: " + nv.toString() + " js type is: " + type + " " + args.toString());
+            if (type != null) {
+                if (sharedPrefs.contains("_" + key + "_type")) {
+                    editor.remove("_" + key + "_type");
+                }
+                if (type.equals("string") ) {
+                    editor.putString (key, (String)nv);
+                } else if (type.equals("number")) {
+                        if (className.equals("java.lang.Double")) {
+                            editor.putFloat(key, ((Double) nv).floatValue());
+                        } else if (className.equals("java.lang.Integer")) {
+                            editor.putInt(key, (Integer) nv);
+                        } 
+                } else if (type.equals("boolean")) {
+                    editor.putBoolean (key, (Boolean)nv);
+                } else {
+                    editor.putString(key, value);
+                    editor.putString ("_" + key + "_type", "json");
+//                    Log.d("", "complex thing stored");
+                }
+                        
+            }
+        
             if (editor.commit()) {
                 callbackContext.success();
             } else {
@@ -129,10 +186,14 @@ public class AppPreferences extends CordovaPlugin {
             String key  = options.getString("key");
             String dict = options.getString("dict");
             if (dict != "")
-            		key = dict + '.' + key;
+                    key = dict + '.' + key;
             if (sharedPrefs.contains(key)) {
                 Editor editor = sharedPrefs.edit();
                 editor.remove(key);
+                    if (sharedPrefs.contains("_" + key + "_type")) {
+                        editor.remove("_" + key + "_type");
+                    }
+
                 if (editor.commit()) {
                     callbackContext.success();
                 } else {
