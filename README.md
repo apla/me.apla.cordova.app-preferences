@@ -59,8 +59,7 @@ Platforms:
 
 Notes:
 ---
-1. iOS and Android basic values (`string`, `number`, `boolean`) stored using typed fields.
-1. Windows Phone basic values (`string`, `number`, `boolean`) stored using JSON notation.
+1. iOS, Android and Windows Phone basic values (`string`, `number`, `boolean`) stored using typed fields.
 1. Complex values, such as arrays and objects, always stored using JSON notation.
 1. Dictionaries supported only on iOS, so on another platforms when using dict key
 will be written like `<dict>.<key>`
@@ -69,7 +68,7 @@ Tests:
 ---
 Tests available in `src/test.js`. After installing plugin, you can add test code from this file and then launch `testPlugin()` function.
 
-Android and iOS tested ok at this moment.
+iOS, Android and Windows Phone 8 test pass ok at this moment.
 
 Credits:
 ---
