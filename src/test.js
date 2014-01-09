@@ -1,0 +1,60 @@
+function testPlugin () {
+var tests = {
+	"bool-test": true,
+	"float-test": 123.456,
+	"int-test": 1,
+	"string-test": "xxx",
+	"obj-test": {a: "b"},
+	"arr-test": ["a", "b"]
+};
+
+var fail = 0;
+var pass = 0;
+
+var appp = plugins.appPreferences;
+for (var testK in tests) {
+	(function (testName, testValue) {
+		appp.store (function (ok) {
+			pass ++;
+			appp.fetch (function (ok) {
+				if (ok == testValue || (typeof testValue == "object" && JSON.stringify (ok) == JSON.stringify (testValue)))
+					pass ++;
+				else {
+					console.error ('fetched incorrect value for ' + testName + ': expected ' + testValue + ' got ' + ok);
+					fail ++;
+				}
+			}, function (err) {
+				console.error ('fetch value failed for ' + testName + ' and value ' + testValue);
+				fail ++;
+			}, testName);
+		}, function (err) {
+			console.error ('store value failed for ' + testName + ' and value ' + testValue);
+			fail ++;
+		}, testName, testValue);
+		appp.store (function (ok) {
+			pass ++;
+			appp.fetch (function (ok) {
+				if (ok == testValue || (typeof testValue == "object" && JSON.stringify (ok) == JSON.stringify (testValue)))
+					pass ++;
+				else {
+					console.error ('fetched incorrect value for x' + testName + ': expected ' + testValue + ' got ' + ok);
+					fail ++;
+				}
+			}, function (err) {
+				console.error ('fetch value failed for ' + "x" + testName + ' and value ' + testValue);
+				fail ++;
+			}, "dict", "x" + testName);
+		}, function (err) {
+			console.error ('store value failed for ' + "x" + testName + ' and value ' + testValue);
+			fail ++;
+		}, "dict", "x" + testName, testValue);
+
+	}) (testK, tests[testK]);
+}
+
+setTimeout (function () {
+	console.log (pass + ' tests passed');
+	if (fail)
+		console.error (fail + ' tests failed');
+}, 1000);
+}
