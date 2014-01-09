@@ -24,12 +24,14 @@ namespace WPCordovaClassLib.Cordova.Commands
 		[DataContract]
 		public class AppPreferenceArgs
 		{
-			[DataMember(Name = "key", IsRequired = true)]
+			[DataMember (Name = "key",   IsRequired = true)]
 			public string key;
-			[DataMember (Name = "dict", IsRequired = false)]
+			[DataMember (Name = "dict",  IsRequired = false)]
 			public string dict;
 			[DataMember (Name = "value", IsRequired = false)]
 			public string value;
+            [DataMember (Name = "type",  IsRequired = false)]
+            public string type;
 
 			public string fullKey () {
 				if (this.dict != null) {
@@ -44,7 +46,10 @@ namespace WPCordovaClassLib.Cordova.Commands
         {
 			AppPreferenceArgs preference;
             string value;
-			string optionsString = JSON.JsonHelper.Deserialize<string[]> (argsString)[0];
+			string[] args = JSON.JsonHelper.Deserialize<string[]> (argsString);
+            string optionsString = args[0];
+            string callbackId    = args[1];
+            // System.Diagnostics.Debug.WriteLine ("\nfetch args: "+argsString+"\n");
 			//BrowserOptions opts = JSON.JsonHelper.Deserialize<BrowserOptions>(options);
 
             try {
@@ -53,22 +58,24 @@ namespace WPCordovaClassLib.Cordova.Commands
 				
                 userSettings.TryGetValue<string> (preference.fullKey(), out value);
             } catch (NullReferenceException) {
-                DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION), callbackId);
                 return;
             }
             catch (Exception)
             {
-                DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION), callbackId);
                 return;
             }
-            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, value));
+            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, value), callbackId);
         }
 
         public void store (string argsString)
         {
 			AppPreferenceArgs preference;
-			string optionsString = JSON.JsonHelper.Deserialize<string[]> (argsString)[0];
 			//BrowserOptions opts = JSON.JsonHelper.Deserialize<BrowserOptions>(options);
+            string[] args = JSON.JsonHelper.Deserialize<string[]> (argsString);
+            string optionsString = args[0];
+            string callbackId    = args[1];
 
 			try {
 				preference = JSON.JsonHelper.Deserialize<AppPreferenceArgs> (optionsString);
@@ -82,10 +89,10 @@ namespace WPCordovaClassLib.Cordova.Commands
             }
             catch (Exception)
             {
-                DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION), callbackId);
                 return;
             }
-            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, ""));
+            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, ""), callbackId);
         }
     }
 }
