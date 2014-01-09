@@ -2,7 +2,7 @@ Application preferences Cordova plugin.
 -----------------------
 
 Store and fetch application preferences using platform facilities.
-Compatible with phonegap 3.x
+Compatible with Cordova 3.x
 
 Installing:
 ---
@@ -55,13 +55,14 @@ Platforms:
 1. Native execution on iOS using `NSUserDefaults`
 1. Native execution on Android using `android.content.SharedPreferences`
 1. Native execution on Windows Phone using `IsolatedStorageSettings.ApplicationSettings`
+1. Native execution on Windows 8 using `IsolatedStorageSettings.ApplicationSettings`
 1. (untested) fallback using `localStorage`
 
 Notes:
 ---
 1. iOS, Android and Windows Phone basic values (`string`, `number`, `boolean`) stored using typed fields.
 1. Complex values, such as arrays and objects, always stored using JSON notation.
-1. Dictionaries supported only on iOS, so on another platforms when using dict key
+1. Dictionaries supported on iOS and Windows 8, so on another platforms when using dict key
 will be written like `<dict>.<key>`
 
 Tests:
