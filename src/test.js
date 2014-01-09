@@ -20,7 +20,7 @@ for (var testK in tests) {
 				if (ok == testValue || (typeof testValue == "object" && JSON.stringify (ok) == JSON.stringify (testValue)))
 					pass ++;
 				else {
-					console.error ('fetched incorrect value for ' + testName + ': expected ' + testValue + ' got ' + ok);
+					console.error ('fetched incorrect value for ' + testName + ': expected ' + JSON.stringify (testValue) + ' got ' + JSON.stringify (ok));
 					fail ++;
 				}
 			}, function (err) {
@@ -37,7 +37,7 @@ for (var testK in tests) {
 				if (ok == testValue || (typeof testValue == "object" && JSON.stringify (ok) == JSON.stringify (testValue)))
 					pass ++;
 				else {
-					console.error ('fetched incorrect value for x' + testName + ': expected ' + testValue + ' got ' + ok);
+					console.error ('fetched incorrect value for x' + testName + ': expected ' + JSON.stringify (testValue) + ' got ' + JSON.stringify (ok));
 					fail ++;
 				}
 			}, function (err) {
