@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-var fs = require('fs');
-var plist = require('plist');
+var fs     = require('fs');
+var plist  = require('plist');
 var libxml = require('libxmljs');
 
 function ucfirst(s) {
@@ -9,7 +9,67 @@ function ucfirst(s) {
 }
 
 function ConfigMap(config) {
-	// iOS
+// iOS
+// https://developer.apple.com/library/ios/documentation/cocoa/Conceptual/UserDefaults/Preferences/Preferences.html
+/*
+
+mkdir Settings.bundle
+cd Settings.bundle
+touch Root.plist
+mkdir en.lproj
+cd en.lproj
+touch Root.strings
+
+Identifier
+
+PSGroupSpecifier
+Type
+Title
+FooterText
+
+PSToggleSwitchSpecifier
+Title
+Key
+DefaultValue
+
+PSSliderSpecifier
+Key
+DefaultValue
+MinimumValue
+MaximumValue
+
+PSTitleValueSpecifier
+Title
+Key
+DefaultValue
+
+PSTextFieldSpecifier
+Title
+Key
+DefaultValue
+IsSecure
+KeyboardType (Alphabet , NumbersAndPunctuation , NumberPad , URL , EmailAddress)
+AutocapitalizationType
+AutocorrectionType
+
+PSMultiValueSpecifier
+Title
+Key
+DefaultValue
+Values
+Titles
+
+PSRadioGroupSpecifier
+Title
+FooterText???
+Key
+DefaultValue
+Values
+Titles
+
+
+*/
+
 	if (config.type)
 		switch (config.type) {
 			case 'combo':
@@ -69,7 +129,7 @@ fs.readFile('app-settings.json', function(err, data) {
 		items.push(ConfigMap(src));
 	}
 
-	var xml = plist.build({ PreferenceSpecifiers: items });
+	var plistXml = plist.build({ PreferenceSpecifiers: items });
 	fs.exists('platforms/ios', function(exists) {
 		if (!exists)
 			throw 'platform ios not found';
@@ -79,7 +139,7 @@ fs.readFile('app-settings.json', function(err, data) {
 				throw e;
 
 			// Write settings plist
-			fs.writeFile('platforms/ios/Settings.bundle/Root.plist', xml, function(err) {
+			fs.writeFile('platforms/ios/Settings.bundle/Root.plist', plistXml, function(err) {
 				if (err)
 					throw err;
 				console.log('ios settings bundle was successfully generated');

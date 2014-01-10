@@ -4,7 +4,7 @@ Application preferences Cordova plugin.
 Store and fetch application preferences using platform facilities.
 Compatible with Cordova 3.x
 
-Installing:
+Installing
 ---
 
 From plugin registry:
@@ -26,7 +26,7 @@ More information:
 [Using Plugman to Manage Plugins](http://cordova.apache.org/docs/en/edge/guide_plugin_ref_plugman.md.html).
 
 
-Synopsis:
+Synopsis
 ---
 
 ```javascript
@@ -50,7 +50,7 @@ prefs.fetch (ok, fail, 'key');
 prefs.fetch (ok, fail, 'dict', 'key');
 ```
 
-Platforms:
+Platforms
 ---
 1. Native execution on iOS using `NSUserDefaults`
 1. Native execution on Android using `android.content.SharedPreferences`
@@ -58,20 +58,25 @@ Platforms:
 1. Native execution on Windows 8 using `IsolatedStorageSettings.ApplicationSettings`
 1. (untested) fallback using `localStorage`
 
-Notes:
+Notes
 ---
-1. iOS, Android and Windows Phone basic values (`string`, `number`, `boolean`) stored using typed fields.
-1. Complex values, such as arrays and objects, always stored using JSON notation.
-1. Dictionaries supported on iOS and Windows 8, so on another platforms when using dict key
-will be written like `<dict>.<key>`
+1. iOS, Android and Windows Phone basic values (`string`, `number`, `boolean`) are stored using typed fields.
+1. Complex values, such as arrays and objects, are always stored using JSON notation.
+1. Dictionaries are supported on iOS and Windows 8 only, so on other platforms instead of using the real dictionary a composite key will be written like `<dict>.<key>`
 
-Tests:
+Tests
 ---
-Tests available in `src/test.js`. After installing plugin, you can add test code from this file and then launch `testPlugin()` function.
+Tests are available in `src/test.js`. After installing plugin you can add test code from this file and then launch `testPlugin()` function.
 
-iOS, Android and Windows Phone 8 test pass ok at this moment.
+iOS, Android and Windows Phone 8 tests pass ok at the moment.
 
-Credits:
+
+Preferences interface generator
+---
+You can find preliminary version of `Settings.bundle` generator in `bin/build-app-settings.js`. Only toggle switch is supported for now.
+
+
+Credits
 ---
 
 Originally ported from:
