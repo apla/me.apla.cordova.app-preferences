@@ -130,7 +130,7 @@
 			[target setObject:(NSNumber*)JSONObj forKey:settingsName];
 			// setInteger: forKey, setFloat: forKey:
 		} else if ([settingsType  isEqual: @"boolean"]) {
-			[target setObject:[NSNumber numberWithBool:(BOOL)JSONObj] forKey:settingsName];
+			[target setObject:JSONObj forKey:settingsName];
 		} else {
 			// data
 			[target setObject:[settingsValue dataUsingEncoding:NSUTF8StringEncoding] forKey:settingsName];

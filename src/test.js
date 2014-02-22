@@ -1,6 +1,7 @@
 function testPlugin () {
 var tests = {
 	"bool-test": true,
+	"false-test": false,
 	"float-test": 123.456,
 	"int-test": 1,
 	"string-test": "xxx",
