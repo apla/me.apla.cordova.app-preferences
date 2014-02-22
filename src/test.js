@@ -4,9 +4,12 @@ var tests = {
 	"false-test": false,
 	"float-test": 123.456,
 	"int-test": 1,
+	"zero-test": 0,
 	"string-test": "xxx",
+	"empty-string-test": "xxx",
 	"obj-test": {a: "b"},
-	"arr-test": ["a", "b"]
+	"arr-test": ["a", "b"],
+	"empty-arr-test": []
 };
 
 var fail = 0;

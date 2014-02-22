@@ -86,7 +86,7 @@ AppPreferences.prototype.store = platform.store || function (
 
 		var args = this.prepareKey ('set', dict, key, value);
 
-		if (!args.key || !args.value) {
+		if (!args.key || args.value === null || args.value === undefined) {
 			errorCallback ();
 			return;
 		}
