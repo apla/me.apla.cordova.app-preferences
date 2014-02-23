@@ -76,7 +76,7 @@ public class AppPreferences extends CordovaPlugin {
                 JSONObject options = args.getJSONObject (0);
                 String key  = options.getString("key");
                 String dict = options.optString("dict");
-                if (dict != "")
+                if (!"".equals(dict))
                     key = dict + '.' + key;
                 String returnVal = null;
             if (sharedPrefs.contains(key)) {
@@ -115,7 +115,7 @@ public class AppPreferences extends CordovaPlugin {
             String value  = options.getString("value");
             String dict   = options.optString("dict");
             String type   = options.optString("type");
-            if (dict != "")
+            if (!"".equals(dict))
                 key = dict + '.' + key;
             Editor editor = sharedPrefs.edit();
             // editor.putString(key, value);
@@ -185,7 +185,7 @@ public class AppPreferences extends CordovaPlugin {
             JSONObject options = args.getJSONObject (0);
             String key  = options.getString("key");
             String dict = options.getString("dict");
-            if (dict != "")
+            if (!"".equals(dict))
                     key = dict + '.' + key;
             if (sharedPrefs.contains(key)) {
                 Editor editor = sharedPrefs.edit();
