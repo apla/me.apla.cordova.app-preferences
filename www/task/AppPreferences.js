@@ -1,6 +1,12 @@
+var define;
+if (typeof define === "undefined")
+	define = function (classInstance) {
+		classInstance (require, exports, module);
+	}
+
 define (function (require, exports, module) {
 
-	var taskBase = require ('task/base');
+	var taskBase = require ('dataflo.ws').task ('base');
 
 	var AppPreferenceTask = module.exports = function (config) {
 		// there is no options to netinfo class
@@ -8,12 +14,12 @@ define (function (require, exports, module) {
 	};
 
 	util.inherits (AppPreferenceTask, taskBase);
-	
-	util.extend (AppPreferenceTask.prototype, { 
-		
+
+	util.extend (AppPreferenceTask.prototype, {
+
 		fetch: function () {
 			var self  = this;
-			
+
 			console.log('MOBRO PREFERENCE GET PREPARE');
 
 			var successCallback = function (response) {
@@ -29,10 +35,10 @@ define (function (require, exports, module) {
 				} else {
 					returnValue.noValue = true;
 				}
-				
+
 				console.log ('MOBRO PREFERENCE GET DONE');
 				console.log (returnValue);
-				
+
 				self.completed (returnValue);
 			};
 
@@ -41,9 +47,9 @@ define (function (require, exports, module) {
 				self.completed ({
 					forKey: self.forKey,
 					noValue: true
-				});				
+				});
 			};
-			
+
 			// if (device.platform == "BlackBerry" && parseInt(device.version) == 10) {
 			// 	self.completed ({
 			// 		forKey: self.forKey,
@@ -51,13 +57,13 @@ define (function (require, exports, module) {
 			// 	});
 			// 	return;
 			// }
-			
+
 			var cordovaModule = cordova.require ('me.apla.cordova.app-preferences.apppreferences');
 			cordovaModule.fetch (successCallback, errorCallback, this.forKey, this.inDict);
 		},
 		store: function () {
 			var self = this;
-			
+
 			var args   = {};
 			args.key   = this.forKey;
 			args.dict  = this.inDict;
@@ -84,7 +90,7 @@ define (function (require, exports, module) {
 				self.completed ();
 				return;
 			}
-			
+
 			var cordovaModule = cordova.require ('me.apla.cordova.app-preferences.apppreferences');
 			cordovaModule.store (successCallback, errorCallback, this.forKey, this.inDict, this.value);
 		}
