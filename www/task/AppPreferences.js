@@ -6,7 +6,9 @@ if (typeof define === "undefined")
 
 define (function (require, exports, module) {
 
-	var taskBase = require ('dataflo.ws').task ('base');
+	var dataflows = require ('dataflo.ws');
+
+	var taskBase = dataflows.task ('base');
 
 	var AppPreferenceTask = module.exports = function (config) {
 		// there is no options to netinfo class
@@ -96,6 +98,8 @@ define (function (require, exports, module) {
 		}
 
 	});
+
+	dataflows.register ('task', 'AppPreferences', AppPreferenceTask);
 
 	return AppPreferenceTask;
 
