@@ -4,6 +4,12 @@
         "title":"Common",
         "items":[
             {
+                "title":"Other",
+                "type":"switch",
+                "default":false,
+                "name":"demo_switch"
+            },
+            {
                 "type":"combo",
                 "items":[
                     {

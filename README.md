@@ -73,7 +73,16 @@ iOS, Android and Windows Phone 8 tests pass ok at the moment.
 
 Preferences interface generator
 ---
-You can find preliminary version of `Settings.bundle` generator in `bin/build-app-settings.js`. Only toggle switch is supported for now.
+You can find preliminary version of `Settings.bundle` generator in `bin/build-app-settings.js`. Supported for now:
+
+* iOS
+** group
+** combo
+** switch
+
+* Android
+** group
+** combo
 
 
 Credits
