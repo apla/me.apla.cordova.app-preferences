@@ -34,3 +34,7 @@ profile
 *.moved-aside
 DerivedData
 .idea/
+
+bin/node_modules
+*.*~
+.*~

@@ -38,6 +38,7 @@
 
         <header-file src="src/ios/AppPreferences.h" />
         <source-file src="src/ios/AppPreferences.m" />
+
     </platform>
 
     <!-- wp7 -->
