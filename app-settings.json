@@ -4,6 +4,12 @@
         "title":"Common",
         "items":[
             {
+                "title":"Server",
+                "name":"server",
+                "type":"textfield",
+                "default":"http://www.apache.org"
+            },
+            {
                 "title":"Other",
                 "type":"switch",
                 "default":false,

@@ -73,40 +73,39 @@ Titles
 */
 
     if (config.type) {
-        switch (config.type) {
-                
-            case 'switch':
-                config.type = 'PSToggleSwitchSpecifier';
-                
-                config.DefaultValue = config['default'];
-                delete config['default'];
-                
-                config.Key = config.name;
-                delete config['name'];
+        
+        if (config.type == 'group') {
+            config.type = 'PSGroupSpecifier';
+        }
+        else {     
+            config.DefaultValue = config['default'];
+            delete config['default'];
 
-                break;
+            config.Key = config.name;
+            delete config['name'];
 
-            case 'combo':
-                config.type = 'PSMultiValueSpecifier';
+            switch (config.type) {
 
-                config.DefaultValue = config['default'];
-				delete config['default'];
+                case 'textfield':
+                    config.type = 'PSTextFieldSpecifier';                
+                    break;
 
-				config.Key = config.name;
-				delete config['name'];
+                case 'switch':
+                    config.type = 'PSToggleSwitchSpecifier';
+                    break;
 
-				config.titles = [];
-				config.values = [];
-				config.items.forEach(function(a) {
-					config.values.push(a.id || a.value);
-					config.titles.push(a.title || a.name);
-				});
-				delete config.items;
-                break;
-                
-            case 'group':
-                config.type = 'PSGroupSpecifier';
-                break;
+                case 'combo':
+                    config.type = 'PSMultiValueSpecifier';
+
+                    config.titles = [];
+                    config.values = [];
+                    config.items.forEach(function(a) {
+                        config.values.push(a.id || a.value);
+                        config.titles.push(a.title || a.name);
+                    });
+                    delete config.items;
+                    break;
+            }
         }
     }
 

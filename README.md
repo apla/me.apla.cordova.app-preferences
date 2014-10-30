@@ -73,16 +73,29 @@ iOS, Android and Windows Phone 8 tests pass ok at the moment.
 
 Preferences interface generator
 ---
-You can find preliminary version of `Settings.bundle` generator in `bin/build-app-settings.js`. Supported for now:
+You can find preliminary version of `Settings.bundle` generator in `bin/build-app-settings.js`. 
 
-* iOS
-	* group
-	* combo
-	* switch
+#### Usage: ####
 
-* Android
-	* group
-	* combo
+1. Copy example settings JSON to your project folder:
+`cp plugins/me.apla.cordova.app-preferences/app-settings.json .`
+
+2. Edit JSON to include the controls you need...
+
+3. Generate settings resources with this command:
+`node plugins/me.apla.cordova.app-preferences/bin/build-app-settings.js`
+
+4. Add generated Settings.bundle to your iOS project.
+
+Supported controls for iOS:
+* group
+* combo
+* switch
+* textfield
+
+Supported controls for Android:
+* group
+* combo
 
 
 Credits
