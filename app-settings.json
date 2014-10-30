@@ -1,11 +1,24 @@
-[{
-	"type": "group",
-	"title": "Common",
-	"items": [{
-		"type": "combo",
-		"items": [{"value": "ru", "title": "Русский"}, {"value": "en", "title": "English"}],
-		"default": "ru",
-		"title": "Language",
-		"name": "language"
-	}]
-}]
+[
+    {
+        "type":"group",
+        "title":"Common",
+        "items":[
+            {
+                "type":"combo",
+                "items":[
+                    {
+                        "value":"ru",
+                        "title":"Русский"
+                    },
+                    {
+                        "value":"en",
+                        "title":"English"
+                    }
+                ],
+                "default":"ru",
+                "title":"Language",
+                "name":"language"
+            }
+        ]
+    }
+]
