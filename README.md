@@ -76,13 +76,13 @@ Preferences interface generator
 You can find preliminary version of `Settings.bundle` generator in `bin/build-app-settings.js`. Supported for now:
 
 * iOS
-** group
-** combo
-** switch
+	* group
+	* combo
+	* switch
 
 * Android
-** group
-** combo
+	* group
+	* combo
 
 
 Credits
