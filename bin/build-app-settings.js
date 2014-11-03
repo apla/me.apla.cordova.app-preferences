@@ -14,9 +14,9 @@ fs.readFile('app-settings.json', function(err, data) {
 		throw err;
     }
     
-	var config = JSON.parse(data);
+	var configJson = JSON.parse(data);
 
-    var items = mp.iosBuildItems(config);
+    var items = mp.iosBuildItems(configJson);
     
 	var plistXml = plist.build({ PreferenceSpecifiers: items });    
     
@@ -64,55 +64,8 @@ fs.readFile('app-settings.json', function(err, data) {
 		.attr({'xmlns:android': 'http://schemas.android.com/apk/res/android'});
 
 
-	function androidConfigMap(parent, config) {
-        
-		if (config.type == 'group') {
-			var g = parent
-				.node('PreferenceCategory')
-				.attr({'android:title': config.name || config.title});
-
-			config.items.forEach(function(item) {
-				androidConfigMap(g, item);
-			});
-            
-		} else {
-
-			var attr = {
-				'android:title': config.title,
-				'android:key': config.name,
-				'android:defaultValue': config['default']
-			}
-
-			switch (config.type) {
-				case 'combo':
-					// Generate resource file
-					var d = new libxml.Document();
-					var res = d.node('resources');
-					var titles = res.node('string-array').attr({name: config.name}),
-					    values = res.node('string-array').attr({name: config.name + 'Values'});
-
-					config.items.forEach(function(item) {
-						titles.node('item', item.name || item.title);
-						values.node('item', item.id || item.value);
-					});
-
-					strings.push({
-						name: config.name,
-						xml: d.toString()
-					});
-
-					attr['android:entries'] = '@array/' + config.name;
-					attr['android:entryValues'] = '@array/' + config.name + 'Values';
-
-					parent
-						.node('ListPreference')
-						.attr(attr)
-				break;
-			}
-		}
-	}
-	androidData.forEach(function(item) {
-		androidConfigMap(n, item);
+	configJson.forEach(function(item) {
+		mp.androidConfigMap(n, item);
 	});
 
 

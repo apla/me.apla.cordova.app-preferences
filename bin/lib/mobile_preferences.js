@@ -4,6 +4,8 @@
  *
  */
 
+var libxml  = require('libxmljs');
+
 
 function ucfirst(s) {
     return s.charAt(0).toUpperCase() + s.substring(1);
@@ -76,31 +78,32 @@ Titles
     if (config.type) {
         
         if (config.type == 'group') {
-            element.type = 'PSGroupSpecifier';
+            element.Type = 'PSGroupSpecifier';
         }
         else {     
             element.DefaultValue = config['default'];
 
             element.Key = config['name'];
+            element.Title = ucfirst(config['name']);
 
             switch (config.type) {
 
                 case 'textfield':
-                    element.type = 'PSTextFieldSpecifier';                
+                    element.Type = 'PSTextFieldSpecifier';                
                     break;
 
                 case 'switch':
-                    element.type = 'PSToggleSwitchSpecifier';
+                    element.Type = 'PSToggleSwitchSpecifier';
                     break;
 
                 case 'combo':
-                    element.type = 'PSMultiValueSpecifier';
+                    element.Type = 'PSMultiValueSpecifier';
 
-                    element.titles = [];
-                    element.values = [];
+                    element.Titles = [];
+                    element.Values = [];
                     config.items.forEach(function(a) {
-                        element.values.push(a.id || a.value);
-                        element.titles.push(a.title || a.name);
+                        element.Values.push(a.id || a.value);
+                        element.Titles.push(a.title || a.name);
                     });
 
                     break;
@@ -141,8 +144,59 @@ function iosBuildItems(data) {
 }
 
 
+function androidConfigMap(parent, config) {
+
+    var strings = [];
+
+    if (config.type == 'group') {
+        var g = parent
+            .node('PreferenceCategory')
+            .attr({'android:title': config.name || config.title});
+
+        config.items.forEach(function(item) {
+            androidConfigMap(g, item);
+        });
+
+    } else {
+
+        var attr = {
+            'android:title': config.title,
+            'android:key': config.name,
+            'android:defaultValue': config['default']
+        }
+
+        switch (config.type) {
+            case 'combo':
+                // Generate resource file
+                var d = new libxml.Document();
+                var res = d.node('resources');
+                var titles = res.node('string-array').attr({name: config.name}),
+                    values = res.node('string-array').attr({name: config.name + 'Values'});
+
+                config.items.forEach(function(item) {
+                    titles.node('item', item.name || item.title);
+                    values.node('item', item.id || item.value);
+                });
+
+                strings.push({
+                    name: config.name,
+                    xml: d.toString()
+                });
+
+                attr['android:entries'] = '@array/' + config.name;
+                attr['android:entryValues'] = '@array/' + config.name + 'Values';
+
+                parent
+                    .node('ListPreference')
+                    .attr(attr)
+            break;
+        }
+    }
+}
+
 module.exports = {
     iosConfigMap: iosConfigMap,
-    iosBuildItems: iosBuildItems
+    iosBuildItems: iosBuildItems,
+    androidConfigMap: androidConfigMap
 };
 
