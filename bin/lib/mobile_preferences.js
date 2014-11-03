@@ -73,7 +73,9 @@ Titles
 
 
 */
-    var element = {};
+    var element = {
+        Title: config['title']
+    };
 
     if (config.type) {
         
@@ -84,7 +86,6 @@ Titles
             element.DefaultValue = config['default'];
 
             element.Key = config['name'];
-            element.Title = ucfirst(config['name']);
 
             switch (config.type) {
 
