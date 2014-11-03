@@ -71,55 +71,78 @@ Titles
 
 
 */
+    var element = {};
 
     if (config.type) {
         
         if (config.type == 'group') {
-            config.type = 'PSGroupSpecifier';
+            element.type = 'PSGroupSpecifier';
         }
         else {     
-            config.DefaultValue = config['default'];
-            delete config['default'];
+            element.DefaultValue = config['default'];
 
-            config.Key = config.name;
-            delete config['name'];
+            element.Key = config['name'];
 
             switch (config.type) {
 
                 case 'textfield':
-                    config.type = 'PSTextFieldSpecifier';                
+                    element.type = 'PSTextFieldSpecifier';                
                     break;
 
                 case 'switch':
-                    config.type = 'PSToggleSwitchSpecifier';
+                    element.type = 'PSToggleSwitchSpecifier';
                     break;
 
                 case 'combo':
-                    config.type = 'PSMultiValueSpecifier';
+                    element.type = 'PSMultiValueSpecifier';
 
-                    config.titles = [];
-                    config.values = [];
+                    element.titles = [];
+                    element.values = [];
                     config.items.forEach(function(a) {
-                        config.values.push(a.id || a.value);
-                        config.titles.push(a.title || a.name);
+                        element.values.push(a.id || a.value);
+                        element.titles.push(a.title || a.name);
                     });
-                    delete config.items;
+
                     break;
             }
         }
     }
-
+/*
 	Object.keys(config).forEach(function(k) {
 		var uc = ucfirst(k);
 		config[uc] = config[k];
-		if (uc != k)
+		if (uc != k) {
 			delete config[k];
+        }
 	})
-
-	return config;
+*/
+	return element;
 }
 
 
+// build iOS settings bundle
+function iosBuildItems(data) {
+
+	var items = [];
+	for (var i=0, l=data.length; i<l; i++) {
+        
+		var src = data[i];
+        
+		items.push(iosConfigMap(src));
+        
+		if (src.type == 'group') {
+			src.items.forEach(function(s) {
+				items.push(iosConfigMap(s));
+			});
+		}
+	}
+    
+    return items;    
+}
 
 
-module.exports.iosConfigMap = iosConfigMap;
+module.exports = {
+    iosConfigMap: iosConfigMap,
+    iosBuildItems: iosBuildItems
+};
+

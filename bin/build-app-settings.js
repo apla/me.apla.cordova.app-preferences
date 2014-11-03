@@ -9,31 +9,17 @@ var libxml  = require('libxmljs');
 var mp = require('./lib/mobile_preferences.js');
 
 
-
 fs.readFile('app-settings.json', function(err, data) {
 	if (err) {
 		throw err;
     }
     
-	var iosData = JSON.parse(data);
-	var androidData = iosData;
+	var config = JSON.parse(data);
 
-
-	// build iOS settings bundle
-
-	var items = [];
-	while (iosData.length) {
-		var src = iosData.shift();
-		if (src.type == 'group') {
-			src.items.forEach(function(s) {
-				iosData.unshift(s);
-			});
-			delete src['items'];
-		}
-		items.push(mp.iosConfigMap(src));
-	}
-
-	var plistXml = plist.build({ PreferenceSpecifiers: items });
+    var items = mp.iosBuildItems(config);
+    
+	var plistXml = plist.build({ PreferenceSpecifiers: items });    
+    
 	fs.exists('platforms/ios', function(exists) {
 		if (!exists) {
 			console.error('platform ios not found');
