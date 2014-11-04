@@ -119,7 +119,9 @@ function androidConfigMap(config) {
     if (config.type == 'group') {
         var node = {
             tagname: 'PreferenceCategory',
-            atts: {'android:title': config.name || config.title},
+            atts: {
+                'android:title': config.name || config.title
+            },
             children: []
         };
 
@@ -135,10 +137,18 @@ function androidConfigMap(config) {
         var attr = {
             'android:title': config.title,
             'android:key': config.name,
-            'android:defaultValue': config['default']
+            'android:defaultValue': config.default
         };
 
         switch (config.type) {
+            
+            case 'textfield':
+                tagname = 'EditTextPreference';
+                break;
+                
+            case 'switch':
+                tagname = 'CheckBoxPreference';
+                break;
                 
             case 'combo':
 
@@ -168,7 +178,8 @@ function androidConfigMap(config) {
         
         return {
             tagname: tagname,
-            atts: attr
+            atts: attr,
+            strings: strings
         };
 
     }
