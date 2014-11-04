@@ -186,12 +186,26 @@ function androidConfigMap(config) {
 }
 
 
+function androidBuildNode(parent, config) {
+    
+        var newNode = parent
+            .node(config.tagname)
+            .attr(config.atts);
+        
+        if (config.children) {
+            config.children.forEach(function(child){
+                androidBuildNode(newNode, child);
+            });
+        }
+}
+
+
+// build Android settings XML
 function androidBuildNodes(configJson) {
-	// build Android settings XML
+	var strings = [];
 
 	var doc = new libxml.Document();
-	var strings = [];
-	var n = doc
+	var screenNode = doc
 		.node('PreferenceScreen')
 		.attr({'xmlns:android': 'http://schemas.android.com/apk/res/android'});
 
@@ -199,9 +213,7 @@ function androidBuildNodes(configJson) {
 	configJson.forEach(function(item) {
 		var node = androidConfigMap(item);
         
-        n
-            .node(node.tagname)
-            .attr(node.atts);
+        androidBuildNode(screenNode, node);
 	});
     
     return doc;
