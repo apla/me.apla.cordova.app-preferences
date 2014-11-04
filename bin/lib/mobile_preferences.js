@@ -113,7 +113,7 @@ function iosBuildItems(data) {
 
 
 function androidConfigMap(config) {
-
+    
     var strings = [];
 
     if (config.type == 'group') {
@@ -134,95 +134,98 @@ function androidConfigMap(config) {
     } else {
 
         var tagname;
-        var attr = {
-            'android:title': config.title,
-            'android:key': config.name,
-            'android:defaultValue': config.default
+        var node = {
+            atts: {
+                'android:title': config.title,
+                'android:key': config.name,
+                'android:defaultValue': config.default
+            }
         };
 
         switch (config.type) {
             
             case 'textfield':
-                tagname = 'EditTextPreference';
+                node.tagname = 'EditTextPreference';
                 break;
                 
             case 'switch':
-                tagname = 'CheckBoxPreference';
+                node.tagname = 'CheckBoxPreference';
                 break;
                 
             case 'combo':
 
-                tagname = 'ListPreference';
-                
-                // Generate resource file
-                var d = new libxml.Document();
-                var res = d.node('resources');
-                var titles = res.node('string-array').attr({name: config.name}),
-                    values = res.node('string-array').attr({name: config.name + 'Values'});
+                node.tagname = 'ListPreference';
+                                
+                var titles = [], values = [];
 
                 config.items.forEach(function(item) {
-                    titles.node('item', item.name || item.title);
-                    values.node('item', item.id || item.value);
+                    
+                    titles.push(item.name || item.title);
+                    values.push(item.id || item.value);
                 });
 
-                strings.push({
+                node.strings = {
                     name: config.name,
-                    xml: d.toString()
-                });
+                    titles: titles,
+                    values: values
+                };
 
-                attr['android:entries'] = '@array/' + config.name;
-                attr['android:entryValues'] = '@array/' + config.name + 'Values';
+                node.atts['android:entries'] = '@preferences_strings/' + config.name;
+                node.atts['android:entryValues'] = '@preferences_strings/' + config.name + 'Values';
 
             break;
         }
-        
-        return {
-            tagname: tagname,
-            atts: attr,
-            strings: strings
-        };
 
+        return node;
     }
 }
 
 
-function androidBuildNode(parent, config) {
+function androidBuildNode(parent, config, stringsArrays) {
     
-        var newNode = parent
-            .node(config.tagname)
-            .attr(config.atts);
-        
-        if (config.children) {
-            config.children.forEach(function(child){
-                androidBuildNode(newNode, child);
-            });
-        }
+    var newNode = parent
+        .node(config.tagname)
+        .attr(config.atts);
+    
+    if (config.strings) {
+        console.log("will push strings array "+JSON.stringify(config.strings));
+        stringsArrays.push(config.strings);
+    }
+    
+    if (config.children) {
+        config.children.forEach(function(child){
+            androidBuildNode(newNode, child, stringsArrays);
+        });
+    }
 }
 
 
 // build Android settings XML
-function androidBuildNodes(configJson) {
-	var strings = [];
+function androidBuildSettings(configJson) {
 
-	var doc = new libxml.Document();
-	var screenNode = doc
+	var preferencesDocument = new libxml.Document();
+	var screenNode = preferencesDocument
 		.node('PreferenceScreen')
 		.attr({'xmlns:android': 'http://schemas.android.com/apk/res/android'});
 
+    var stringsArrays = [];
 
 	configJson.forEach(function(item) {
 		var node = androidConfigMap(item);
         
-        androidBuildNode(screenNode, node);
+        androidBuildNode(screenNode, node, stringsArrays);
 	});
     
-    return doc;
+    return {
+        preferencesDocument: preferencesDocument,
+        stringsArrays: stringsArrays
+    };
 }
 
 module.exports = {
     iosConfigMap: iosConfigMap,
     iosBuildItems: iosBuildItems,
     androidConfigMap: androidConfigMap,
-    androidBuildNodes: androidBuildNodes
+    androidBuildSettings: androidBuildSettings
 };
 

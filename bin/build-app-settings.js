@@ -54,8 +54,9 @@ fs.readFile('app-settings.json', function(err, data) {
 	});
 
 
-    var doc = mp.androidBuildNodes(configJson);
-    var strings = [];
+    var settingsDocuments = mp.androidBuildSettings(configJson);
+    var preferencesDocument = settingsDocuments.preferencesDocument;
+    var stringsArrays = settingsDocuments.stringsArrays;
 
 	fs.exists('platforms/android', function(exists) {
 		if (!exists) {
@@ -68,8 +69,8 @@ fs.readFile('app-settings.json', function(err, data) {
 				throw e;
             }
 
-			// Write settings plist
-			fs.writeFile('platforms/android/res/xml/preference.xml', doc.toString(), function(err) {
+			// Write preferences xml file
+			fs.writeFile('platforms/android/res/xml/preference.xml', preferencesDocument.toString(), function(err) {
 				if (err) {
 					throw err;
                 }
@@ -81,13 +82,28 @@ fs.readFile('app-settings.json', function(err, data) {
 				if (e && e.code != 'EEXIST') {
 					throw e;
                 }
-				strings.forEach(function(file) {
-					fs.writeFile('platforms/android/res/values/' + file.name + '.xml', file.xml, function(err) {
-						if (err) {
-							throw err;
-                        }
-					});
+
+                // Generate resource file
+                var prefsStringsDoc = new libxml.Document();
+                var resources = prefsStringsDoc.node('resources');
+
+                stringsArrays.forEach(function(stringsArray) {
+                    var titlesXml = resources.node('string-array').attr({name: stringsArray.name}),
+                        valuesXml = resources.node('string-array').attr({name: stringsArray.name + 'Values'});
+                    
+                    for (var i=0, l=stringsArray.titles.length; i<l; i++) {
+                        titlesXml.node('item', stringsArray.titles[i]);
+                        valuesXml.node('item', stringsArray.values[i]);
+                    }
+                    
 				});
+                
+                fs.writeFile('platforms/android/res/values/preferences_strings.xml', prefsStringsDoc.toString(), function(err) {
+                    if (err) {
+                        throw err;
+                    }
+                });
+                
 			});
 		});
 	});

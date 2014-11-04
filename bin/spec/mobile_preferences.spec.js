@@ -91,8 +91,10 @@ describe("mobile_preferences.js module", function() {
                 ]
             }];
 
-            var nodes = mp.androidBuildNodes(configs);
-console.log(nodes);            
+            var prefsDocuments = mp.androidBuildSettings(configs);
+console.log(prefsDocuments);
+            expect(prefsDocuments.preferencesDocument).not.toBeNull();
+            expect(prefsDocuments.stringsArrays).not.toBeNull();
         });
 
     });
