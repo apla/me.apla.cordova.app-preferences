@@ -16,61 +16,36 @@ function iosConfigMap(config) {
 // iOS
 // https://developer.apple.com/library/ios/documentation/cocoa/Conceptual/UserDefaults/Preferences/Preferences.html
 /*
-
-mkdir Settings.bundle
-cd Settings.bundle
-touch Root.plist
-mkdir en.lproj
-cd en.lproj
-touch Root.strings
-
-Identifier
+@TODO: 
 
 PSGroupSpecifier
 Type
 Title
-FooterText
+@TODO: FooterText
 
-PSToggleSwitchSpecifier
-Title
-Key
-DefaultValue
-
-PSSliderSpecifier
+@TODO: PSSliderSpecifier
 Key
 DefaultValue
 MinimumValue
 MaximumValue
 
-PSTitleValueSpecifier
-Title
-Key
-DefaultValue
-
 PSTextFieldSpecifier
 Title
 Key
 DefaultValue
+@TODO: 
 IsSecure
 KeyboardType (Alphabet , NumbersAndPunctuation , NumberPad , URL , EmailAddress)
 AutocapitalizationType
 AutocorrectionType
 
-PSMultiValueSpecifier
-Title
-Key
-DefaultValue
-Values
-Titles
-
-PSRadioGroupSpecifier
+@TODO: PSRadioGroupSpecifier
 Title
 FooterText???
 Key
 DefaultValue
 Values
 Titles
-
 
 */
     var element = {
@@ -111,15 +86,7 @@ Titles
             }
         }
     }
-/*
-	Object.keys(config).forEach(function(k) {
-		var uc = ucfirst(k);
-		config[uc] = config[k];
-		if (uc != k) {
-			delete config[k];
-        }
-	})
-*/
+
 	return element;
 }
 
@@ -145,29 +112,38 @@ function iosBuildItems(data) {
 }
 
 
-function androidConfigMap(parent, config) {
+function androidConfigMap(config) {
 
     var strings = [];
 
     if (config.type == 'group') {
-        var g = parent
-            .node('PreferenceCategory')
-            .attr({'android:title': config.name || config.title});
+        var node = {
+            tagname: 'PreferenceCategory',
+            atts: {'android:title': config.name || config.title},
+            children: []
+        };
 
         config.items.forEach(function(item) {
-            androidConfigMap(g, item);
+            node.children.push(androidConfigMap(item));
         });
+        
+        return node;
 
     } else {
 
+        var tagname;
         var attr = {
             'android:title': config.title,
             'android:key': config.name,
             'android:defaultValue': config['default']
-        }
+        };
 
         switch (config.type) {
+                
             case 'combo':
+
+                tagname = 'ListPreference';
+                
                 // Generate resource file
                 var d = new libxml.Document();
                 var res = d.node('resources');
@@ -187,17 +163,43 @@ function androidConfigMap(parent, config) {
                 attr['android:entries'] = '@array/' + config.name;
                 attr['android:entryValues'] = '@array/' + config.name + 'Values';
 
-                parent
-                    .node('ListPreference')
-                    .attr(attr)
             break;
         }
+        
+        return {
+            tagname: tagname,
+            atts: attr
+        };
+
     }
+}
+
+
+function androidBuildNodes(configJson) {
+	// build Android settings XML
+
+	var doc = new libxml.Document();
+	var strings = [];
+	var n = doc
+		.node('PreferenceScreen')
+		.attr({'xmlns:android': 'http://schemas.android.com/apk/res/android'});
+
+
+	configJson.forEach(function(item) {
+		var node = androidConfigMap(item);
+        
+        n
+            .node(node.tagname)
+            .attr(node.atts);
+	});
+    
+    return doc;
 }
 
 module.exports = {
     iosConfigMap: iosConfigMap,
     iosBuildItems: iosBuildItems,
-    androidConfigMap: androidConfigMap
+    androidConfigMap: androidConfigMap,
+    androidBuildNodes: androidBuildNodes
 };
 

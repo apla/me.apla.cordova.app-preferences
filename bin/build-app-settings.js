@@ -16,9 +16,9 @@ fs.readFile('app-settings.json', function(err, data) {
     
 	var configJson = JSON.parse(data);
 
-    var items = mp.iosBuildItems(configJson);
+    var iosItems = mp.iosBuildItems(configJson);
     
-	var plistXml = plist.build({ PreferenceSpecifiers: items });    
+	var plistXml = plist.build({ PreferenceSpecifiers: iosItems });    
     
 	fs.exists('platforms/ios', function(exists) {
 		if (!exists) {
@@ -54,20 +54,8 @@ fs.readFile('app-settings.json', function(err, data) {
 	});
 
 
-
-	// build Android settings XML
-
-	var doc = new libxml.Document();
-	var strings = [];
-	var n = doc
-		.node('PreferenceScreen')
-		.attr({'xmlns:android': 'http://schemas.android.com/apk/res/android'});
-
-
-	configJson.forEach(function(item) {
-		mp.androidConfigMap(n, item);
-	});
-
+    var doc = mp.androidBuildNodes(configJson);
+    var strings = [];
 
 	fs.exists('platforms/android', function(exists) {
 		if (!exists) {
