@@ -77,6 +77,10 @@ You can find preliminary version of `Settings.bundle` generator in `bin/build-ap
 
 #### Usage: ####
 
+0. Install npm dependencies for the settings generator:
+`npm install plist`
+`npm install libxmljs`
+
 1. Copy example settings JSON to your project folder:
 `cp plugins/me.apla.cordova.app-preferences/app-settings.json .`
 
