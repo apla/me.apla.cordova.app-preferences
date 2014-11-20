@@ -136,7 +136,7 @@ fs.readFile('app-settings.json', function(err, data) {
 	while (iosData.length) {
 		var src = iosData.shift();
 		if (src.type == 'group') {
-			src.items.forEach(function(s) {
+			src.items.reverse().forEach(function(s) {
 				iosData.unshift(s);
 			});
 			delete src['items'];
