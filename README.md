@@ -56,7 +56,7 @@ Platforms
 1. Native execution on Android using `android.content.SharedPreferences`
 1. Native execution on Windows Phone using `IsolatedStorageSettings.ApplicationSettings`
 1. Native execution on Windows 8 using `IsolatedStorageSettings.ApplicationSettings`
-1. (untested) fallback using `localStorage`
+1. Execution on BlackBerry10 fallback using `localStorage`
 
 Notes
 ---
@@ -68,7 +68,7 @@ Tests
 ---
 Tests are available in `src/test.js`. After installing plugin you can add test code from this file and then launch `testPlugin()` function.
 
-iOS, Android and Windows Phone 8 tests pass ok at the moment.
+iOS, Android, BlackBerry 10 and Windows Phone 8 tests pass ok at the moment.
 
 
 Preferences interface generator
