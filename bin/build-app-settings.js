@@ -126,8 +126,8 @@ fs.readFile('app-settings.json', function(err, data) {
 		throw err;
     }
     
-	var iosData = JSON.parse(data);
-	var aData = iosData;
+	var iosData = JSON.parse (data);
+	var aData   = JSON.parse (data);
 
 
 	// build iOS settings bundle
