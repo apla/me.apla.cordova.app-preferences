@@ -10,7 +10,41 @@ function ucfirst(s) {
     return s.charAt(0).toUpperCase() + s.substring(1);
 }
 
-function ConfigMap(config) {
+function SettingsGenerator () {
+
+	this.config = {
+		ios: {
+			root: "PreferenceSpecifiers",
+		},
+		types: {
+			group: {
+				iosType: "PSGroupSpecifier",
+			},
+			select: {
+				iosType: "PSMultiValueSpecifier",
+			},
+			radio: {
+				iosType: "PSRadioGroupSpecifier",
+			},
+			toggle: {
+				iosType: "PSToggleSwitchSpecifier",
+				types: "boolean",
+			},
+			text: {
+				iosType: "PSTextFieldSpecifier",
+				types: "string",
+			},
+			slider: {
+				iosType: "PSSliderSpecifier",
+				types: "float",
+			}
+
+		}
+
+	};
+}
+
+function configMap (config) {
 // iOS
 // https://developer.apple.com/library/ios/documentation/cocoa/Conceptual/UserDefaults/Preferences/Preferences.html
 /*
@@ -112,8 +146,9 @@ Titles
 	Object.keys(config).forEach(function(k) {
 		var uc = ucfirst(k);
 		config[uc] = config[k];
-		if (uc != k)
+		if (uc !== k) {
 			delete config[k];
+		}
 	})
 
 	return config;
@@ -123,25 +158,25 @@ Titles
 
 fs.readFile('app-settings.json', function(err, data) {
 	if (err) {
+		console.error ('you must write your preferences meta in app-settings.json in order to work');
 		throw err;
     }
     
 	var iosData = JSON.parse (data);
 	var aData   = JSON.parse (data);
 
-
 	// build iOS settings bundle
 
 	var items = [];
 	while (iosData.length) {
 		var src = iosData.shift();
-		if (src.type == 'group') {
+		if (src.type === 'group') {
 			src.items.reverse().forEach(function(s) {
 				iosData.unshift(s);
 			});
-			delete src['items'];
+			delete src.items;
 		}
-		items.push(ConfigMap(src));
+		items.push (configMap(src));
 	}
 
 	var plistXml = plist.build({ PreferenceSpecifiers: items });
@@ -152,7 +187,7 @@ fs.readFile('app-settings.json', function(err, data) {
         }
         
 		fs.mkdir('platforms/ios/Settings.bundle', function(e) {
-			if (e && e.code != 'EEXIST') {
+			if (e && e.code !== 'EEXIST') {
 				throw e;
             }
             
@@ -247,7 +282,7 @@ fs.readFile('app-settings.json', function(err, data) {
         }
 
 		fs.mkdir('platforms/android/res/xml', function(e) {
-			if (e && e.code != 'EEXIST') {
+			if (e && e.code !== 'EEXIST') {
 				throw e;
             }
 

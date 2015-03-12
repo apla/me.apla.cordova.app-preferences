@@ -10,8 +10,23 @@ try {
 }
 
 function AppPreferences() {
-
 }
+
+var promiseLib;
+if (typeof Promise !== "undefined") {
+	promiseLib = Promise;
+} else if (typeof WinJS !== "undefined" && WinJS.Promise) {
+	promiseLib = WinJS.Promise;
+} else if (typeof $ !== "undefined" && $.Deferred) {
+	promiseLib = function (init) {
+		var d = $.Deferred ();
+		init (d.resolve.bind (d), d.reject.bind (d));
+		return d.promise ();
+	}
+}
+
+if (!platform.nativeExec)
+	platform.nativeExec = cordova.exec.bind (cordova);
 
 AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dict, key, value) {
 	var argList = [].slice.apply(arguments);
@@ -48,27 +63,57 @@ AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dic
 AppPreferences.prototype.fetch = platform.fetch || function (
 	successCallback, errorCallback, dict, key
 	) {
+	
+	var promise = false;
+	// for promises
+	if (successCallback !== undefined
+		&& typeof successCallback !== function && typeof errorCallback !== function
+		&& dict === undefined && key === undefined
+		&& promiseLib
+	) {
+		dict = successCallback;
+		key  = errorCallback;
+		promise = true;
+	}
 
-		var args = this.prepareKey ('get', dict, key);
+	var args = this.prepareKey ('get', dict, key);
 
-		if (!args.key) {
-			errorCallback ();
-			return;
+	var _successCallback = function (_value) {
+		var value = _value;
+		try {
+			value = JSON.parse (_value);
+		} catch (e) {
 		}
+		successCallback (value);
+	}
 
-		_successCallback = function (_value) {
-			var value = _value;
-			try {
-				value = JSON.parse (_value);
-			} catch (e) {
+	
+	if (promise) {
+		
+		return new promiseLib (function (resolve, reject) {
+			if (!args.key) {
+				reject ();
 			}
-			successCallback (value);
-		}
+			
+			successCallback = resolve;
 
-		var execStatus = cordova.exec (
-			_successCallback, errorCallback,
-			"AppPreferences", "fetch", [args]
-		);
+			var execStatus = platform.nativeExec (
+				_successCallback, reject,
+				"AppPreferences", "fetch", [args]
+			);
+			
+		});
+	}
+		
+	if (!args.key) {
+		errorCallback ();
+		return;
+	}
+
+	var execStatus = platform.nativeExec (
+		_successCallback, errorCallback,
+		"AppPreferences", "fetch", [args]
+	);
 };
 
 /**
@@ -84,34 +129,64 @@ AppPreferences.prototype.store = platform.store || function (
 	successCallback, errorCallback, dict, key, value
 	) {
 
-		var args = this.prepareKey ('set', dict, key, value);
+	var promise = false;
+	// for promises
+	if (successCallback !== undefined
+		&& typeof successCallback !== function && typeof errorCallback !== function
+		&& dict === undefined && key === undefined
+		&& promiseLib
+	) {
+		value = dict;
+		key  = errorCallback;
+		dict = successCallback;
+		promise = true;
+	}
 
-		if (!args.key || args.value === null || args.value === undefined) {
-			errorCallback ();
-			return;
-		}
+	
+	var args = this.prepareKey ('set', dict, key, value);
 
-		args.type  = typeof args.value;
+	args.type  = typeof args.value;
 
-		// VERY IMPORTANT THING
-		// WP platform has some limitations, so we need to encode all values to JSON.
-		// On plugin side we store value according to it's type.
-		// So, every platform plugin must check for type, decode JSON and store
-		// value decoded for basic types.
-		// TODO: don't think about array of strings, it's android only.
-		// Complex structures must be stored as JSON string.
-		// On iOS strings stored as strings and JSON stored as NSData
-		// Android:
-		// Now, interesting thing: how to differentiate between string value
-		// and complex value, encoded as json and stored as string?
-		// I'm introduce setting named _<preference>_type with value "JSON"
-		// Windows Phone ?
-		args.value = JSON.stringify (args.value);
+	// VERY IMPORTANT THING
+	// WP platform has some limitations, so we need to encode all values to JSON.
+	// On plugin side we store value according to it's type.
+	// So, every platform plugin must check for type, decode JSON and store
+	// value decoded for basic types.
+	// TODO: don't think about array of strings, it's android only.
+	// Complex structures must be stored as JSON string.
+	// On iOS strings stored as strings and JSON stored as NSData
+	// Android:
+	// Now, interesting thing: how to differentiate between string value
+	// and complex value, encoded as json and stored as string?
+	// I'm introduce setting named _<preference>_type with value "JSON"
+	// Windows Phone ?
+	args.value = JSON.stringify (args.value);
 
-		var execStatus = cordova.exec (
-			successCallback, errorCallback,
-			"AppPreferences", "store", [args]
-		);
+	if (promise) {
+
+		return new promiseLib (function (resolve, reject) {
+			if (!args.key || args.value === null || args.value === undefined) {
+				reject ();
+			}
+
+			var execStatus = platform.nativeExec (
+				resolve, reject,
+				"AppPreferences", "store", [args]
+			);
+
+		});
+	}
+
+	if (!args.key || args.value === null || args.value === undefined) {
+		errorCallback ();
+		return;
+	}
+
+	var execStatus = platform.nativeExec (
+		successCallback, errorCallback,
+		"AppPreferences", "store", [args]
+	);
+
 };
 
 
