@@ -67,7 +67,7 @@ AppPreferences.prototype.fetch = platform.fetch || function (
 	var promise = false;
 	// for promises
 	if (successCallback !== undefined
-		&& typeof successCallback !== function && typeof errorCallback !== function
+		&& typeof successCallback !== 'function' && typeof errorCallback !== 'function'
 		&& dict === undefined && key === undefined
 		&& promiseLib
 	) {
@@ -132,7 +132,7 @@ AppPreferences.prototype.store = platform.store || function (
 	var promise = false;
 	// for promises
 	if (successCallback !== undefined
-		&& typeof successCallback !== function && typeof errorCallback !== function
+		&& typeof successCallback !== 'function' && typeof errorCallback !== 'function'
 		&& dict === undefined && key === undefined
 		&& promiseLib
 	) {
