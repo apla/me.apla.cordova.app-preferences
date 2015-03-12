@@ -38,3 +38,5 @@ DerivedData
 bin/node_modules
 *.*~
 .*~
+
+platforms

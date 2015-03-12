@@ -9,15 +9,15 @@ Installing
 
 From plugin registry:
 
-    $ cordova plugin add me.apla.cordova.app-preferences
+	$ cordova plugin add me.apla.cordova.app-preferences
 
 From the repo:
 
-    $ cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
+	$ cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
 
 From a local clone:
 
-    $ cordova plugin add /path/to/me.apla.cordova.app-preferences/folder
+	$ cordova plugin add /path/to/me.apla.cordova.app-preferences/folder
 
 
 More information:
@@ -73,7 +73,7 @@ iOS, Android, BlackBerry 10 and Windows Phone 8 tests pass ok at the moment.
 
 Preferences interface generator
 ---
-You can find preliminary version of `Settings.bundle` generator in `bin/build-app-settings.js`. 
+You can find preliminary version of `Settings.bundle` generator in `bin/build-app-settings.js`.
 
 #### Usage: ####
 
@@ -100,6 +100,8 @@ Supported controls for iOS:
 Supported controls for Android:
 * group
 * combo
+* switch - not tested
+* textfield - not tested
 
 
 Credits
