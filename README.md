@@ -103,6 +103,7 @@ Supported controls for Android:
 * switch - not tested
 * textfield - not tested
 
+TODO: Windows Phone ([guide](http://blogs.msdn.com/b/glengordon/archive/2012/09/17/managing-settings-in-windows-phone-and-windows-8-store-apps.aspx), [docs](https://msdn.microsoft.com/en-US/library/windows/apps/ff769510\(v=vs.105\).aspx))
 
 Credits
 ---
