@@ -32,6 +32,27 @@ AppPreferencesLocalStorage.prototype.fetch = function(successCallback, errorCall
 	}
 };
 
+AppPreferencesLocalStorage.prototype.remove = function(successCallback, errorCallback, dict, key) {
+
+	var self = this;
+
+	var args = this.prepareKey ('get', dict, key);
+
+	if (!args.key) {
+		errorCallback ();
+		return;
+	}
+
+	var key = args.key;
+
+	if (args.dict)
+		key = args.dict + '.' + args.key;
+
+	var result = window.localStorage.removeItem (key);
+
+	successCallback (true);
+};
+
 AppPreferencesLocalStorage.prototype.store = function(successCallback, errorCallback, dict, key, value) {
 
 	var self = this;

@@ -15,10 +15,58 @@ var tests = {
 var fail = 0;
 var pass = 0;
 
+var nonExistingKeyName = 'this-key-must-not-exists';
+
 var appp = plugins.appPreferences;
+appp.fetch (function (ok) {
+	if (ok === null) {
+		pass++;
+		appp.store (function (ok) {
+			pass++;
+			appp.fetch (function (ok) {
+				if (ok !== null && ok) {
+					pass++;
+				} else {
+					fail ++;
+				}
+				appp.remove (function (ok) {
+					pass++;
+				}, function (err) {
+					fail++;
+				}, nonExistingKeyName);
+			}, function (err) {
+				fail++;
+			}, nonExistingKeyName);
+		}, function (err) {
+			fail++;
+		}, nonExistingKeyName, true);
+	} else {
+		appp.remove (function (ok) {
+			pass++;
+		}, function (err) {
+			fail++;
+		}, nonExistingKeyName);
+		fail ++;
+	}
+}, function (err) {
+	fail ++;
+}, nonExistingKeyName);
+
+appp.fetch (function (ok) {
+	if (ok === null) {
+		pass++;
+	} else {
+		fail ++;
+	}
+}, function (err) {
+	fail ++;
+}, "dict2", nonExistingKeyName);
+
 for (var testK in tests) {
 	(function (testName, testValue) {
+		console.log ('trying to store', testName);
 		appp.store (function (ok) {
+			console.log ('stored', testName);
 			pass ++;
 			appp.fetch (function (ok) {
 				if (ok == testValue || (typeof testValue == "object" && JSON.stringify (ok) == JSON.stringify (testValue)))

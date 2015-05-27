@@ -189,5 +189,65 @@ AppPreferences.prototype.store = platform.store || function (
 
 };
 
+/**
+ * Remove value from preferences
+ *
+ * @param {Function} successCallback The function to call when the value is available
+ * @param {Function} errorCallback The function to call when value is unavailable
+ * @param {String} dict Dictionary for key (OPTIONAL)
+ * @param {String} key Key
+ */
+AppPreferences.prototype.remove = platform.remove || function (
+	successCallback, errorCallback, dict, key
+) {
+
+	var promise = false;
+	// for promises
+	if (successCallback !== undefined
+		&& typeof successCallback !== 'function' && typeof errorCallback !== 'function'
+		&& dict === undefined && key === undefined
+		&& promiseLib
+	   ) {
+		dict = successCallback;
+		key  = errorCallback;
+		promise = true;
+	}
+
+	var args = this.prepareKey ('get', dict, key);
+
+	var _successCallback = function (_value) {
+		var value = _value;
+		successCallback (value);
+	}
+
+
+	if (promise) {
+
+		return new promiseLib (function (resolve, reject) {
+			if (!args.key) {
+				reject ();
+			}
+
+			successCallback = resolve;
+
+			var execStatus = platform.nativeExec (
+				_successCallback, reject,
+				"AppPreferences", "remove", [args]
+			);
+
+		});
+	}
+
+	if (!args.key) {
+		errorCallback ();
+		return;
+	}
+
+	var execStatus = platform.nativeExec (
+		_successCallback, errorCallback,
+		"AppPreferences", "remove", [args]
+	);
+};
+
 
 module.exports = new AppPreferences();

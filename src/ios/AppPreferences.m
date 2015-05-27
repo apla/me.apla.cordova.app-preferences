@@ -83,6 +83,60 @@
 	}];
 }
 
+- (void)remove:(CDVInvokedUrlCommand*)command
+{
+
+	__block CDVPluginResult* result = nil;
+
+	NSDictionary* options = [[command arguments] objectAtIndex:0];
+
+	if (!options) {
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"no options given"];
+		[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+		return;
+	}
+
+	NSString *settingsDict = [options objectForKey:@"dict"];
+	NSString *settingsName = [options objectForKey:@"key"];
+
+	//[self.commandDelegate runInBackground:^{
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+	id target = defaults;
+
+	// NSMutableDictionary *mutable = [[dict mutableCopy] autorelease];
+	// NSDictionary *dict = [[mutable copy] autorelease];
+
+	@try {
+
+		NSString *returnVar;
+
+		if (settingsDict) {
+			target = [defaults dictionaryForKey:settingsDict];
+			if (target)
+				target = [target mutableCopy];
+		}
+
+		if (target != nil) {
+			[target removeObjectForKey:settingsName];
+			if (target != defaults)
+				[defaults setObject:(NSMutableDictionary*)target forKey:settingsDict];
+			[defaults synchronize];
+		}
+
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnVar];
+
+	} @catch (NSException * e) {
+
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT messageAsString:[e reason]];
+
+	} @finally {
+
+		[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+	}
+	//}];
+}
+
 - (void)store:(CDVInvokedUrlCommand*)command
 {
     __block CDVPluginResult* result;
