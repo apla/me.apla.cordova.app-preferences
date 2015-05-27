@@ -76,7 +76,9 @@ public class AppPreferences extends CordovaPlugin {
 			key = dict + '.' + key;
 		Log.d ("", "key is " + key);
 
-		if (action.equals("fetch")) {
+		if (action.equals ("show")) {
+			return this.showPreferencesActivity (callbackContext);
+		} else if (action.equals("fetch")) {
 			return this.fetchValueByKey(key, callbackContext);
 		} else if (action.equals("store")) {
 			String value  = options.getString("value");
@@ -124,6 +126,14 @@ public class AppPreferences extends CordovaPlugin {
 		}
 		// callbackContext.sendPluginResult(new PluginResult (PluginResult.Status.JSON_EXCEPTION));
 		return false;
+	}
+
+	private boolean showPreferencesActivity (final CallbackContext callbackContext) {
+		cordova.getThreadPool().execute(new Runnable() {public void run() {
+			Intent i = new Intent(this, UserSettingActivity.class);
+			startActivityForResult(i, RESULT_SETTINGS);
+			callbackContext.success(null);
+		}});
 	}
 
 	private boolean fetchValueByKey(final String key, final CallbackContext callbackContext) {
