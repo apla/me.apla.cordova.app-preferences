@@ -5,7 +5,7 @@
 //  Created by Tue Topholm on 31/01/11.
 //  Copyright 2011 Sugee. All rights reserved.
 //
-//  Modified by Ivan Baktsheev, 2012-2013
+//  Modified by Ivan Baktsheev, 2012-2015
 //
 // THIS HAVEN'T BEEN TESTED WITH CHILD PANELS YET.
 
@@ -102,7 +102,7 @@
 
 //	NSLog(@"%@ = %@ (%@)", settingsName, settingsValue, settingsType);
 
-	[self.commandDelegate runInBackground:^{
+	//[self.commandDelegate runInBackground:^{
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
 	id target = defaults;
@@ -157,7 +157,7 @@
 
         [self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
     }
-	}];
+	//}];
 }
 /*
   Parsing the Root.plist for the key, because there is a bug/feature in Settings.bundle
