@@ -39,24 +39,31 @@
 
 	@try {
 
+		NSString *returnVar;
+		id settingsValue = nil;
+
 		if (settingsDict) {
 			target = [defaults dictionaryForKey:settingsDict];
+			if (target == nil) {
+				returnVar = nil;
+			}
 		}
 
-		NSString *returnVar;
-		id settingsValue = [target objectForKey:settingsName];
+		if (target != nil) {
+			settingsValue = [target objectForKey:settingsName];
+		}
 
 		if (settingsValue != nil) {
 			if ([settingsValue isKindOfClass:[NSString class]]) {
 				returnVar = [NSString stringWithFormat:@"\"%@\"", (NSString*)settingsValue];
 			} else if ([settingsValue isKindOfClass:[NSNumber class]]) {
 				if ((NSNumber*)settingsValue == (void*)kCFBooleanFalse || (NSNumber*)settingsValue == (void*)kCFBooleanTrue) {
-//					const char * x = [(NSNumber*)settingsValue objCType];
-//					NSLog(@"boolean %@", [(NSNumber*)settingsValue boolValue] == NO ? @"false" : @"true");
+					// const char * x = [(NSNumber*)settingsValue objCType];
+					// NSLog(@"boolean %@", [(NSNumber*)settingsValue boolValue] == NO ? @"false" : @"true");
 					returnVar = [NSString stringWithFormat:@"%@", [(NSNumber*)settingsValue boolValue] == YES ? @"true": @"false"];
 				} else {
 					// TODO: int, float
-//					NSLog(@"number");
+					// NSLog(@"number");
 					returnVar = [NSString stringWithFormat:@"%@", (NSNumber*)settingsValue];
 				}
 
@@ -64,10 +71,11 @@
 				returnVar = [[NSString alloc] initWithData:(NSData*)settingsValue encoding:NSUTF8StringEncoding];
 			}
 		} else {
+			// TODO: also submit dict
 			returnVar = [self getSettingFromBundle:settingsName]; //Parsing Root.plist
 
-//			if (returnVar == nil)
-//				@throw [NSException exceptionWithName:nil reason:@"Key not found" userInfo:nil];;
+			// if (returnVar == nil)
+			// @throw [NSException exceptionWithName:nil reason:@"Key not found" userInfo:nil];;
 		}
 
 		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnVar];
@@ -139,7 +147,7 @@
 
 - (void)store:(CDVInvokedUrlCommand*)command
 {
-    __block CDVPluginResult* result;
+	__block CDVPluginResult* result;
 
 	NSDictionary* options = [[command arguments] objectAtIndex:0];
 
@@ -150,11 +158,11 @@
 	}
 
 	NSString *settingsDict  = [options objectForKey:@"dict"];
-    NSString *settingsName  = [options objectForKey:@"key"];
-    NSString *settingsValue = [options objectForKey:@"value"];
+	NSString *settingsName  = [options objectForKey:@"key"];
+	NSString *settingsValue = [options objectForKey:@"value"];
 	NSString *settingsType  = [options objectForKey:@"type"];
 
-//	NSLog(@"%@ = %@ (%@)", settingsName, settingsValue, settingsType);
+	//	NSLog(@"%@ = %@ (%@)", settingsName, settingsValue, settingsType);
 
 	//[self.commandDelegate runInBackground:^{
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -168,22 +176,22 @@
 		target = [[defaults dictionaryForKey:settingsDict] mutableCopy];
 		if (!target) {
 			target = [[NSMutableDictionary alloc] init];
-#if !__has_feature(objc_arc)
-			[target autorelease];
-#endif
+			#if !__has_feature(objc_arc)
+				[target autorelease];
+			#endif
 		}
 	}
 
 	NSError* error = nil;
 	id JSONObj = [NSJSONSerialization JSONObjectWithData:[settingsValue dataUsingEncoding:NSUTF8StringEncoding]
-                                                options:NSJSONReadingAllowFragments
-                                                  error:&error];
+				  options:NSJSONReadingAllowFragments
+				  error:&error];
 
 	if (error != nil) {
-        NSLog(@"NSString JSONObject error: %@", [error localizedDescription]);
-    }
+		NSLog(@"NSString JSONObject error: %@", [error localizedDescription]);
+	}
 
-    @try {
+	@try {
 
 		if ([settingsType isEqual: @"string"] && [JSONObj isKindOfClass:[NSString class]]) {
 			[target setObject:(NSString*)JSONObj forKey:settingsName];
@@ -201,16 +209,16 @@
 			[defaults setObject:(NSMutableDictionary*)target forKey:settingsDict];
 		[defaults synchronize];
 
-        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
 
-    } @catch (NSException * e) {
+	} @catch (NSException * e) {
 
-        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT messageAsString:[e reason]];
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT messageAsString:[e reason]];
 
 	} @finally {
 
-        [self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
-    }
+		[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+	}
 	//}];
 }
 /*

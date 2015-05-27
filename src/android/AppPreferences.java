@@ -164,9 +164,9 @@ public class AppPreferences extends CordovaPlugin {
 				// JSONObject jsonValue = new JSONObject((Map) obj);
 				callbackContext.success(returnVal);
 			} else {
-				//          Log.d("", "no value");
 				callbackContext.error(0);
-				//            callbackContext.sendPluginResult(new PluginResult ());
+				// Log.d("", "no value");
+				// callbackContext.sendPluginResult(new PluginResult ());
 			}
 
 		}});

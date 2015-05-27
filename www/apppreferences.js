@@ -1,14 +1,13 @@
-/**
- * This module contains basic cross-platform request. platform's request override common one
- * @constructor
- */
 var platform = {};
 try {
 	platform = require ('./platform');
 } catch (e) {
-	
+
 }
 
+/**
+ * @constructor
+ */
 function AppPreferences() {
 }
 
@@ -44,10 +43,10 @@ AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dic
 	};
 	if (argList[0] !== undefined)
 		args.dict = argList[0]
-	
+
 	if (mode == 'set')
 		args.value = argList[2];
-	
+
 	// console.log (JSON.stringify (argList), JSON.stringify (args));
 	return args;
 }
@@ -63,7 +62,7 @@ AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dic
 AppPreferences.prototype.fetch = platform.fetch || function (
 	successCallback, errorCallback, dict, key
 	) {
-	
+
 	var promise = false;
 	// for promises
 	if (successCallback !== undefined
@@ -87,24 +86,24 @@ AppPreferences.prototype.fetch = platform.fetch || function (
 		successCallback (value);
 	}
 
-	
+
 	if (promise) {
-		
+
 		return new promiseLib (function (resolve, reject) {
 			if (!args.key) {
 				reject ();
 			}
-			
+
 			successCallback = resolve;
 
 			var execStatus = platform.nativeExec (
 				_successCallback, reject,
 				"AppPreferences", "fetch", [args]
 			);
-			
+
 		});
 	}
-		
+
 	if (!args.key) {
 		errorCallback ();
 		return;
@@ -142,7 +141,7 @@ AppPreferences.prototype.store = platform.store || function (
 		promise = true;
 	}
 
-	
+
 	var args = this.prepareKey ('set', dict, key, value);
 
 	args.type  = typeof args.value;

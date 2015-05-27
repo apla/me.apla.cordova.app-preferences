@@ -17,7 +17,7 @@ AppPreferencesLocalStorage.prototype.fetch = function(successCallback, errorCall
 
 	if (args.dict)
 		key = args.dict + '.' + args.key;
-	
+
 	var result = window.localStorage.getItem (key);
 
 	var value = result;

@@ -83,21 +83,23 @@ for (var testK in tests) {
 			console.error ('store value failed for ' + testName + ' and value ' + testValue);
 			fail ++;
 		}, testName, testValue);
+		console.log ('trying to store', "dict.x" + testName);
 		appp.store (function (ok) {
+			console.log ('stored', "dict.x" + testName);
 			pass ++;
 			appp.fetch (function (ok) {
 				if (ok == testValue || (typeof testValue == "object" && JSON.stringify (ok) == JSON.stringify (testValue)))
 					pass ++;
 				else {
-					console.error ('fetched incorrect value for x' + testName + ': expected ' + JSON.stringify (testValue) + ' got ' + JSON.stringify (ok));
+					console.error ('fetched incorrect value for dict.x' + testName + ': expected ' + JSON.stringify (testValue) + ' got ' + JSON.stringify (ok));
 					fail ++;
 				}
 			}, function (err) {
-				console.error ('fetch value failed for ' + "x" + testName + ' and value ' + testValue);
+				console.error ('fetch value failed for ' + "dict.x" + testName + ' and value ' + testValue);
 				fail ++;
 			}, "dict", "x" + testName);
 		}, function (err) {
-			console.error ('store value failed for ' + "x" + testName + ' and value ' + testValue);
+			console.error ('store value failed for ' + "dictx" + testName + ' and value ' + testValue);
 			fail ++;
 		}, "dict", "x" + testName, testValue);
 
