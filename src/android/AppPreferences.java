@@ -134,7 +134,7 @@ public class AppPreferences extends CordovaPlugin {
 			if (sharedPrefs.contains(key)) {
 				Object obj = sharedPrefs.getAll().get(key);
 				String objClass = obj.getClass().getName();
-				if (objClass.equals("java.lang.Integer")) {
+				if (objClass.equals("java.lang.Integer") || objClass.equals("java.lang.Long")) {
 					returnVal = obj.toString();
 				} else if (objClass.equals("java.lang.Float") || objClass.equals("java.lang.Double")) {
 					returnVal = obj.toString();
@@ -235,6 +235,8 @@ public class AppPreferences extends CordovaPlugin {
 						editor.putFloat(key, ((Double) nv).floatValue());
 					} else if (className.equals("java.lang.Integer")) {
 						editor.putInt(key, (Integer) nv);
+					} else if (className.equals("java.lang.Long")) {
+						editor.putLong(key, (Long) nv);
 					}
 				} else if (type.equals("boolean")) {
 					editor.putBoolean (key, (Boolean)nv);
