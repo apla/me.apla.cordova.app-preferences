@@ -76,4 +76,20 @@ AppPreferencesLocalStorage.prototype.store = function(successCallback, errorCall
 	successCallback ();
 };
 
+AppPreferencesLocalStorage.prototype.clearAll = function(successCallback, errorCallback) {
+
+	var self = this;
+
+	window.localStorage.clear ();
+
+	successCallback ();
+};
+
+AppPreferencesLocalStorage.prototype.show = function (successCallback, errorCallback) {
+
+	var self = this;
+
+	errorCallback ('not implemented');
+};
+
 module.exports = new AppPreferencesLocalStorage();

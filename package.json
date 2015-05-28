@@ -1,0 +1,37 @@
+{
+  "name": "cordova-plugin-app-preferences",
+  "version": "0.5.0",
+  "description": "Application preferences plugin",
+  "cordova": {
+	"id": "me.apla.cordova.app-preferences",
+	"platforms": [
+	  "android",
+	  "ios",
+	  "wp7",
+	  "wp8",
+	  "windows8",
+	  "blackberry10"
+	]
+  },
+  "repository": {
+	"type": "git",
+	"url": "https://github.com/apla/me.apla.cordova.app-preferences.git"
+  },
+  "keywords": [
+	"preferences",
+	"settings",
+	"ecosystem:cordova",
+	"cordova-android",
+	"cordova-ios",
+	"cordova-wp7",
+	"cordova-wp8",
+	"cordova-windows8",
+	"cordova-blackberry10"
+  ],
+  "author": "Ivan Baktsheev",
+  "license": "Apache",
+  "bugs": {
+	"url": "https://github.com/apla/me.apla.cordova.app-preferences/issues"
+  },
+  "homepage": "https://github.com/apla/me.apla.cordova.app-preferences"
+}
