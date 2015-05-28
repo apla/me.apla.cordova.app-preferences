@@ -14,10 +14,13 @@ import org.json.JSONTokener;
 
 //import android.content.ActivityNotFoundException;
 //import android.content.Intent;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import me.apla.cordova.AppPreferencesActivity;
 
 // http://developer.android.com/guide/topics/ui/settings.html
 // http://stackoverflow.com/questions/4990529/android-a-good-looking-standard-settings-menu
@@ -130,10 +133,12 @@ public class AppPreferences extends CordovaPlugin {
 
 	private boolean showPreferencesActivity (final CallbackContext callbackContext) {
 		cordova.getThreadPool().execute(new Runnable() {public void run() {
-			Intent i = new Intent(this, UserSettingActivity.class);
-			startActivityForResult(i, RESULT_SETTINGS);
-			callbackContext.success(null);
+			Intent i = new Intent(cordova.getActivity(), AppPreferencesActivity.class);
+			cordova.getActivity().getApplicationContext().startActivity(i);
+			String result = null;
+			callbackContext.success(result);
 		}});
+		return true;
 	}
 
 	private boolean fetchValueByKey(final String key, final CallbackContext callbackContext) {
@@ -175,7 +180,7 @@ public class AppPreferences extends CordovaPlugin {
 				callbackContext.success(returnVal);
 			} else {
 				// Log.d("", "no value");
-				callbackContext.success(null);
+				callbackContext.success();
 				// callbackContext.sendPluginResult(new PluginResult ());
 			}
 

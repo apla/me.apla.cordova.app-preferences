@@ -2,6 +2,31 @@
 
 'use strict';
 
+var cordovaLib = 'cordova';
+var configParserLib = 'ConfigParser';
+
+try {
+	var cordova_util = require (cordovaLib + '/src/util');
+} catch (e) {
+	cordovaLib = 'cordova/node_modules/cordova-lib';
+	configParserLib = 'configparser/ConfigParser';
+	cordova_util = require (cordovaLib + '/src/cordova/util');
+}
+
+var projectRoot = cordova_util.isCordova(process.cwd());
+var projectXml = cordova_util.projectConfig(projectRoot);
+var configParser = cordova_util.config_parser || cordova_util.configparser;
+
+if (!configParser) {
+	var configParser = require(cordovaLib + '/src/' + configParserLib);
+}
+var projectConfig = new configParser(projectXml);
+
+// console.log (projectConfig.name(), projectConfig.packageName());
+
+
+
+var path    = require('path');
 var fs      = require('fs');
 var plist   = require('plist');
 var libxml  = require('libxmljs');
@@ -263,7 +288,7 @@ fs.readFile('app-settings.json', function(err, data) {
 					var d = new libxml.Document();
 					var res = d.node('resources');
 					var titles = res.node('string-array').attr({name: config.name}),
-					    values = res.node('string-array').attr({name: config.name + 'Values'});
+						values = res.node('string-array').attr({name: config.name + 'Values'});
 
 					config.items.forEach(function(item) {
 						titles.node('item', item.name || item.title);
@@ -341,7 +366,7 @@ fs.readFile('app-settings.json', function(err, data) {
 			}
 
 			// Write settings plist
-			fs.writeFile('platforms/android/res/xml/preference.xml', doc.toString(), function(err) {
+			fs.writeFile('platforms/android/res/xml/apppreferences.xml', doc.toString(), function(err) {
 				if (err) {
 					throw err;
 				}
@@ -361,6 +386,15 @@ fs.readFile('app-settings.json', function(err, data) {
 					});
 				});
 			});
+
+			// no error handling, sorry
+			var rs = fs.createReadStream (path.resolve (__dirname, '../src/android/AppPreferencesActivity.template'));
+			var androidPackagePath = "me.apla.cordova".replace (/\./g, '/');
+			var activityFileName= path.join ('platforms/android/src', androidPackagePath, 'AppPreferencesActivity.java')
+			var ws = fs.createWriteStream (activityFileName);
+			ws.write ("package me.apla.cordova;\n\n");
+			ws.write ('import ' + projectConfig.packageName() + ".R;\n\n");
+			rs.pipe (ws);
 		});
 	});
 

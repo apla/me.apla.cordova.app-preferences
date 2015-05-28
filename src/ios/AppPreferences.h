@@ -16,6 +16,8 @@
 
 - (void)fetch:(CDVInvokedUrlCommand*)command;
 - (void)remove:(CDVInvokedUrlCommand*)command;
+- (void)clearAll:(CDVInvokedUrlCommand*)command;
+- (void)show:(CDVInvokedUrlCommand*)command;
 - (void)store:(CDVInvokedUrlCommand*)command;
 - (NSString*)getSettingFromBundle:(NSString*)settingsName;
 

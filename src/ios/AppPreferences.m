@@ -145,6 +145,34 @@
 	//}];
 }
 
+- (void)clearAll:(CDVInvokedUrlCommand*)command
+{
+	__block CDVPluginResult* result;
+
+	result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not implemented"];
+
+	[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+
+}
+
+
+- (void)show:(CDVInvokedUrlCommand*)command
+{
+	__block CDVPluginResult* result;
+
+	if(&UIApplicationOpenSettingsURLString != nil) {
+
+		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+
+	} else {
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"switching to preferences not supported"];
+	}
+
+	[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+
+}
+
 - (void)store:(CDVInvokedUrlCommand*)command
 {
 	__block CDVPluginResult* result;
@@ -183,9 +211,11 @@
 	}
 
 	NSError* error = nil;
-	id JSONObj = [NSJSONSerialization JSONObjectWithData:[settingsValue dataUsingEncoding:NSUTF8StringEncoding]
-				  options:NSJSONReadingAllowFragments
-				  error:&error];
+	id JSONObj = [NSJSONSerialization
+		JSONObjectWithData:[settingsValue dataUsingEncoding:NSUTF8StringEncoding]
+		options:NSJSONReadingAllowFragments
+		error:&error
+	];
 
 	if (error != nil) {
 		NSLog(@"NSString JSONObject error: %@", [error localizedDescription]);
