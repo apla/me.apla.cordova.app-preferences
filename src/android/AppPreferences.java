@@ -71,17 +71,22 @@ public class AppPreferences extends CordovaPlugin {
 	public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
 		//        String result = "";
 
+		if (action.equals ("show")) {
+			return this.showPreferencesActivity(callbackContext);
+		//} else if (action.equals("clearAll")) {
+
+		}
+
 		JSONObject options = args.getJSONObject (0);
 		String key    = options.getString("key");
 		String dict   = options.optString("dict");
 		String type   = options.optString("type");
 		if (!"".equals(dict))
 			key = dict + '.' + key;
-		Log.d ("", "key is " + key);
+		// Log.d ("", "key is " + key);
 
-		if (action.equals ("show")) {
-			return this.showPreferencesActivity (callbackContext);
-		} else if (action.equals("fetch")) {
+
+		if (action.equals("fetch")) {
 			return this.fetchValueByKey(key, callbackContext);
 		} else if (action.equals("store")) {
 			String value  = options.getString("value");
@@ -134,7 +139,7 @@ public class AppPreferences extends CordovaPlugin {
 	private boolean showPreferencesActivity (final CallbackContext callbackContext) {
 		cordova.getThreadPool().execute(new Runnable() {public void run() {
 			Intent i = new Intent(cordova.getActivity(), AppPreferencesActivity.class);
-			cordova.getActivity().getApplicationContext().startActivity(i);
+			cordova.getActivity().startActivity(i);
 			String result = null;
 			callbackContext.success(result);
 		}});

@@ -395,6 +395,9 @@ fs.readFile('app-settings.json', function(err, data) {
 			ws.write ("package me.apla.cordova;\n\n");
 			ws.write ('import ' + projectConfig.packageName() + ".R;\n\n");
 			rs.pipe (ws);
+
+			console.log ('you must insert following xml node into <application> section of your Manifest:');
+			console.log ('<activity android:name="me.apla.cordova.AppPreferencesActivity"></activity>');
 		});
 	});
 
