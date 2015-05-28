@@ -194,7 +194,7 @@ Titles
 	return config;
 }
 
-
+// guide for windows: http://blogs.msdn.com/b/glengordon/archive/2012/09/17/managing-settings-in-windows-phone-and-windows-8-store-apps.aspx
 
 fs.readFile('app-settings.json', function(err, data) {
 	if (err) {
