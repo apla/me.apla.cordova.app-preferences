@@ -24,6 +24,19 @@ if (typeof Promise !== "undefined") {
 	}
 }
 
+function promiseCheck (argCount, successCallback, errorCallback) {
+	if (
+		successCallback !== undefined
+		&& typeof successCallback !== 'function' && typeof errorCallback !== 'function'
+		&& arguments.length <= argCount + 1 // argCount
+		&& promiseLib
+	) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 if (!platform.nativeExec)
 	platform.nativeExec = cordova.exec.bind (cordova);
 
@@ -61,18 +74,14 @@ AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dic
  */
 AppPreferences.prototype.fetch = platform.fetch || function (
 	successCallback, errorCallback, dict, key
-	) {
+) {
 
-	var promise = false;
+	var argCount = 2; // dict, key
+	var promise = promiseCheck.apply (this, [argCount].concat ([].splice.call(arguments)));
 	// for promises
-	if (successCallback !== undefined
-		&& typeof successCallback !== 'function' && typeof errorCallback !== 'function'
-		&& dict === undefined && key === undefined
-		&& promiseLib
-	) {
+	if (promise) {
 		dict = successCallback;
 		key  = errorCallback;
-		promise = true;
 	}
 
 	var args = this.prepareKey ('get', dict, key);
@@ -86,33 +95,24 @@ AppPreferences.prototype.fetch = platform.fetch || function (
 		successCallback (value);
 	}
 
+	var nativeExec = function (resolve, reject) {
+		if (!args.key) {
+			return reject ();
+		}
+
+		if (resolve !== successCallback) {
+			successCallback = resolve;
+		}
+
+		return platform.nativeExec (_successCallback, reject, "AppPreferences", "fetch", [args]);
+	}
 
 	if (promise) {
-
-		return new promiseLib (function (resolve, reject) {
-			if (!args.key) {
-				reject ();
-			}
-
-			successCallback = resolve;
-
-			var execStatus = platform.nativeExec (
-				_successCallback, reject,
-				"AppPreferences", "fetch", [args]
-			);
-
-		});
+		return new promiseLib (nativeExec);
+	} else {
+		nativeExec (successCallback, errorCallback);
 	}
 
-	if (!args.key) {
-		errorCallback ();
-		return;
-	}
-
-	var execStatus = platform.nativeExec (
-		_successCallback, errorCallback,
-		"AppPreferences", "fetch", [args]
-	);
 };
 
 /**
@@ -128,19 +128,14 @@ AppPreferences.prototype.store = platform.store || function (
 	successCallback, errorCallback, dict, key, value
 	) {
 
-	var promise = false;
+	var argCount = 3; // dict, key, value
+	var promise = promiseCheck.apply (this, [argCount].concat ([].splice.call(arguments)));
 	// for promises
-	if (successCallback !== undefined
-		&& typeof successCallback !== 'function' && typeof errorCallback !== 'function'
-		&& dict === undefined && key === undefined
-		&& promiseLib
-	) {
+	if (promise) {
 		value = dict;
 		key  = errorCallback;
 		dict = successCallback;
-		promise = true;
 	}
-
 
 	var args = this.prepareKey ('set', dict, key, value);
 
@@ -161,30 +156,19 @@ AppPreferences.prototype.store = platform.store || function (
 	// Windows Phone ?
 	args.value = JSON.stringify (args.value);
 
+	var nativeExec = function (resolve, reject) {
+		if (!args.key || args.value === null || args.value === undefined) {
+			return reject ();
+		}
+
+		return platform.nativeExec (resolve, reject, "AppPreferences", "store", [args]);
+	}
+
 	if (promise) {
-
-		return new promiseLib (function (resolve, reject) {
-			if (!args.key || args.value === null || args.value === undefined) {
-				reject ();
-			}
-
-			var execStatus = platform.nativeExec (
-				resolve, reject,
-				"AppPreferences", "store", [args]
-			);
-
-		});
+		return new promiseLib (nativeExec);
+	} else {
+		nativeExec (successCallback, errorCallback);
 	}
-
-	if (!args.key || args.value === null || args.value === undefined) {
-		errorCallback ();
-		return;
-	}
-
-	var execStatus = platform.nativeExec (
-		successCallback, errorCallback,
-		"AppPreferences", "store", [args]
-	);
 
 };
 
@@ -200,52 +184,83 @@ AppPreferences.prototype.remove = platform.remove || function (
 	successCallback, errorCallback, dict, key
 ) {
 
-	var promise = false;
+	var argCount = 2; // dict, key
+	var promise = promiseCheck.apply (this, [argCount].concat ([].splice.call(arguments)));
 	// for promises
-	if (successCallback !== undefined
-		&& typeof successCallback !== 'function' && typeof errorCallback !== 'function'
-		&& dict === undefined && key === undefined
-		&& promiseLib
-	   ) {
-		dict = successCallback;
+	if (promise) {
 		key  = errorCallback;
-		promise = true;
+		dict = successCallback;
 	}
 
 	var args = this.prepareKey ('get', dict, key);
 
-	var _successCallback = function (_value) {
-		var value = _value;
-		successCallback (value);
-	}
+	var nativeExec = function (resolve, reject) {
+		if (!args.key) {
+			return reject ();
+		}
 
+		return platform.nativeExec (resolve, reject, "AppPreferences", "remove", [args]);
+	}
 
 	if (promise) {
-
-		return new promiseLib (function (resolve, reject) {
-			if (!args.key) {
-				reject ();
-			}
-
-			successCallback = resolve;
-
-			var execStatus = platform.nativeExec (
-				_successCallback, reject,
-				"AppPreferences", "remove", [args]
-			);
-
-		});
+		return new promiseLib (nativeExec);
+	} else {
+		nativeExec (successCallback, errorCallback);
 	}
 
-	if (!args.key) {
-		errorCallback ();
-		return;
+};
+
+/**
+ * Clear preferences
+ *
+ * @param {Function} successCallback The function to call when the value is available
+ * @param {Function} errorCallback The function to call when value is unavailable
+ * @param {String} dict Dictionary for key (OPTIONAL)
+ * @param {String} key Key
+ */
+AppPreferences.prototype.clearAll = platform.clearAll || function (
+	successCallback, errorCallback
+) {
+
+	var argCount = 0;
+	var promise = promiseCheck.apply (this, [argCount].concat ([].splice.call(arguments)));
+
+	var nativeExec = function (resolve, reject) {
+		return platform.nativeExec (resolve, reject, "AppPreferences", "clearAll", [args]);
 	}
 
-	var execStatus = platform.nativeExec (
-		_successCallback, errorCallback,
-		"AppPreferences", "remove", [args]
-	);
+	if (promise) {
+		return new promiseLib (nativeExec);
+	} else {
+		nativeExec (successCallback, errorCallback);
+	}
+
+};
+
+/**
+ * Show native preferences interface
+ *
+ * @param {Function} successCallback The function to call when the value is available
+ * @param {Function} errorCallback The function to call when value is unavailable
+ * @param {String} dict Dictionary for key (OPTIONAL)
+ * @param {String} key Key
+ */
+AppPreferences.prototype.show = platform.show || function (
+successCallback, errorCallback
+) {
+
+	var argCount = 0;
+	var promise = promiseCheck.apply (this, [argCount].concat ([].splice.call(arguments)));
+
+	var nativeExec = function (resolve, reject) {
+		return platform.nativeExec (resolve, reject, "AppPreferences", "show", [args]);
+	}
+
+	if (promise) {
+		return new promiseLib (nativeExec);
+	} else {
+		nativeExec (successCallback, errorCallback);
+	}
 };
 
 
