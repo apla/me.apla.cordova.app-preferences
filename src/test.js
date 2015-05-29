@@ -21,7 +21,7 @@ var appp = plugins.appPreferences;
 
 appp.fetch ("test-promise").then (function () {
 	pass++;
-}).catch (function (err) {
+}, function (err) {
 	fail.push ('promise fetch failed');
 });
 
