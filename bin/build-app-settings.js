@@ -59,6 +59,10 @@ function SettingsGenerator () {
 				androidType: "SwitchPreference",
 				types: "boolean",
 			},
+         title: {
+            iosType: "PSTitleValueSpecifier",
+            types: "string",
+         },
 			text: {
 				iosType: "PSTextFieldSpecifier",
 				androidType: "EditTextPreference",
@@ -201,6 +205,10 @@ Titles
 				case 'textfield':
 					config.type = 'PSTextFieldSpecifier';
 					break;
+
+            case 'title':
+               config.type = 'PSTitleValueSpecifier';
+               break;
 
 				case 'switch':
 					config.type = 'PSToggleSwitchSpecifier';

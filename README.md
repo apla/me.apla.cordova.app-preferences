@@ -103,6 +103,7 @@ Supported controls for iOS:
 * combo
 * switch
 * textfield
+* title
 
 Supported controls for Android:
 * group
