@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-app-preferences",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Application preferences plugin",
   "cordova": {
 	"id": "me.apla.cordova.app-preferences",

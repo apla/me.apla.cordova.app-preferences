@@ -15,8 +15,6 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import me.apla.cordova.AppPreferencesActivity;
-
 public class AppPreferences extends CordovaPlugin {
 
 	//    private static final String LOG_TAG = "AppPreferences";
@@ -79,10 +77,20 @@ public class AppPreferences extends CordovaPlugin {
 
 	private boolean showPreferencesActivity (final CallbackContext callbackContext) {
 		cordova.getThreadPool().execute(new Runnable() {public void run() {
-			Intent i = new Intent(cordova.getActivity(), AppPreferencesActivity.class);
-			cordova.getActivity().startActivity(i);
-			String result = null;
-			callbackContext.success(result);
+			Class preferenceActivity;
+			try {
+				preferenceActivity = Class.forName("me.apla.cordova.AppPreferencesActivity");
+				Intent i = new Intent(cordova.getActivity(), preferenceActivity);
+				cordova.getActivity().startActivity(i);
+				String result = null;
+				callbackContext.success(result);
+			} catch(ClassNotFoundException e) {
+				callbackContext.error("Class me.apla.cordova.AppPreferencesActivity not found. Please run preference generator.");
+				e.printStackTrace();
+			} catch (Exception e) {
+				callbackContext.error("Intent launch error");
+				e.printStackTrace();
+			}
 		}});
 		return true;
 	}

@@ -2,7 +2,7 @@ Application preferences Cordova plugin.
 -----------------------
 
 Store and fetch application preferences using platform facilities.
-Compatible with Cordova 3.x
+Compatible with Cordova 3+
 
 Installing
 ---
@@ -48,6 +48,13 @@ prefs.fetch (ok, fail, 'key');
 
 // fetch value by key from dict (see notes)
 prefs.fetch (ok, fail, 'dict', 'key');
+
+// remove value by key
+prefs.remove (ok, fail, 'key');
+
+// show application preferences
+prefs.show (ok, fail);
+
 ```
 
 Platforms
@@ -63,13 +70,13 @@ Notes
 1. iOS, Android and Windows Phone basic values (`string`, `number`, `boolean`) are stored using typed fields.
 1. Complex values, such as arrays and objects, are always stored using JSON notation.
 1. Dictionaries are supported on iOS and Windows 8 only, so on other platforms instead of using the real dictionary a composite key will be written like `<dict>.<key>`
+1. On iOS dictionaries just a key, so appPrefs.store ('dict', 'key', value) and appPrefs.store ('dict', {'key': value}) have same meaning (but different result).
 
 Tests
 ---
 Tests are available in `src/test.js`. After installing plugin you can add test code from this file and then launch `testPlugin()` function.
 
 iOS, Android, BlackBerry 10 and Windows Phone 8 tests pass ok at the moment.
-
 
 Preferences interface generator
 ---
@@ -108,7 +115,7 @@ TODO: Windows Phone ([guide](http://blogs.msdn.com/b/glengordon/archive/2012/09/
 Credits
 ---
 
-Originally ported from:
+Original version for iOS:
 https://github.com/phonegap/phonegap-plugins/tree/master/iOS/ApplicationPreferences
 
 Another android implementation for cordova 2.x:
