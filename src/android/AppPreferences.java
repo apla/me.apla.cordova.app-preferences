@@ -70,7 +70,7 @@ public class AppPreferences extends CordovaPlugin {
 			}});
 			return true;
 		} else if (action.equals("remove")) {
-			this.removeValueByKey(key, callbackContext);
+			return this.removeValueByKey(key, callbackContext);
 		}
 		// callbackContext.sendPluginResult(new PluginResult (PluginResult.Status.JSON_EXCEPTION));
 		return false;
@@ -125,7 +125,7 @@ public class AppPreferences extends CordovaPlugin {
 				callbackContext.success(returnVal);
 			} else {
 				// Log.d("", "no value");
-				callbackContext.success();
+				callbackContext.success(returnVal);
 				// callbackContext.sendPluginResult(new PluginResult ());
 			}
 

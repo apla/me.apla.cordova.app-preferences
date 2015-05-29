@@ -12,7 +12,7 @@ var tests = {
 	"empty-arr-test": []
 };
 
-var fail = 0;
+var fail = [];
 var pass = 0;
 
 var nonExistingKeyName = 'this-key-must-not-exists';
@@ -27,39 +27,39 @@ appp.fetch (function (ok) {
 				if (ok !== null && ok) {
 					pass++;
 				} else {
-					fail ++;
+					fail.push ('fetch>store>fetch '+nonExistingKeyName);
 				}
 				appp.remove (function (ok) {
 					pass++;
 				}, function (err) {
-					fail++;
+					fail.push ('fetch>store>fetch>remove '+nonExistingKeyName + ', error: '+err);
 				}, nonExistingKeyName);
 			}, function (err) {
-				fail++;
+				fail.push ('fetch>store>fetch null '+nonExistingKeyName);
 			}, nonExistingKeyName);
 		}, function (err) {
-			fail++;
+			fail.push ('fetch>store '+nonExistingKeyName);
 		}, nonExistingKeyName, true);
 	} else {
 		appp.remove (function (ok) {
 			pass++;
 		}, function (err) {
-			fail++;
+			fail.push ('fetch>remove '+nonExistingKeyName + '="'+err+'"');
 		}, nonExistingKeyName);
-		fail ++;
+		fail.push ('fetch exists '+nonExistingKeyName + '="'+ok+'"');
 	}
 }, function (err) {
-	fail ++;
+	fail.push ('fetch '+nonExistingKeyName);
 }, nonExistingKeyName);
 
 appp.fetch (function (ok) {
 	if (ok === null) {
 		pass++;
 	} else {
-		fail ++;
+		fail.push ('fetch not null '+'dict2.'+nonExistingKeyName + '="'+ok+'"');
 	}
 }, function (err) {
-	fail ++;
+	fail.push ('fetch '+'dict2.'+nonExistingKeyName);
 }, "dict2", nonExistingKeyName);
 
 for (var testK in tests) {
@@ -73,15 +73,15 @@ for (var testK in tests) {
 					pass ++;
 				else {
 					console.error ('fetched incorrect value for ' + testName + ': expected ' + JSON.stringify (testValue) + ' got ' + JSON.stringify (ok));
-					fail ++;
+					fail.push ('store>fetch not equal '+testName);
 				}
 			}, function (err) {
 				console.error ('fetch value failed for ' + testName + ' and value ' + testValue);
-				fail ++;
+				fail.push ('store>fetch '+testName);
 			}, testName);
 		}, function (err) {
 			console.error ('store value failed for ' + testName + ' and value ' + testValue);
-			fail ++;
+			fail.push ('store '+testName);
 		}, testName, testValue);
 		console.log ('trying to store', "dict.x" + testName);
 		appp.store (function (ok) {
@@ -92,15 +92,15 @@ for (var testK in tests) {
 					pass ++;
 				else {
 					console.error ('fetched incorrect value for dict.x' + testName + ': expected ' + JSON.stringify (testValue) + ' got ' + JSON.stringify (ok));
-					fail ++;
+					fail.push ('store>fetch not equal '+'dict.x'+testName);
 				}
 			}, function (err) {
 				console.error ('fetch value failed for ' + "dict.x" + testName + ' and value ' + testValue);
-				fail ++;
+				fail.push ('store>fetch '+'dict.x'+testName);
 			}, "dict", "x" + testName);
 		}, function (err) {
 			console.error ('store value failed for ' + "dictx" + testName + ' and value ' + testValue);
-			fail ++;
+			fail.push ('store '+'dict.x'+testName);
 		}, "dict", "x" + testName, testValue);
 
 	}) (testK, tests[testK]);
@@ -108,7 +108,7 @@ for (var testK in tests) {
 
 setTimeout (function () {
 	console.log (pass + ' tests passed');
-	if (fail)
-		console.error (fail + ' tests failed');
+	if (fail && fail.length)
+		console.error ('tests failed:', fail);
 }, 1000);
 }
