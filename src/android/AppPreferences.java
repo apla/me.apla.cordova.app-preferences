@@ -1,8 +1,5 @@
 package me.apla.cordova;
 
-//import java.util.Iterator;
-//import java.util.Map;
-
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
@@ -12,8 +9,6 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.JSONTokener;
 
-//import android.content.ActivityNotFoundException;
-//import android.content.Intent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -21,43 +16,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import me.apla.cordova.AppPreferencesActivity;
-
-// http://developer.android.com/guide/topics/ui/settings.html
-// http://stackoverflow.com/questions/4990529/android-a-good-looking-standard-settings-menu
-// http://androidpartaker.wordpress.com/2010/07/11/android-preferences/
-
-/*
-
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="Main">
-		<CheckBoxPreference android:title="Enable Preferences"
-			android:key="EnablePreferences" android:summary="Check to enable Other Preferences" />
-	</PreferenceCategory>
-	<PreferenceCategory android:title="Other Prefernces">
-		<ListPreference android:title="List Preference"
-			android:key="DayOfWeek" android:dependency="EnablePreferences"
-			android:summary="Selec Day of the Week" android:entries="@array/daysOfWeek"
-			android:entryValues="@array/daysOfWeekValues" />
-		<EditTextPreference android:title="Edit Text Preference"
-			android:key="Name" android:dependency="EnablePreferences"
-			android:summary="Enter Your Name" android:dialogTitle="Enter Your Name"
-			android:defaultValue="Android Partaker"/>
-		<RingtonePreference android:title="Ringtone Preference"
-			android:key="Ringtone" android:dependency="EnablePreferences"
-			android:summary="Select Ringtone" android:ringtoneType="all" />
-	</PreferenceCategory>
-
-	<PreferenceCategory android:title="Advance Preference">
-		<PreferenceScreen android:title="Advance Preference">
-
-			<EditTextPreference android:title="Enter Text"
-				android:key="Text" />
-		</PreferenceScreen>
-	</PreferenceCategory>
-</PreferenceScreen>
-
-*/
 
 public class AppPreferences extends CordovaPlugin {
 
@@ -91,24 +49,6 @@ public class AppPreferences extends CordovaPlugin {
 		} else if (action.equals("store")) {
 			String value  = options.getString("value");
 			return this.storeValueByKey(key, type, value, callbackContext);
-			//            } else if (action.equals("load")) {
-			//                JSONObject obj = new JSONObject();
-			//                Map prefs = sharedPrefs.getAll();
-			//                Iterator it = prefs.entrySet().iterator();
-			//                while (it.hasNext()) {
-			//                    Map.Entry pairs = (Map.Entry)it.next();
-			//                    obj.put(pairs.getKey().toString(), pairs.getValue().toString());
-			//                }
-			//                callbackContext.sendPluginResult(new PluginResult(status, obj));
-			//            } else if (action.equals("show")) {
-			//                String activityName = args.getString(0);
-			//                Intent intent = new Intent(Intent.ACTION_VIEW);
-			//                intent.setClassName(this.cordova.getActivity(), activityName);
-			//                try {
-			//                    this.cordova.getActivity().startActivity(intent);
-			//                } catch (ActivityNotFoundException e) {
-			//                    callbackContext.sendPluginResult(createErrorObj(NO_PREFERENCE_ACTIVITY, "No preferences activity called " + activityName));
-			//                }
 		} else if (action.equals("removeAll")) {
 			cordova.getThreadPool().execute(new Runnable() {public void run() {
 
