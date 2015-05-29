@@ -6,16 +6,9 @@ function AppPreferencesW8() {
 // http://msdn.microsoft.com/en-us/library/windows/apps/hh770544.aspx
 // http://www.silverlightshow.net/items/Windows-8-Metro-Add-settings-to-your-application.aspx
 
-AppPreferencesW8.prototype.fetch = function(successCallback, errorCallback, dict, key) {
+AppPreferencesW8.prototype.nativeFetch = function(successCallback, errorCallback, args) {
 
 	var self = this;
-
-	var args = this.prepareKey ('get', dict, key);
-
-	if (!args.key) {
-		errorCallback ();
-		return;
-	}
 
 	// no support for windows phone 8
 	var settings = Windows.Storage.ApplicationData.current.localSettings;
@@ -24,40 +17,37 @@ AppPreferencesW8.prototype.fetch = function(successCallback, errorCallback, dict
 	if (args.dict)
 		hasContainer = settings.containers.hasKey(args.dict);
 
-	var result;
-	if (hasContainer) {
-		// Access data in: 
-		result = settings.containers.lookup(args.dict).values.hasKey(args.key);
-	} else {
-		result = settings.values.hasKey(args.key);
+	if (args.dict && !hasContainer) {
+	    return successCallback(null);
 	}
 
-	var value;
+	var result = null;
+	if (hasContainer) {
+		// Access data in: 
+	    if (settings.containers.lookup(args.dict).values.hasKey(args.key))
+	        result = settings.containers.lookup(args.dict).values[args.key];
+
+	} else if (settings.values.hasKey(args.key)) {
+		result = settings.values[args.key];
+	}
+
+	var value = null;
 	if (result) {
 		try {
 			value = JSON.parse (result);
 		} catch (e) {
 			value = result;
 		}
-		successCallback (value);
-	} else {
-		errorCallback();
 	}
+	successCallback(value);
 
     // argscheck.checkArgs('fF', 'Device.getInfo', arguments);
     // exec(successCallback, errorCallback, "Device", "getDeviceInfo", []);
 };
 
-AppPreferencesW8.prototype.store = function(successCallback, errorCallback, dict, key, value) {
+AppPreferencesW8.prototype.nativeStore = function(successCallback, errorCallback, args) {
 
 	var self = this;
-
-	var args = this.prepareKey ('set', dict, key, value);
-
-	if (!args.key || !args.value) {
-		errorCallback ();
-		return;
-	}
 
 	args.value = JSON.stringify(args.value);
 
@@ -70,7 +60,7 @@ AppPreferencesW8.prototype.store = function(successCallback, errorCallback, dict
 		// debugger;
 
 		if (!hasContainer) {
-			var container = settings.createContainer(dict, Windows.Storage.ApplicationDataCreateDisposition.Always);
+			var container = settings.createContainer(args.dict, Windows.Storage.ApplicationDataCreateDisposition.Always);
 		}
 		settings = settings.containers[args.dict];			
 	}
@@ -82,5 +72,37 @@ AppPreferencesW8.prototype.store = function(successCallback, errorCallback, dict
     // argscheck.checkArgs('fF', 'Device.getInfo', arguments);
     // exec(successCallback, errorCallback, "Device", "getDeviceInfo", []);
 };
+
+AppPreferencesW8.prototype.nativeRemove = function (successCallback, errorCallback, args) {
+
+    var self = this;
+
+    // no support for windows phone 8
+    var settings = Windows.Storage.ApplicationData.current.localSettings;
+
+    var hasContainer;
+    if (args.dict)
+        hasContainer = settings.containers.hasKey(args.dict);
+
+    if (args.dict && !hasContainer) {
+        return successCallback(null);
+    }
+
+    var result = null;
+    if (hasContainer) {
+        // Access data in: 
+        if (settings.containers.lookup(args.dict).values.hasKey(args.key))
+            result = settings.containers.lookup(args.dict).values.remove (args.key);
+
+    } else if (settings.values.hasKey(args.key)) {
+        result = settings.values.remove (args.key);
+    }
+
+    successCallback();
+
+    // argscheck.checkArgs('fF', 'Device.getInfo', arguments);
+    // exec(successCallback, errorCallback, "Device", "getDeviceInfo", []);
+};
+
 
 module.exports = new AppPreferencesW8();

@@ -103,7 +103,10 @@ AppPreferences.prototype.fetch = platform.fetch || function (
 			successCallback = resolve;
 		}
 
-		return platform.nativeExec (_successCallback, reject, "AppPreferences", "fetch", [args]);
+		if (platform.nativeFetch) {
+		    return platform.nativeFetch(_successCallback, reject, args);
+		}
+		return platform.nativeExec(_successCallback, reject, "AppPreferences", "fetch", [args]);
 	}
 
 	if (promise) {
@@ -160,6 +163,9 @@ AppPreferences.prototype.store = platform.store || function (
 			return reject ();
 		}
 
+		if (platform.nativeStore) {
+		    return platform.nativeStore (resolve, reject, args);
+		}
 		return platform.nativeExec (resolve, reject, "AppPreferences", "store", [args]);
 	}
 
@@ -198,6 +204,9 @@ AppPreferences.prototype.remove = platform.remove || function (
 			return reject ();
 		}
 
+		if (platform.nativeRemove) {
+		    return platform.nativeRemove (resolve, reject, args);
+		}
 		return platform.nativeExec (resolve, reject, "AppPreferences", "remove", [args]);
 	}
 
