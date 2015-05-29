@@ -15,9 +15,16 @@ var tests = {
 var fail = [];
 var pass = 0;
 
-var nonExistingKeyName = 'this-key-must-not-exists';
+var nonExistingKeyName = 'test-key-must-not-exists';
 
 var appp = plugins.appPreferences;
+
+appp.fetch ("test-promise").then (function () {
+	pass++;
+}).catch (function (err) {
+	fail.push ('promise fetch failed');
+});
+
 appp.fetch (function (ok) {
 	if (ok === null) {
 		pass++;

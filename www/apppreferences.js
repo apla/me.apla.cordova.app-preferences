@@ -24,11 +24,10 @@ if (typeof Promise !== "undefined") {
 	}
 }
 
-function promiseCheck (argCount, successCallback, errorCallback) {
+function promiseCheck (maxArgs, successCallback, errorCallback) {
 	if (
-		successCallback !== undefined
-		&& typeof successCallback !== 'function' && typeof errorCallback !== 'function'
-		&& arguments.length <= argCount + 1 // argCount
+		typeof successCallback !== 'function' && typeof errorCallback !== 'function'
+		&& arguments.length <= maxArgs + 1 // argCount
 		&& promiseLib
 	) {
 		return true;
@@ -77,7 +76,7 @@ AppPreferences.prototype.fetch = platform.fetch || function (
 ) {
 
 	var argCount = 2; // dict, key
-	var promise = promiseCheck.apply (this, [argCount].concat ([].splice.call(arguments)));
+	var promise = promiseCheck.apply (this, [argCount].concat ([].slice.call(arguments)));
 	// for promises
 	if (promise) {
 		dict = successCallback;
@@ -129,7 +128,7 @@ AppPreferences.prototype.store = platform.store || function (
 	) {
 
 	var argCount = 3; // dict, key, value
-	var promise = promiseCheck.apply (this, [argCount].concat ([].splice.call(arguments)));
+	var promise = promiseCheck.apply (this, [argCount].concat ([].slice.call(arguments)));
 	// for promises
 	if (promise) {
 		value = dict;
@@ -185,7 +184,7 @@ AppPreferences.prototype.remove = platform.remove || function (
 ) {
 
 	var argCount = 2; // dict, key
-	var promise = promiseCheck.apply (this, [argCount].concat ([].splice.call(arguments)));
+	var promise = promiseCheck.apply (this, [argCount].concat ([].slice.call(arguments)));
 	// for promises
 	if (promise) {
 		key  = errorCallback;
@@ -223,7 +222,7 @@ AppPreferences.prototype.clearAll = platform.clearAll || function (
 ) {
 
 	var argCount = 0;
-	var promise = promiseCheck.apply (this, [argCount].concat ([].splice.call(arguments)));
+	var promise = promiseCheck.apply (this, [argCount].concat ([].slice.call(arguments)));
 
 	var nativeExec = function (resolve, reject) {
 		return platform.nativeExec (resolve, reject, "AppPreferences", "clearAll", []);
@@ -250,7 +249,7 @@ successCallback, errorCallback
 ) {
 
 	var argCount = 0;
-	var promise = promiseCheck.apply (this, [argCount].concat ([].splice.call(arguments)));
+	var promise = promiseCheck.apply (this, [argCount].concat ([].slice.call(arguments)));
 
 	var nativeExec = function (resolve, reject) {
 		return platform.nativeExec (resolve, reject, "AppPreferences", "show", []);
