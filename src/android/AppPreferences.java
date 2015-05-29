@@ -31,8 +31,8 @@ public class AppPreferences extends CordovaPlugin {
 
 		if (action.equals ("show")) {
 			return this.showPreferencesActivity(callbackContext);
-		//} else if (action.equals("clearAll")) {
-
+		} else if (action.equals("clearAll")) {
+			return this.clearAll(callbackContext);
 		}
 
 		JSONObject options = args.getJSONObject (0);
@@ -49,31 +49,32 @@ public class AppPreferences extends CordovaPlugin {
 		} else if (action.equals("store")) {
 			String value  = options.getString("value");
 			return this.storeValueByKey(key, type, value, callbackContext);
-		} else if (action.equals("removeAll")) {
-			cordova.getThreadPool().execute(new Runnable() {public void run() {
-
-				SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(cordova.getActivity());
-
-				Editor editor = sharedPrefs.edit();
-				editor.clear();
-				editor.commit();
-				if (editor.commit()) {
-					callbackContext.success();
-				} else {
-					try {
-						callbackContext.error(createErrorObj(COMMIT_FAILED, "Cannot commit change"));
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}});
-			return true;
 		} else if (action.equals("remove")) {
 			return this.removeValueByKey(key, callbackContext);
 		}
 		// callbackContext.sendPluginResult(new PluginResult (PluginResult.Status.JSON_EXCEPTION));
 		return false;
+	}
+
+	private boolean clearAll (final CallbackContext callbackContext) {
+		cordova.getThreadPool().execute(new Runnable() {public void run() {
+			SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(cordova.getActivity());
+
+			Editor editor = sharedPrefs.edit();
+			editor.clear();
+			editor.commit();
+			if (editor.commit()) {
+				callbackContext.success();
+			} else {
+				try {
+					callbackContext.error(createErrorObj(COMMIT_FAILED, "Cannot commit change"));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}});
+		return true;
 	}
 
 	private boolean showPreferencesActivity (final CallbackContext callbackContext) {
