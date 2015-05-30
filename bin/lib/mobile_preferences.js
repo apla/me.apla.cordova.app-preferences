@@ -8,84 +8,180 @@ var libxml  = require('libxmljs');
 
 
 function ucfirst(s) {
-    return s.charAt(0).toUpperCase() + s.substring(1);
+	return s.charAt(0).toUpperCase() + s.substring(1);
 }
 
+var commonMappings = {
+	title: {
+		ios: "Title",
+		android: "@android:title"
+	},
+	key: {
+		ios: "Key",
+		android: "@android:key"
+	},
+	default: {
+		ios: "DefaultValue",
+		android: "@android:defaultValue"
+	},
+	description: {
+		ios: "FooterText",
+		android: "@android:summary"
+	},
+};
+
+var mappings = {
+	group: {
+		ios: "PSGroupSpecifier",
+		android: "PreferenceCategory",
+		attrs: {
+			description: commonMappings.description,
+			title: commonMappings.title
+		}
+	},
+	selectNotSupported: {
+		ios: "PSMultiValueSpecifier",
+		android: "MultiSelectListPreference",
+		attrs: {
+			key:     commonMappings.key,
+			title:   commonMappings.title,
+			default: commonMappings.default,
+		}
+	},
+	radio: {
+		ios: "PSRadioGroupSpecifier",
+		android: "ListPreference",
+		required: ["title", "key", "default"],
+		attrs: {
+			key:     commonMappings.key,
+			title:   commonMappings.title,
+			default: commonMappings.default,
+			description: commonMappings.description,
+		},
+		fixup: {
+			ios: function (element, config) {
+				element.Titles = [];
+				element.Values = [];
+				config.items.forEach(function(a) {
+					element.Values.push(a.id || a.value);
+					element.Titles.push(a.title || a.name);
+				});
+			},
+			android: function (element, config) {
+				var titles = [], values = [];
+
+				config.items.forEach(function(item) {
+
+					titles.push(item.name || item.title);
+					values.push(item.id || item.value);
+				});
+
+				element.strings = {
+					name: config.name,
+					titles: titles,
+					values: values
+				};
+
+				element.attrs['android:entries'] = '@apppreferences_strings/' + config.name;
+				element.attrs['android:entryValues'] = '@apppreferences_strings/' + config.name + 'Values';
+			}
+		}
+	},
+	toggle: {
+		ios: "PSToggleSwitchSpecifier",
+		android: "SwitchPreference",
+		types: "boolean",
+		required: ["title", "key", "default"],
+		attrs: {
+			key:     commonMappings.key,
+			title:   commonMappings.title,
+			default: commonMappings.default,
+		}
+	},
+	textfield: {
+		ios: "PSTextFieldSpecifier",
+		android: "EditTextPreference",
+		types: "string",
+		required: ["name"],
+		attrs: {
+			keyboard: {
+				android: "@android:inputType",
+				ios: "KeyboardType",
+				value: {
+					// Alphabet , NumbersAndPunctuation , NumberPad , URL , EmailAddress
+					// text, number, textUri, textEmailAddress
+					// ios: https://developer.apple.com/library/ios/documentation/PreferenceSettings/Conceptual/SettingsApplicationSchemaReference/Articles/PSTextFieldSpecifier.html#//apple_ref/doc/uid/TP40007011-SW1
+					// android is little weird http://developer.android.com/reference/android/widget/TextView.html#attr_android:inputType
+					number: {ios: "NumberPad", android: "number"},
+					text: {ios: "Alphabet", android: "text"},
+					uri: {ios: "URL", android: "textUri"},
+					email: {ios: "EmailAddress", android: "textEmailAddress"}
+				}
+			},
+			// need a different handling for ios and android
+			// IsSecure
+			// AutocapitalizationType
+			// AutocorrectionType
+			key:     commonMappings.key,
+			title:   commonMappings.title,
+			default: commonMappings.default,
+		}
+	},
+	sliderNotSupported: {
+		// slider is not supported for android
+		// iOS:
+		//@TODO: PSSliderSpecifier
+		//Key
+		//DefaultValue
+		//MinimumValue
+		//MaximumValue
+	},
+	titleNotSupported: {
+		// please use group for this, ios only
+		// TODO: probably it is good idea to add title automatically:
+		// 1. if you want to show wide text input without title
+		// 2. for a slider
+		// 3. to simulate android summary for fields
+	}
+};
 
 function iosConfigMap(config) {
-// iOS
-// https://developer.apple.com/library/ios/documentation/cocoa/Conceptual/UserDefaults/Preferences/Preferences.html
-/*
-@TODO: 
+	var platformName = "ios";
 
-PSGroupSpecifier
-Type
-Title
-@TODO: FooterText
+	var element = {};
 
-@TODO: PSSliderSpecifier
-Key
-DefaultValue
-MinimumValue
-MaximumValue
+	if (!config.type) {
+		throw "no type defined for "+JSON.stringify (config, null, "\t");
+	}
 
-PSTextFieldSpecifier
-Title
-Key
-DefaultValue
-@TODO: 
-IsSecure
-KeyboardType (Alphabet , NumbersAndPunctuation , NumberPad , URL , EmailAddress)
-AutocapitalizationType
-AutocorrectionType
+	var mapping = mappings[config.type];
 
-@TODO: PSRadioGroupSpecifier
-Title
-FooterText???
-Key
-DefaultValue
-Values
-Titles
+	if (!mapping)
+		throw "no mapping for "+ config.type;
 
-*/
-    var element = {
-        Title: config['title']
-    };
+	element.Type = mapping[platformName];
 
-    if (config.type) {
-        
-        if (config.type == 'group') {
-            element.Type = 'PSGroupSpecifier';
-        }
-        else {     
-            element.DefaultValue = config['default'];
+	// TODO: check required
 
-            element.Key = config['name'];
+	if (mapping.attrs) {
+		for (var attrName in mapping.attrs) {
+			if (!config[attrName])
+				continue;
+			var attrConfig = mapping.attrs[attrName];
+			var elementKey = attrConfig[platformName];
+			if (attrConfig.value) {
+				if (!attrConfig.value[config[attrName]] || !attrConfig.value[config[attrName]][platformName])
+					throw "no mapping for type: "+ config.type + ", attr: " + attrName + ", value: " + config[attrName];
+				element[elementKey] = attrConfig.value[config[attrName]][platformName];
+			} else {
+				element[elementKey] = config[attrName];
+			}
+		}
+	}
 
-            switch (config.type) {
-
-                case 'textfield':
-                    element.Type = 'PSTextFieldSpecifier';                
-                    break;
-
-                case 'switch':
-                    element.Type = 'PSToggleSwitchSpecifier';
-                    break;
-
-                case 'combo':
-                    element.Type = 'PSMultiValueSpecifier';
-
-                    element.Titles = [];
-                    element.Values = [];
-                    config.items.forEach(function(a) {
-                        element.Values.push(a.id || a.value);
-                        element.Titles.push(a.title || a.name);
-                    });
-
-                    break;
-            }
-        }
-    }
+	if (mapping.fixup && mapping.fixup[platformName]) {
+		mapping.fixup[platformName] (element, config, mapping);
+	}
 
 	return element;
 }
@@ -96,107 +192,101 @@ function iosBuildItems(data) {
 
 	var items = [];
 	for (var i=0, l=data.length; i<l; i++) {
-        
+
 		var src = data[i];
-        
+
 		items.push(iosConfigMap(src));
-        
+
 		if (src.type == 'group') {
 			src.items.forEach(function(s) {
 				items.push(iosConfigMap(s));
 			});
 		}
 	}
-    
-    return items;    
+
+	return items;
 }
 
 
 function androidConfigMap(config) {
-    
-    var strings = [];
+	var platformName = "android";
 
-    if (config.type == 'group') {
-        var node = {
-            tagname: 'PreferenceCategory',
-            atts: {
-                'android:title': config.name || config.title
-            },
-            children: []
-        };
+	var element = {
+		attrs: {},
+		children: []
+	};
 
-        config.items.forEach(function(item) {
-            node.children.push(androidConfigMap(item));
-        });
-        
-        return node;
+	if (!config.type) {
+		throw "no type defined for "+JSON.stringify (config, null, "\t");
+	}
 
-    } else {
+	var mapping = mappings[config.type];
 
-        var tagname;
-        var node = {
-            atts: {
-                'android:title': config.title,
-                'android:key': config.name,
-                'android:defaultValue': config.default
-            }
-        };
+	if (!mapping)
+		throw "no mapping for "+ config.type;
 
-        switch (config.type) {
-            
-            case 'textfield':
-                node.tagname = 'EditTextPreference';
-                break;
-                
-            case 'switch':
-                node.tagname = 'CheckBoxPreference';
-                break;
-                
-            case 'combo':
+	element.tagname = mapping[platformName];
 
-                node.tagname = 'ListPreference';
-                                
-                var titles = [], values = [];
+	// TODO: check required
 
-                config.items.forEach(function(item) {
-                    
-                    titles.push(item.name || item.title);
-                    values.push(item.id || item.value);
-                });
+	if (mapping.attrs) {
+		for (var attrName in mapping.attrs) {
+			if (!config[attrName])
+				continue;
+			var attrConfig = mapping.attrs[attrName];
+			var elementKey = attrConfig[platformName];
 
-                node.strings = {
-                    name: config.name,
-                    titles: titles,
-                    values: values
-                };
+			var targetCheck = elementKey.split ('@');
+			var targetAttr;
+			if (targetCheck.length === 2 && targetCheck[0] === '') {
+				targetAttr = targetCheck[1];
+				if (!element.attrs)
+					element.attrs = {};
+				element.attrs[targetAttr] = [];
+			}
+			if (attrConfig.value) {
+				if (!attrConfig.value[config[attrName]] || !attrConfig.value[config[attrName]][platformName])
+					throw "no mapping for type: "+ config.type + ", attr: " + attrName + ", value: " + config[attrName];
+				if (targetAttr)
+					element.attrs[targetAttr].push (attrConfig.value[config[attrName]][platformName]);
+				else
+					element[elementKey] = attrConfig.value[config[attrName]][platformName]
+			} else {
 
-                node.atts['android:entries'] = '@apppreferences_strings/' + config.name;
-                node.atts['android:entryValues'] = '@apppreferences_strings/' + config.name + 'Values';
+				if (targetAttr)
+					element.attrs[targetAttr].push (config[attrName]);
+				else
+					element[elementKey] = config[attrName];
+			}
+		}
+	}
 
-            break;
-        }
+	if (mapping.fixup && mapping.fixup[platformName]) {
+		mapping.fixup[platformName] (element, config, mapping);
+	}
 
-        return node;
-    }
+	return element;
 }
 
-
 function androidBuildNode(parent, config, stringsArrays) {
-    
-    var newNode = parent
-        .node(config.tagname)
-        .attr(config.atts);
-    
-    if (config.strings) {
-        console.log("will push strings array "+JSON.stringify(config.strings));
-        stringsArrays.push(config.strings);
-    }
-    
-    if (config.children) {
-        config.children.forEach(function(child){
-            androidBuildNode(newNode, child, stringsArrays);
-        });
-    }
+
+	for (var attr in config.attrs) {
+		config.attrs[attr] = config.attrs[attr].join ('|');
+	}
+	var newNode = parent
+		.node(config.tagname)
+		.attr(config.attrs);
+
+	if (config.strings) {
+		console.log("will push strings array "+JSON.stringify(config.strings));
+		stringsArrays.push(config.strings);
+	}
+
+	if (config.children) {
+		config.children.forEach(function(child){
+			androidBuildNode(newNode, child, stringsArrays);
+		});
+	}
 }
 
 
@@ -208,24 +298,30 @@ function androidBuildSettings(configJson) {
 		.node('PreferenceScreen')
 		.attr({'xmlns:android': 'http://schemas.android.com/apk/res/android'});
 
-    var stringsArrays = [];
+	var stringsArrays = [];
 
-	configJson.forEach(function(item) {
-		var node = androidConfigMap(item);
-        
-        androidBuildNode(screenNode, node, stringsArrays);
+	configJson.forEach(function(preference) {
+		var node = androidConfigMap(preference);
+
+		if (preference.type === 'group' && preference.items && preference.items.length) {
+			preference.items.forEach(function(childNode) {
+				node.children.push(androidConfigMap(childNode));
+			});
+		}
+
+		androidBuildNode(screenNode, node, stringsArrays);
 	});
-    
-    return {
-        preferencesDocument: preferencesDocument,
-        stringsArrays: stringsArrays
-    };
+
+	return {
+		preferencesDocument: preferencesDocument,
+		stringsArrays: stringsArrays
+	};
 }
 
 module.exports = {
-    iosConfigMap: iosConfigMap,
-    iosBuildItems: iosBuildItems,
-    androidConfigMap: androidConfigMap,
-    androidBuildSettings: androidBuildSettings
+	iosConfigMap: iosConfigMap,
+	iosBuildItems: iosBuildItems,
+	androidConfigMap: androidConfigMap,
+	androidBuildSettings: androidBuildSettings
 };
 

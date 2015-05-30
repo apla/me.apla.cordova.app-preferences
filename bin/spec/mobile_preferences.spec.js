@@ -2,101 +2,107 @@ var mp = require('../lib/mobile_preferences.js');
 
 describe("mobile_preferences.js module", function() {
 
-    it("exists", function() {
-        expect(mp).not.toBeNull();
-    });
-    
-    describe("ios functions", function() {
-    
-        it("maps a texfield control", function() {
+	it("exists", function() {
+		expect(mp).not.toBeNull();
+	});
 
-            var config = {
-                type: "textfield",
-                default: "test_value",
-                name: "test_key"
-            };
+	describe("ios functions", function() {
 
-            var element = mp.iosConfigMap(config);
+		it("maps a texfield control", function() {
 
-            expect(element.Key).toEqual(config.name);
-            expect(element.DefaultValue).toEqual(config.default);        
-        });
+			var config = {
+				type: "textfield",
+				default: "test_value",
+				key: "test_key",
+				keyboard: "email"
+			};
 
-        it("builds array of ios preference items", function() {
+			var element = mp.iosConfigMap(config);
 
-            var configs = [{},{}];
+			expect(element.Key).toEqual(config.key);
+			expect(element.DefaultValue).toEqual(config.default);
+			expect(element.KeyboardType).toEqual("EmailAddress");
+		});
 
-            var items = mp.iosBuildItems(configs);
-            expect(items.length).toEqual(2);
-        });
+		it("builds array of ios preference items", function() {
 
-        it("flattens group items", function() {
+			var configs = [{
+				type: "textfield"
+			},{
+				type: "textfield"
+			}];
 
-            var configs = [{
-                type: "group",
-                items: [
-                    { type: "textfield", name: "child 1" },
-                    { type: "textfield", name: "child 2" }
-                ]
-            }];
+			var items = mp.iosBuildItems(configs);
+			expect(items.length).toEqual(2);
+		});
 
-            var items = mp.iosBuildItems(configs);
-            expect(items.length).toEqual(3);
-        });
-    
-    });
+		it("flattens group items", function() {
+
+			var configs = [{
+				type: "group",
+				items: [
+					{ type: "textfield", key: "child 1" },
+					{ type: "textfield", key: "child 2" }
+				]
+			}];
+
+			var items = mp.iosBuildItems(configs);
+			expect(items.length).toEqual(3);
+		});
+
+	});
 
 
-    describe("android functions", function() {
+	describe("android functions", function() {
 
-        it("generates group items", function() {
+		it("generates group items", function() {
 
-            var config = {
-                type: "group",
-                title: "test group",
-                items: [
-                    { type: "textfield", name: "child 1" },
-                    { type: "textfield", name: "child 2" }
-                ]
-            };
+			var config = {
+				type: "group",
+				title: "test group",
+				items: [
+					{ type: "textfield", key: "child 1" },
+					{ type: "textfield", key: "child 2" }
+				]
+			};
 
-            var item = mp.androidConfigMap(config);
-            console.log(item);
-            expect(item.tagname).toEqual('PreferenceCategory');
-            expect(item.children).not.toBeNull();
-        });
-        
-        it("maps a texfield control", function() {
+			var item = mp.androidConfigMap(config);
+			console.log(item);
+			expect(item.tagname).toEqual('PreferenceCategory');
+			expect(item.children).not.toBeNull();
+		});
 
-            var config = {
-                type: "textfield",
-                default: "test_value",
-                name: "test_key"
-            };
+		it("maps a texfield control", function() {
 
-            var element = mp.androidConfigMap(config);
+			var config = {
+				type: "textfield",
+				default: "test_value",
+				key: "test_key"
+			};
 
-            expect(element.tagname).toEqual('EditTextPreference');
-            expect(element.atts).not.toBeNull();        
-        });
-        
-        it("builds the item array", function() {
+			var element = mp.androidConfigMap(config);
 
-            var configs = [{
-                type: "group",
-                title: "test group",
-                items: [
-                    { type: "textfield", name: "child 1" },
-                    { type: "textfield", name: "child 2" }
-                ]
-            }];
+			expect(element.tagname).toEqual('EditTextPreference');
+			expect(element.atts).not.toBeNull();
+		});
 
-            var prefsDocuments = mp.androidBuildSettings(configs);
-console.log(prefsDocuments);
-            expect(prefsDocuments.preferencesDocument).not.toBeNull();
-            expect(prefsDocuments.stringsArrays).not.toBeNull();
-        });
+		it("builds the item array", function() {
 
-    });
+			var configs = [{
+				type: "group",
+				title: "test group",
+				items: [
+					{ type: "textfield", key: "child 1", title: "child 1" },
+					{ type: "textfield", key: "child 2", title: "child 2" }
+				]
+			}];
+
+			var prefsDocuments = mp.androidBuildSettings(configs);
+			console.log(prefsDocuments);
+			expect(prefsDocuments.preferencesDocument).not.toBeNull();
+			expect(prefsDocuments.stringsArrays).not.toBeNull();
+		});
+
+	});
 
 });
