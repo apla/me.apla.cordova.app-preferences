@@ -19,6 +19,26 @@ var nonExistingKeyName = 'test-key-must-not-exists';
 
 var appp = plugins.appPreferences;
 
+function fetchIncrementStore (keyName) {
+	var testRunCount;
+	appp.fetch (keyName).then (function (value) {
+		testRunCount = value || 0;
+		testRunCount++;
+		pass++;
+	}, function (err) {
+		console.error (err);
+		fail.push ('promise '+keyName+' failed');
+	}).then (function () {
+		appp.store (keyName, testRunCount)
+	}).then (function () {
+		console.info ("test run #"+testRunCount);
+	}, function (err) {
+		console.error (err);
+	});
+}
+
+fetchIncrementStore ("test-run-count");
+
 appp.fetch ("test-promise").then (function () {
 	pass++;
 }, function (err) {
