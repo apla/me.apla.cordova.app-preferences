@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-app-preferences",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "Application preferences plugin",
   "cordova": {
 	"id": "me.apla.cordova.app-preferences",
@@ -10,6 +10,7 @@
 	  "wp7",
 	  "wp8",
 	  "windows8",
+	  "windows",
 	  "blackberry10"
 	]
   },

@@ -8,7 +8,8 @@ try {
 /**
  * @constructor
  */
-function AppPreferences() {
+function AppPreferences (defaultArgs) {
+	this.defaultArgs = defaultArgs || {};
 }
 
 var promiseLib;
@@ -40,6 +41,13 @@ if (!platform.nativeExec)
 	platform.nativeExec = cordova.exec.bind (cordova);
 
 AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dict, key, value) {
+
+	var args = {};
+
+	for (var k in this.defaultArgs) {
+		args[k] = this.defaultArgs[k];
+	}
+
 	var argList = [].slice.apply(arguments);
 	argList.shift();
 	if (
@@ -50,9 +58,9 @@ AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dic
 	) {
 		argList.unshift (undefined);
 	}
-	var args = {
-		key: argList[1]
-	};
+
+	args.key = argList[1];
+
 	if (argList[0] !== undefined)
 		args.dict = argList[0]
 
@@ -104,7 +112,7 @@ AppPreferences.prototype.fetch = platform.fetch || function (
 		}
 
 		if (platform.nativeFetch) {
-		    return platform.nativeFetch(_successCallback, reject, args);
+			return platform.nativeFetch(_successCallback, reject, args);
 		}
 		return platform.nativeExec(_successCallback, reject, "AppPreferences", "fetch", [args]);
 	}
@@ -164,7 +172,7 @@ AppPreferences.prototype.store = platform.store || function (
 		}
 
 		if (platform.nativeStore) {
-		    return platform.nativeStore (resolve, reject, args);
+			return platform.nativeStore (resolve, reject, args);
 		}
 		return platform.nativeExec (resolve, reject, "AppPreferences", "store", [args]);
 	}
@@ -205,7 +213,7 @@ AppPreferences.prototype.remove = platform.remove || function (
 		}
 
 		if (platform.nativeRemove) {
-		    return platform.nativeRemove (resolve, reject, args);
+			return platform.nativeRemove (resolve, reject, args);
 		}
 		return platform.nativeExec (resolve, reject, "AppPreferences", "remove", [args]);
 	}
@@ -271,5 +279,11 @@ successCallback, errorCallback
 	}
 };
 
+AppPreferences.prototype.iosSuite = function (suiteName) {
+	var appPrefsSuite = new AppPreferences ({iosSuiteName: suiteName});
+
+	return appPrefsSuite;
+}
 
 module.exports = new AppPreferences();
+

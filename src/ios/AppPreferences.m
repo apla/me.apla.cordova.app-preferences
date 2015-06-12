@@ -28,9 +28,18 @@
 
 	NSString *settingsDict = [options objectForKey:@"dict"];
 	NSString *settingsName = [options objectForKey:@"key"];
+	NSString *suiteName    = [options objectForKey:@"iosSuiteName"];
 
 	[self.commandDelegate runInBackground:^{
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+	NSUserDefaults *defaults;
+
+	if (suiteName != nil) {
+		defaults = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
+	} else {
+		defaults = [NSUserDefaults standardUserDefaults];
+	}
+
 
 	id target = defaults;
 
@@ -106,9 +115,17 @@
 
 	NSString *settingsDict = [options objectForKey:@"dict"];
 	NSString *settingsName = [options objectForKey:@"key"];
+	NSString *suiteName    = [options objectForKey:@"iosSuiteName"];
 
 	//[self.commandDelegate runInBackground:^{
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+	NSUserDefaults *defaults;
+
+	if (suiteName != nil) {
+		defaults = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
+	} else {
+		defaults = [NSUserDefaults standardUserDefaults];
+	}
 
 	id target = defaults;
 
@@ -189,11 +206,18 @@
 	NSString *settingsName  = [options objectForKey:@"key"];
 	NSString *settingsValue = [options objectForKey:@"value"];
 	NSString *settingsType  = [options objectForKey:@"type"];
+	NSString *suiteName     = [options objectForKey:@"iosSuiteName"];
 
 	//	NSLog(@"%@ = %@ (%@)", settingsName, settingsValue, settingsType);
 
 	//[self.commandDelegate runInBackground:^{
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	NSUserDefaults *defaults;
+
+	if (suiteName != nil) {
+		defaults = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
+	} else {
+		defaults = [NSUserDefaults standardUserDefaults];
+	}
 
 	id target = defaults;
 
@@ -251,11 +275,11 @@
 	}
 	//}];
 }
+
 /*
   Parsing the Root.plist for the key, because there is a bug/feature in Settings.bundle
   So if the user haven't entered the Settings for the app, the default values aren't accessible through NSUserDefaults.
 */
-
 
 - (NSString*)getSettingFromBundle:(NSString*)settingsName
 {
