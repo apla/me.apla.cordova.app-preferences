@@ -4,12 +4,20 @@ Application preferences Cordova plugin.
 Store and fetch application preferences using platform facilities.
 Compatible with Cordova 3+
 
+Upgrade
+---
+
+If you used this plugin before cordova@5.0.0, you'll have to reinstall it:
+
+	$ cordova plugin rm me.apla.cordova.app-preferences
+	$ cordova plugin add cordova-plugin-app-preferences
+
 Installing
 ---
 
 From plugin registry:
 
-	$ cordova plugin add me.apla.cordova.app-preferences
+	$ cordova plugin add cordova-plugin-app-preferences
 
 From the repo:
 
@@ -54,6 +62,11 @@ prefs.remove (ok, fail, 'key');
 
 // show application preferences
 prefs.show (ok, fail);
+
+// support for iOS suites (untested)
+var suitePrefs = prefs.iosSuite ("suiteName");
+suitePrefs.fetch (...);
+suitePrefs.store (...);
 
 ```
 

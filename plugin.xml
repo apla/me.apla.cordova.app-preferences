@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
-	id="me.apla.cordova.app-preferences"
-	version="0.5.2">
+	id="cordova-plugin-app-preferences"
+	version="0.6.1">
 
 	<name>AppPreferences</name>
-	<description>Application preferences plugin</description>
+	<description>Application preferences plugin and preference pane generator</description>
 	<license>Apache</license>
 	<keywords>preferences, settings</keywords>
 	<repo>https://github.com/apla/me.apla.cordova.app-preferences</repo>
