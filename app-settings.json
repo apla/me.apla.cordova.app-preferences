@@ -12,7 +12,7 @@
 			},
 			{
 				"title":"Other",
-				"type":"switch",
+				"type":"toggle",
 				"default":false,
 				"name":"demo_switch"
 			},
