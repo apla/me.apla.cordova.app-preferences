@@ -5,7 +5,7 @@
 		"items":[
 			{
 				"title":"Server",
-				"name":"server",
+				"key":"server",
 				"type":"textfield",
 				"keyboard": "uri",
 				"default":"http://www.apache.org"
@@ -14,7 +14,7 @@
 				"title":"Other",
 				"type":"toggle",
 				"default":false,
-				"name":"demo_switch"
+				"key":"demo_switch"
 			},
 			{
 				"type":"combo",
@@ -30,7 +30,7 @@
 				],
 				"default":"ru",
 				"title":"Language",
-				"name":"language"
+				"key":"language"
 			}
 		]
 	}
