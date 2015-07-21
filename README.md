@@ -2,12 +2,14 @@ Application preferences Cordova plugin.
 -----------------------
 
 Store and fetch application preferences using platform facilities.
+Supports cordova and promise interfaces,
 Compatible with Cordova 3+
 
 Upgrade
 ---
 
-If you used this plugin before cordova@5.0.0, you'll have to reinstall it:
+Please note that plugin id is changed for npm publishing, so if you used
+this plugin before cordova@5.0.0, you'll have to reinstall it:
 
 	$ cordova plugin rm me.apla.cordova.app-preferences
 	$ cordova plugin add cordova-plugin-app-preferences
@@ -42,8 +44,9 @@ Synopsis
 function ok (value) {}
 function fail (error) {}
 
-
 var prefs = plugins.appPreferences;
+
+// cordova interface
 
 // store key => value pair
 prefs.store (ok, fail, 'key', 'value');
@@ -62,6 +65,13 @@ prefs.remove (ok, fail, 'key');
 
 // show application preferences
 prefs.show (ok, fail);
+
+// instead of cordova interface you can use promise interface
+// you'll receive promise when you won't pass function reference
+// as first and second parameter
+
+// fetch the value for a key using promise
+prefs.fetch ('key').then (ok, fail);
 
 // support for iOS suites (untested)
 var suitePrefs = prefs.iosSuite ("suiteName");
@@ -93,21 +103,20 @@ iOS, Android, BlackBerry 10 and Windows Phone 8 tests pass ok at the moment.
 
 Preferences interface generator
 ---
-You can find preliminary version of `Settings.bundle` generator in `bin/build-app-settings.js`.
+You can find preliminary version of settings generator in `bin/build-app-settings.js`.
 
 #### Usage: ####
 
-0. Install npm dependencies for the settings generator:
-`npm install plist`
-`npm install libxmljs`
+0. Install the settings generator:
+`npm install cordova-plugin-app-preferences`
 
 1. Copy example settings JSON to your project folder:
-`cp plugins/me.apla.cordova.app-preferences/app-settings.json .`
+`cp plugins/cordova-plugin-app-preferences/app-settings.json .`
 
 2. Edit JSON to include the controls you need...
 
 3. Generate settings resources with this command:
-`node plugins/me.apla.cordova.app-preferences/bin/build-app-settings.js`
+`node plugins/cordova-plugin-app-preferences/bin/build-app-settings.js`
 
 4. Add generated Settings.bundle to your iOS project.
 
