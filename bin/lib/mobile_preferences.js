@@ -165,7 +165,7 @@ function iosConfigMap(config) {
 
 	if (mapping.attrs) {
 		for (var attrName in mapping.attrs) {
-			if (!config[attrName])
+			if (!config.hasOwnProperty(attrName))
 				continue;
 			var attrConfig = mapping.attrs[attrName];
 			var elementKey = attrConfig[platformName];
@@ -231,7 +231,7 @@ function androidConfigMap(config) {
 
 	if (mapping.attrs) {
 		for (var attrName in mapping.attrs) {
-			if (!config[attrName])
+			if (!config.hasOwnProperty(attrName))
 				continue;
 			var attrConfig = mapping.attrs[attrName];
 			var elementKey = attrConfig[platformName];
