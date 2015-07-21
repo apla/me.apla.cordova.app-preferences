@@ -271,7 +271,8 @@ function androidConfigMap(config) {
 function androidBuildNode(parent, config, stringsArrays) {
 
 	for (var attr in config.attrs) {
-		config.attrs[attr] = config.attrs[attr].join ('|');
+		if (config.attrs[attr] && config.attrs[attr].constructor === Array)
+			config.attrs[attr] = config.attrs[attr].join ('|');
 	}
 	var newNode = parent
 		.node(config.tagname)

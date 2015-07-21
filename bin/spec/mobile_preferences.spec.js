@@ -103,6 +103,40 @@ describe("mobile_preferences.js module", function() {
 			expect(prefsDocuments.stringsArrays).not.toBeNull();
 		});
 
+		it ("extended radio play", function () {
+			var configs = [
+				{
+					"type":"group",
+					"title":"Measurement Units",
+					"key":"measurement_units",
+					"description":"Define which measurement unit is prefered",
+					"items":[
+						{
+							"type":"radio",
+							"items":[
+								{
+									"value":"kilometers_litres",
+									"title":"Use kilometers / litres"
+								},
+								{
+									"value":"miles_gallons",
+									"title":"Use miles / gallons"
+								}
+							],
+							"default":"kilometers_litres",
+							"title":"Measurement unit",
+							"key":"measurement_unit",
+							"name":"measurementunit"
+						}
+					]
+				}
+			];
+
+			var prefsDocuments = mp.androidBuildSettings(configs);
+			console.log(prefsDocuments);
+			expect(prefsDocuments.preferencesDocument).not.toBeNull();
+			expect(prefsDocuments.stringsArrays).not.toBeNull();
+		});
 	});
 
 });
