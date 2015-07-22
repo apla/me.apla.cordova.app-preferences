@@ -104,29 +104,29 @@ fs.readFile('app-settings.json', function(err, data) {
 			fs.mkdir('platforms/android/res/values', function(e) {
 				if (e && e.code != 'EEXIST') {
 					throw e;
-                }
+				}
 
-                // Generate resource file
-                var prefsStringsDoc = new libxml.Document();
-                var resources = prefsStringsDoc.node('resources');
+				// Generate resource file
+				var prefsStringsDoc = new libxml.Document();
+				var resources = prefsStringsDoc.node('resources');
 
-                stringsArrays.forEach(function(stringsArray) {
-                    var titlesXml = resources.node('string-array').attr({name: stringsArray.name}),
-                        valuesXml = resources.node('string-array').attr({name: stringsArray.name + 'Values'});
-                    
-                    for (var i=0, l=stringsArray.titles.length; i<l; i++) {
-                        titlesXml.node('item', stringsArray.titles[i]);
-                        valuesXml.node('item', stringsArray.values[i]);
-                    }
-                    
+				stringsArrays.forEach(function(stringsArray) {
+					var titlesXml = resources.node('string-array').attr({name: "apppreferences_" + stringsArray.name}),
+						valuesXml = resources.node('string-array').attr({name: "apppreferences_" + stringsArray.name + 'Values'});
+
+					for (var i=0, l=stringsArray.titles.length; i<l; i++) {
+						titlesXml.node('item', stringsArray.titles[i]);
+						valuesXml.node('item', stringsArray.values[i]);
+					}
+
 				});
-                
-                fs.writeFile('platforms/android/res/values/apppreferences_strings.xml', prefsStringsDoc.toString(), function(err) {
-                    if (err) {
-                        throw err;
-                    }
-                });
-                
+
+				fs.writeFile('platforms/android/res/values/apppreferences.xml', prefsStringsDoc.toString(), function(err) {
+					if (err) {
+						throw err;
+					}
+				});
+
 			});
 			
 			// no error handling, sorry

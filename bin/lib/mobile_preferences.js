@@ -82,8 +82,8 @@ var mappings = {
 					values: values
 				};
 
-				element.attrs['android:entries'] = '@apppreferences_strings/' + config.name;
-				element.attrs['android:entryValues'] = '@apppreferences_strings/' + config.name + 'Values';
+				element.attrs['android:entries'] = '@array/apppreferences_' + config.name;
+				element.attrs['android:entryValues'] = '@array/apppreferences_' + config.name + 'Values';
 			}
 		}
 	},
