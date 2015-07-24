@@ -10,17 +10,22 @@ try {
 } catch (e) {
 	cordovaLib = 'cordova/node_modules/cordova-lib';
 	configParserLib = 'configparser/ConfigParser';
+}
+
+try {
 	cordova_util = require (cordovaLib + '/src/cordova/util');
-}
 
-var projectRoot = cordova_util.isCordova(process.cwd());
-var projectXml = cordova_util.projectConfig(projectRoot);
-var configParser = cordova_util.config_parser || cordova_util.configparser;
+	var projectRoot = cordova_util.isCordova(process.cwd());
+	var projectXml = cordova_util.projectConfig(projectRoot);
+	var configParser = cordova_util.config_parser || cordova_util.configparser;
 
-if (!configParser) {
-	var configParser = require(cordovaLib + '/src/' + configParserLib);
+	if (!configParser) {
+		var configParser = require(cordovaLib + '/src/' + configParserLib);
+	}
+	var projectConfig = new configParser(projectXml);
+} catch (e) {
+	console.error ('cordova error', e);
 }
-var projectConfig = new configParser(projectXml);
 
 // console.log (projectConfig.name(), projectConfig.packageName());
 
