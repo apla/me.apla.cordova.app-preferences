@@ -102,7 +102,7 @@ var mappings = {
 		ios: "PSTextFieldSpecifier",
 		android: "EditTextPreference",
 		types: "string",
-		required: ["name"],
+		required: ["key"],
 		attrs: {
 			keyboard: {
 				android: "@android:inputType",
@@ -161,7 +161,13 @@ function iosConfigMap(config) {
 
 	element.Type = mapping[platformName];
 
-	// TODO: check required
+	if (mapping.required) {
+		mapping.required.forEach (function (k) {
+			if (!(k in config)) {
+				throw 'ERROR: attribute "'+ k + '" not found for ' + config.title + ' (type: ' + config.type + ')';
+			}
+		});
+	}
 
 	if (mapping.attrs) {
 		for (var attrName in mapping.attrs) {
@@ -227,7 +233,13 @@ function androidConfigMap(config) {
 
 	element.tagname = mapping[platformName];
 
-	// TODO: check required
+	if (mapping.required) {
+		mapping.required.forEach (function (k) {
+			if (!(k in config)) {
+				throw ['attribute', k, 'not found for', config.title, '(' + config.type + ')'].join (" ");
+			}
+		});
+	}
 
 	if (mapping.attrs) {
 		for (var attrName in mapping.attrs) {
