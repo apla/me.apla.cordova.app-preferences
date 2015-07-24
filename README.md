@@ -101,6 +101,14 @@ Tests are available in `src/test.js`. After installing plugin you can add test c
 
 iOS, Android, BlackBerry 10 and Windows Phone 8 tests pass ok at the moment.
 
+Show Preference pane
+---
+
+If you have generated preferences, you can programmatically show preference pane
+(Android and iOS at this time). On Android your application show native interface for preferences,
+on iOS you'll be switched to the Settings.app with application preferences opened for you.
+Either way, you must listen for Cordova resume event to perform preferences synchronization.
+
 Preferences interface generator
 ---
 You can find preliminary version of settings generator in `bin/build-app-settings.js`.
