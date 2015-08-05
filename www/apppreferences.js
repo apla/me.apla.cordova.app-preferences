@@ -283,6 +283,12 @@ successCallback, errorCallback
 	}
 };
 
+/**
+ * Return iOS Suite configuration context
+ * @param   {String}         suiteName suite name
+ * @returns {AppPreferences} AppPreferences object, bound to that suite
+ */
+
 AppPreferences.prototype.iosSuite = function (suiteName) {
 	var appPrefsSuite = new AppPreferences ({iosSuiteName: suiteName});
 
