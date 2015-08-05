@@ -2,16 +2,9 @@ function AppPreferencesLocalStorage() {
 
 }
 
-AppPreferencesLocalStorage.prototype.fetch = function(successCallback, errorCallback, dict, key) {
+AppPreferencesLocalStorage.prototype.nativeFetch = function(successCallback, errorCallback, args) {
 
 	var self = this;
-
-	var args = this.prepareKey ('get', dict, key);
-
-	if (!args.key) {
-		errorCallback ();
-		return;
-	}
 
 	var key = args.key;
 
@@ -21,27 +14,16 @@ AppPreferencesLocalStorage.prototype.fetch = function(successCallback, errorCall
 	var result = window.localStorage.getItem (key);
 
 	var value = result;
-	if (result) {
-		try {
-			value = JSON.parse (result);
-		} catch (e) {
-		}
-		successCallback (value);
-	} else {
-		errorCallback();
+	try {
+		value = JSON.parse (result);
+	} catch (e) {
 	}
+	successCallback (value);
 };
 
-AppPreferencesLocalStorage.prototype.remove = function(successCallback, errorCallback, dict, key) {
+AppPreferencesLocalStorage.prototype.nativeRemove = function(successCallback, errorCallback, args) {
 
 	var self = this;
-
-	var args = this.prepareKey ('get', dict, key);
-
-	if (!args.key) {
-		errorCallback ();
-		return;
-	}
 
 	var key = args.key;
 
@@ -53,16 +35,9 @@ AppPreferencesLocalStorage.prototype.remove = function(successCallback, errorCal
 	successCallback (true);
 };
 
-AppPreferencesLocalStorage.prototype.store = function(successCallback, errorCallback, dict, key, value) {
+AppPreferencesLocalStorage.prototype.nativeStore = function(successCallback, errorCallback, args) {
 
 	var self = this;
-
-	var args = this.prepareKey ('set', dict, key, value);
-
-	if (!args.key || !args.value) {
-		errorCallback ();
-		return;
-	}
 
 	var key = args.key;
 
@@ -76,7 +51,7 @@ AppPreferencesLocalStorage.prototype.store = function(successCallback, errorCall
 	successCallback ();
 };
 
-AppPreferencesLocalStorage.prototype.clearAll = function(successCallback, errorCallback) {
+AppPreferencesLocalStorage.prototype.clearAll = function (successCallback, errorCallback) {
 
 	var self = this;
 
