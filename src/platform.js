@@ -67,4 +67,6 @@ AppPreferencesLocalStorage.prototype.show = function (successCallback, errorCall
 	errorCallback ('not implemented');
 };
 
-module.exports = new AppPreferencesLocalStorage();
+if (typeof module !== "undefined") {
+	module.exports = new AppPreferencesLocalStorage();
+}

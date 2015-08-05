@@ -1,8 +1,12 @@
-var platform = {};
-try {
-	platform = require ('./platform');
-} catch (e) {
+var platform;
 
+if (typeof AppPreferencesLocalStorage === "undefined") {
+	try {
+		platform = require ('./platform');
+	} catch (e) {
+	}
+} else {
+	platform = new AppPreferencesLocalStorage ();
 }
 
 /**
@@ -37,7 +41,7 @@ function promiseCheck (maxArgs, successCallback, errorCallback) {
 	}
 }
 
-if (!platform.nativeExec)
+if (!platform.nativeExec && typeof cordova !== "undefined")
 	platform.nativeExec = cordova.exec.bind (cordova);
 
 AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dict, key, value) {

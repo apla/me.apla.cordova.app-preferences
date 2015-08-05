@@ -17,7 +17,7 @@ var pass = 0;
 
 var nonExistingKeyName = 'test-key-must-not-exists';
 
-var appp = plugins.appPreferences;
+var appp = typeof AppPreferences !== "undefined" ? new AppPreferences () : plugins.appPreferences;
 
 function fetchIncrementStore (keyName) {
 	var testRunCount;
@@ -47,6 +47,7 @@ appp.fetch ("test-promise").then (function () {
 
 appp.fetch (function (ok) {
 	if (ok === null) {
+		console.log ("non existing key fetch result is success with null");
 		pass++;
 		appp.store (function (ok) {
 			pass++;
