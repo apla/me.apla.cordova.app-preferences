@@ -17,7 +17,7 @@ var pass = 0;
 
 var nonExistingKeyName = 'test-key-must-not-exists';
 
-var appp = typeof AppPreferences !== "undefined" ? new AppPreferences () : plugins.appPreferences;
+var appp = (typeof AppPreferences !== "undefined") ? new AppPreferences () : plugins.appPreferences;
 
 function fetchIncrementStore (keyName) {
 	var testRunCount;

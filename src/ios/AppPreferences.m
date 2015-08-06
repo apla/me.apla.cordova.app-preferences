@@ -18,8 +18,8 @@
 
 }
 
-- (void)defaultsChanged
-{
+- (void)defaultsChanged:(NSNotification *)notification {
+
 	NSString * jsCallBack = [NSString stringWithFormat:@"cordova.fireDocumentEvent('preferencesChanged');"];
 	[self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
 }

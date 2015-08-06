@@ -1,4 +1,4 @@
-var platform;
+var platform = {};
 
 if (typeof AppPreferencesLocalStorage === "undefined") {
 	try {
@@ -295,5 +295,7 @@ AppPreferences.prototype.iosSuite = function (suiteName) {
 	return appPrefsSuite;
 }
 
-module.exports = new AppPreferences();
+if (typeof module !== "undefined") {
+	module.exports = new AppPreferences();
+}
 
