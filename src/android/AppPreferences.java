@@ -2,6 +2,7 @@ package me.apla.cordova;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,16 +13,45 @@ import org.json.JSONTokener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-public class AppPreferences extends CordovaPlugin {
+public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceChangeListener {
 
 	//    private static final String LOG_TAG = "AppPreferences";
 	//    private static final int NO_PROPERTY = 0;
 	//    private static final int NO_PREFERENCE_ACTIVITY = 1;
 	private static final int COMMIT_FAILED = 2;
+	private static CordovaWebView cdvWebView;
+	private static boolean watchChanges = false;
 
+	@Override
+	protected void pluginInitialize() {
+		cdvWebView = this.webView;
+	}
+
+	public void onSharedPreferenceChanged (SharedPreferences sharedPreferences, String key) {
+		Log.d("", "PREFERENCE CHANGE DETECTED FOR " + key);
+		cordova.getThreadPool().execute(new Runnable() {
+			public void run() {
+				// TODO: use json
+				cdvWebView.loadUrl("javascript:cordova.fireWindowEvent('preferencesChanged',{'key': '" + key + "'})");
+			}
+		});
+	}
+
+	@Override
+	public void onResume(boolean multitasking) {
+		PreferenceManager.getDefaultSharedPreferences(cordova.getActivity())
+			.registerOnSharedPreferenceChangeListener(this);
+	}
+
+	@Override
+	public void onPause(boolean multitasking) {
+		PreferenceManager.getDefaultSharedPreferences(cordova.getActivity())
+			.unregisterOnSharedPreferenceChangeListener(this);
+	}
 
 	@Override
 	public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
@@ -31,6 +61,17 @@ public class AppPreferences extends CordovaPlugin {
 			return this.showPreferencesActivity(callbackContext);
 		} else if (action.equals("clearAll")) {
 			return this.clearAll(callbackContext);
+		} else if (action.equals("watch")) {
+			if (args.length() == 1) {
+				watchChanges = args.getBoolean(0);
+				if (!watchChanges) {
+					this.onPause(false);
+				}
+			} else {
+				watchChanges = true;
+			}
+			callbackContext.success();
+			return true;
 		}
 
 		JSONObject options = args.getJSONObject (0);

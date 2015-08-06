@@ -13,6 +13,43 @@
 
 @implementation AppPreferences
 
+- (void)pluginInitialize
+{
+
+}
+
+- (void)defaultsChanged
+{
+	NSString * jsCallBack = [NSString stringWithFormat:@"cordova.fireDocumentEvent('preferencesChanged');"];
+	[self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+}
+
+
+
+- (void)watch:(CDVInvokedUrlCommand*)command
+{
+
+	__block CDVPluginResult* result = nil;
+
+	NSNumber *option = [[command arguments] objectAtIndex:0];
+	bool watchChanges = true;
+	if (option) {
+		watchChanges = [option boolValue];
+	}
+
+	if (watchChanges) {
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultsChanged) name:NSUserDefaultsDidChangeNotification object:nil];
+	} else {
+		[[NSNotificationCenter defaultCenter] removeObserver:self];
+	}
+
+	[self.commandDelegate runInBackground:^{
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+	}];
+}
+
+
+
 - (void)fetch:(CDVInvokedUrlCommand*)command
 {
 
