@@ -1,9 +1,17 @@
 Application preferences Cordova plugin.
 -----------------------
 
-Store and fetch application preferences using platform facilities.
-Supports cordova and promise interfaces,
-Compatible with Cordova 3+
+Why you should use this plugin?
+
+ * Cordova + Promise interface out of the box
+ * Supports many platforms (Android, iOS, Windows and local storage fallback)
+ * Have tests
+ * Supports simple and complex data structures
+ * Supports removal of the keys
+ * Have preference pane generator for application (for Android and iOS) and can show native preferences
+ * (Alpha) preference change notification #37
+
+For Cordova 3+
 
 Upgrade
 ---
