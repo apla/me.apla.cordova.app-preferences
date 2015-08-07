@@ -33,23 +33,25 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 
 	public void onSharedPreferenceChanged (SharedPreferences sharedPreferences, final String key) {
 		Log.d("", "PREFERENCE CHANGE DETECTED FOR " + key);
-		cordova.getThreadPool().execute(new Runnable() {
-			public void run() {
-				// TODO: use json
-				cdvWebView.loadUrl("javascript:cordova.fireWindowEvent('preferencesChanged',{'key': '" + key + "'})");
-			}
-		});
+		//cordova.getThreadPool().execute(new Runnable() {
+		//	public void run() {
+		// TODO: use json
+		cdvWebView.loadUrl("javascript:cordova.fireDocumentEvent('preferencesChanged',{'key': '" + key + "'})");
+		//	}
+		//});
 	}
 
 	@Override
 	public void onResume(boolean multitasking) {
-		PreferenceManager.getDefaultSharedPreferences(cordova.getActivity())
+		if (this.watchChanges)
+			PreferenceManager.getDefaultSharedPreferences(cordova.getActivity())
 			.registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
 	public void onPause(boolean multitasking) {
-		PreferenceManager.getDefaultSharedPreferences(cordova.getActivity())
+		if (this.watchChanges)
+			PreferenceManager.getDefaultSharedPreferences(cordova.getActivity())
 			.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
@@ -66,6 +68,8 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 				watchChanges = args.getBoolean(0);
 				if (!watchChanges) {
 					this.onPause(false);
+				} else {
+					this.onResume(false);
 				}
 			} else {
 				watchChanges = true;
