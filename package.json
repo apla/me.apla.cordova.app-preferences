@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-app-preferences",
-  "version": "0.6.1",
+  "version": "0.7.1",
   "description": "Application preferences plugin and preference pane generator",
   "cordova": {
 	"id": "cordova-plugin-app-preferences",
@@ -17,6 +17,9 @@
   "repository": {
 	"type": "git",
 	"url": "https://github.com/apla/me.apla.cordova.app-preferences.git"
+  },
+  "bin": {
+    "cordova-app-preferences-generator": "bin/build-app-settings.js"
   },
   "keywords": [
 	"preferences",

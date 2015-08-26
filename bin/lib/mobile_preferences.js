@@ -82,8 +82,8 @@ var mappings = {
 					values: values
 				};
 
-				element.attrs['android:entries'] = '@apppreferences_strings/' + config.name;
-				element.attrs['android:entryValues'] = '@apppreferences_strings/' + config.name + 'Values';
+				element.attrs['android:entries'] = '@array/apppreferences_' + config.name;
+				element.attrs['android:entryValues'] = '@array/apppreferences_' + config.name + 'Values';
 			}
 		}
 	},
@@ -102,7 +102,7 @@ var mappings = {
 		ios: "PSTextFieldSpecifier",
 		android: "EditTextPreference",
 		types: "string",
-		required: ["name"],
+		required: ["key"],
 		attrs: {
 			keyboard: {
 				android: "@android:inputType",
@@ -161,7 +161,13 @@ function iosConfigMap(config) {
 
 	element.Type = mapping[platformName];
 
-	// TODO: check required
+	if (mapping.required) {
+		mapping.required.forEach (function (k) {
+			if (!(k in config)) {
+				throw 'ERROR: attribute "'+ k + '" not found for ' + config.title + ' (type: ' + config.type + ')';
+			}
+		});
+	}
 
 	if (mapping.attrs) {
 		for (var attrName in mapping.attrs) {
@@ -227,7 +233,13 @@ function androidConfigMap(config) {
 
 	element.tagname = mapping[platformName];
 
-	// TODO: check required
+	if (mapping.required) {
+		mapping.required.forEach (function (k) {
+			if (!(k in config)) {
+				throw ['attribute', k, 'not found for', config.title, '(' + config.type + ')'].join (" ");
+			}
+		});
+	}
 
 	if (mapping.attrs) {
 		for (var attrName in mapping.attrs) {
@@ -271,7 +283,8 @@ function androidConfigMap(config) {
 function androidBuildNode(parent, config, stringsArrays) {
 
 	for (var attr in config.attrs) {
-		config.attrs[attr] = config.attrs[attr].join ('|');
+		if (config.attrs[attr] && config.attrs[attr].constructor === Array)
+			config.attrs[attr] = config.attrs[attr].join ('|');
 	}
 	var newNode = parent
 		.node(config.tagname)

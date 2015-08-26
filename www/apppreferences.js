@@ -1,8 +1,12 @@
 var platform = {};
-try {
-	platform = require ('./platform');
-} catch (e) {
 
+if (typeof AppPreferencesLocalStorage === "undefined") {
+	try {
+		platform = require ('./platform');
+	} catch (e) {
+	}
+} else {
+	platform = new AppPreferencesLocalStorage ();
 }
 
 /**
@@ -37,7 +41,7 @@ function promiseCheck (maxArgs, successCallback, errorCallback) {
 	}
 }
 
-if (!platform.nativeExec)
+if (!platform.nativeExec && typeof cordova !== "undefined")
 	platform.nativeExec = cordova.exec.bind (cordova);
 
 AppPreferences.prototype.prepareKey = platform.prepareKey || function (mode, dict, key, value) {
@@ -279,11 +283,98 @@ successCallback, errorCallback
 	}
 };
 
+/**
+ * Watch for preferences change
+ *
+ * @param {Function} successCallback The function to call when the value is available
+ * @param {Function} errorCallback   The function to call when value is unavailable
+ * @param {Boolean}  subscribe       true value to subscribe, false - unsubscribe
+ * @example How to get notified:
+ * ```javascript
+ * plugins.appPreferences.watch();
+ * document.addEventListener ('preferencesChanged', function (evt) {
+ *     // with some platforms can give you details what is changed
+ *     if (evt.key) {
+ *         // handle key change
+ *     } else if (evt.all) {
+ *         // after clearAll
+ *     }
+ * });
+ * ```
+ */
+AppPreferences.prototype.watch = platform.watch || function (
+	successCallback, errorCallback
+) {
+
+	var nativeExec = function (resolve, reject) {
+		return platform.nativeExec (resolve, reject, "AppPreferences", "watch", []);
+	}
+
+	nativeExec (successCallback, errorCallback);
+};
+
+/**
+ * Return iOS Suite configuration context
+ * @param   {String}         suiteName suite name
+ * @returns {AppPreferences} AppPreferences object, bound to that suite
+ */
+
 AppPreferences.prototype.iosSuite = function (suiteName) {
 	var appPrefsSuite = new AppPreferences ({iosSuiteName: suiteName});
 
 	return appPrefsSuite;
 }
 
-module.exports = new AppPreferences();
+// WIP: functions to bind selected preferences to the form
+
+function setFormFields (formEl, fieldsData) {
+	for (var i = 0; i < formEl.elements.length; i ++) {
+		var formField = formEl.elements[i];
+		if (!(formField.name in fieldsData)) {
+			continue;
+		}
+
+		// TODO: multiple checkboxes value for one form field
+		if (formField.type === 'radio' || formField.type === 'checkbox') {
+			if (
+				formField.value === fieldsData[formField.name]
+				|| formField.value === fieldsData[formField.name].toString()
+			) {
+				formField.checked = true;
+			}
+		} else {
+			formField.value = fieldsData[formField.name];
+		}
+	}
+}
+
+function bindFormToData (formEl, formData) {
+	[].slice.apply (formEl.elements).forEach (function (el) {
+		if (el.type.match (/^(?:radio|checkbox)$/)) {
+			el.addEventListener ('change', getFormFields.bind (window, formEl, formData), false);
+		} else {
+			el.addEventListener ('input', getFormFields.bind (window, formEl, formData), false);
+		}
+	});
+}
+
+function getFormFields (formEl, formData) {
+	formData = formData || {};
+	for (var k in formData) {
+		delete formData[k];
+	}
+	for (var i = 0; i < formEl.elements.length; i ++) {
+		var formField = formEl.elements[i];
+		var checkedType = formField.type.match (/^(?:radio|checkbox)$/);
+		if ((checkedType && formField.checked) || !checkedType) {
+			formData[formField.name] = formField.value;
+		}
+	}
+	// console.log (formData);
+	return formData;
+}
+
+if (typeof module !== "undefined") {
+	module.exports = new AppPreferences();
+}
 

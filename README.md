@@ -1,13 +1,23 @@
 Application preferences Cordova plugin.
 -----------------------
 
-Store and fetch application preferences using platform facilities.
-Compatible with Cordova 3+
+Why you should use this plugin?
+
+ * Cordova + Promise interface out of the box
+ * Supports many platforms (Android, iOS, Windows and local storage fallback)
+ * Have tests
+ * Supports simple and complex data structures
+ * Supports removal of the keys
+ * Have preference pane generator for application (for Android and iOS) and can show native preferences
+ * (Alpha) preference change notification #37
+
+For Cordova 3+
 
 Upgrade
 ---
 
-If you used this plugin before cordova@5.0.0, you'll have to reinstall it:
+Please note that plugin id is changed for npm publishing, so if you used
+this plugin before cordova@5.0.0, you'll have to reinstall it:
 
 	$ cordova plugin rm me.apla.cordova.app-preferences
 	$ cordova plugin add cordova-plugin-app-preferences
@@ -42,8 +52,9 @@ Synopsis
 function ok (value) {}
 function fail (error) {}
 
-
 var prefs = plugins.appPreferences;
+
+// cordova interface
 
 // store key => value pair
 prefs.store (ok, fail, 'key', 'value');
@@ -62,6 +73,13 @@ prefs.remove (ok, fail, 'key');
 
 // show application preferences
 prefs.show (ok, fail);
+
+// instead of cordova interface you can use promise interface
+// you'll receive promise when you won't pass function reference
+// as first and second parameter
+
+// fetch the value for a key using promise
+prefs.fetch ('key').then (ok, fail);
 
 // support for iOS suites (untested)
 var suitePrefs = prefs.iosSuite ("suiteName");
@@ -91,23 +109,30 @@ Tests are available in `src/test.js`. After installing plugin you can add test c
 
 iOS, Android, BlackBerry 10 and Windows Phone 8 tests pass ok at the moment.
 
+Show Preference pane
+---
+
+If you have generated preferences, you can programmatically show preference pane
+(Android and iOS at this time). On Android your application show native interface for preferences,
+on iOS you'll be switched to the Settings.app with application preferences opened for you.
+Either way, you must listen for Cordova resume event to perform preferences synchronization.
+
 Preferences interface generator
 ---
-You can find preliminary version of `Settings.bundle` generator in `bin/build-app-settings.js`.
+You can find preliminary version of settings generator in `bin/build-app-settings.js`.
 
 #### Usage: ####
 
-0. Install npm dependencies for the settings generator:
-`npm install plist`
-`npm install libxmljs`
+0. Install the settings generator:
+`npm install cordova-plugin-app-preferences`
 
 1. Copy example settings JSON to your project folder:
-`cp plugins/me.apla.cordova.app-preferences/app-settings.json .`
+`cp plugins/cordova-plugin-app-preferences/app-settings.json .`
 
 2. Edit JSON to include the controls you need...
 
 3. Generate settings resources with this command:
-`node plugins/me.apla.cordova.app-preferences/bin/build-app-settings.js`
+`node plugins/cordova-plugin-app-preferences/bin/build-app-settings.js`
 
 4. Add generated Settings.bundle to your iOS project.
 
