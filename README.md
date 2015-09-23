@@ -90,7 +90,7 @@ suitePrefs.store (...);
 
 Platforms
 ---
-1. Native execution on iOS using `NSUserDefaults`
+1. Native execution on iOS / OSX using `NSUserDefaults`
 1. Native execution on Android using `android.content.SharedPreferences`
 1. Native execution on Windows Phone using `IsolatedStorageSettings.ApplicationSettings`
 1. Native execution on Windows 8 using `IsolatedStorageSettings.ApplicationSettings`
@@ -98,10 +98,10 @@ Platforms
 
 Notes
 ---
-1. iOS, Android and Windows Phone basic values (`string`, `number`, `boolean`) are stored using typed fields.
+1. iOS, OSX, Android and Windows Phone basic values (`string`, `number`, `boolean`) are stored using typed fields.
 1. Complex values, such as arrays and objects, are always stored using JSON notation.
 1. Dictionaries are supported on iOS and Windows 8 only, so on other platforms instead of using the real dictionary a composite key will be written like `<dict>.<key>`
-1. On iOS dictionaries just a key, so appPrefs.store ('dict', 'key', value) and appPrefs.store ('dict', {'key': value}) have same meaning (but different result).
+1. On iOS/OSX dictionaries just a key, so appPrefs.store ('dict', 'key', value) and appPrefs.store ('dict', {'key': value}) have same meaning (but different result).
 
 Tests
 ---
