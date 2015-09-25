@@ -24,7 +24,9 @@
 				<param name="android-package" value="me.apla.cordova.AppPreferences"/>
 			</feature>
 		</config-file>
-
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<activity android:name="me.apla.cordova.AppPreferencesActivity" />
+		</config-file>
 		<source-file src="src/android/AppPreferences.java" target-dir="src/me/apla/cordova" />
 	</platform>
 
