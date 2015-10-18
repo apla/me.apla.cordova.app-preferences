@@ -21,7 +21,7 @@ module.exports = function (context) {
 		.then(settings.remove)
 		.catch(function(err) {
 			if (err.code === 'NEXIST') {
-				console.log("app-settings.json not found: skipping build");
+				console.log("app-settings.json not found: skipping clean");
 				return;
 			}
 			

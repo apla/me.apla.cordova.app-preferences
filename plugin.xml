@@ -18,6 +18,7 @@
 	<asset src="www/task/AppPreferences.js" target="task/AppPreferences.js" />
 	
 	<hook type="after_prepare" src="bin/after_prepare.js" />
+	<hook type="after_plugin_add" src="bin/after_plugin_add.js" />
 	<hook type="before_plugin_rm" src="bin/before_plugin_rm.js" />
 
 	<!-- android -->
