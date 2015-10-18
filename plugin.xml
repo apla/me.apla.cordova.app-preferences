@@ -2,7 +2,7 @@
 
 <plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
 	id="cordova-plugin-app-preferences"
-	version="0.7.1">
+	version="0.7.2">
 
 	<name>AppPreferences</name>
 	<description>Application preferences plugin and preference pane generator</description>
@@ -40,6 +40,19 @@
 
 		<header-file src="src/ios/AppPreferences.h" />
 		<source-file src="src/ios/AppPreferences.m" />
+
+	</platform>
+
+	<!-- osx -->
+	<platform name="osx">
+		<config-file target="config.xml" parent="/*">
+			<feature name="AppPreferences">
+				<param name="ios-package" value="AppPreferences"/>
+			</feature>
+		</config-file>
+
+		<header-file src="src/osx/AppPreferences.h" />
+		<source-file src="src/osx/AppPreferences.m" />
 
 	</platform>
 

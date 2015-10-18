@@ -1,12 +1,13 @@
 {
   "name": "cordova-plugin-app-preferences",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Application preferences plugin and preference pane generator",
   "cordova": {
 	"id": "cordova-plugin-app-preferences",
 	"platforms": [
 	  "android",
 	  "ios",
+	  "osx",
 	  "wp7",
 	  "wp8",
 	  "windows8",
@@ -27,6 +28,7 @@
 	"ecosystem:cordova",
 	"cordova-android",
 	"cordova-ios",
+	"cordova-osx",
 	"cordova-wp7",
 	"cordova-wp8",
 	"cordova-windows",
