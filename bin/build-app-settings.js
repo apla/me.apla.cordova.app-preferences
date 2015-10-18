@@ -34,13 +34,12 @@ var cordova_util, ConfigParser;
 var Q = require('q');
 var path = require('path');
 var fs = require('./lib/filesystem')(Q, require('fs'), path);
+var settings = require("./lib/settings")(fs, path),
 
 var android = require('./lib/android')(fs, path, require('elementtree'), cordova_util, ConfigParser);
 var ios = require('./lib/ios')(Q, fs, path, require('plist'), require('xcode'));
 
-return fs.exists('app-settings.json')
-	.then(function() { return fs.readFile('app-settings.json'); })
-	.then(JSON.parse)
+return settings.get()
 	.then(function (config) {
 		return Q.all([
 			android.build(config),

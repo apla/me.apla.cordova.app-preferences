@@ -6,13 +6,12 @@ module.exports = function (context) {
 		Q = req('q'),
 		path = req('path'),
 		fs = require("./lib/filesystem")(Q, req('fs'), path),
-		
+		settings = require("./lib/settings")(fs, path),
+
 		android = require("./lib/android")(fs, path, req('elementtree'), req('cordova-lib/src/cordova/util'), req('cordova-lib').configparser),
 		ios = require("./lib/ios")(Q, fs, path, req('plist'), req('xcode'));
 	
-    return fs.exists('app-settings.json')
-		.then(function() { return fs.readFile('app-settings.json'); })
-		.then(JSON.parse)
+    return settings.get()
 		.then(function (config) {
 			return Q.all([
 				android.build(config),

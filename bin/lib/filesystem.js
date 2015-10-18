@@ -72,6 +72,12 @@ module.exports = function(Q, fs, path) {
 		return defer.promise;
 	}
 	
+	function copy(src, dest) {
+		return readFile(src).then(function(content) {
+			return writeFile(dest, content);
+		});
+	}
+	
 	function unlink(dest) {
 		var defer = Q.defer();
 
@@ -120,6 +126,7 @@ module.exports = function(Q, fs, path) {
 		
 		readFile: readFile,
 		writeFile: writeFile,
+		copy: copy,
 		unlink: unlink,
 		
 		mkdir: mkdir,
