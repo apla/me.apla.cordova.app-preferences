@@ -72,6 +72,20 @@ module.exports = function(Q, fs, path) {
 		return defer.promise;
 	}
 	
+	function unlink(dest) {
+		var defer = Q.defer();
+
+		fs.unlink(dest, function (err) {
+			if (err) {
+				return defer.reject(err);
+			}
+			
+			defer.resolve();
+		});
+			
+		return defer.promise;
+	}
+	
 	function mkdir(dest) {
 		var defer = Q.defer();
 
@@ -86,11 +100,29 @@ module.exports = function(Q, fs, path) {
 		return defer.promise;
 	}
 	
+	function rmdir(dest) {
+		var defer = Q.defer();
+
+		fs.rmdir(dest, function (err) {
+			if (err) {
+				return defer.reject(err);
+			}
+			
+			defer.resolve();
+		});
+			
+		return defer.promise;
+	}
+	
 	return {
 		exists: exists,
 		find: find,
+		
 		readFile: readFile,
 		writeFile: writeFile,
-		mkdir: mkdir
+		unlink: unlink,
+		
+		mkdir: mkdir,
+		rmdir: rmdir
 	};
 };

@@ -178,9 +178,39 @@ module.exports = function (fs, path, ET, cordova_util, ConfigParser) {
 			});
 	}
 	
+	function clean(config) {
+		
+		return fs.exists('platforms/android')
+			// Remove preferences xml file
+			.then(function () { return fs.unlink('platforms/android/res/xml/apppreferences.xml'); })
+
+			// Remove localization resource file
+			.then(function (prefs) { return fs.unlink('platforms/android/res/xml/values/apppreferences.xml'); })
+			
+			// Remove preferences from native android project
+			.then(function (data) { 
+				var androidPackagePath = "me.apla.cordova".replace (/\./g, '/');
+				var activityFileName= path.join ('platforms/android/src', androidPackagePath, 'AppPreferencesActivity.java');
+				
+				return fs.unlink(activityFileName);
+			})
+			
+			.then(function () { console.log('android preferences file was successfully cleaned'); })
+			.catch(function (err) {
+				if (err.code === 'NEXIST') {
+					console.log("Platform android not found: skipping");
+					return;
+				}
+				
+				throw err;
+			});
+	}
+	
 	return {
 		mapConfig: mapConfig,
 		buildSettings: buildSettings,
-		build: build
+		
+		build: build,
+		clean: clean
 	};
 };

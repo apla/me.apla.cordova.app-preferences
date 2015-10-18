@@ -98,6 +98,21 @@ module.exports = function (Q, fs, path, plist, xcode) {
 		});
 	}
 	
+	function cleanXCode() {
+		return fs.find(platformDir, xcodeprojRegex).then(function(projPath) {
+			projPath = path.join(projPath, "project.pbxproj");
+			
+			return parseXCode(projPath)
+				.then(function (proj) { 
+					proj.removeResourceFile ('Settings.bundle'); 
+					return proj.writeSync(); 
+				})
+				.then(function (content) {
+					return fs.writeFile(projPath, content);
+				});
+		});
+	}
+	
 	function build(config) {
 		var plistXml = plist.build({ PreferenceSpecifiers: buildItems(config) });
 		
@@ -124,9 +139,37 @@ module.exports = function (Q, fs, path, plist, xcode) {
 			});
 	}
 	
+	function clean(config) {
+		return fs.exists('platforms/ios')
+			// Remove settings plist
+			.then(function () { return fs.unlink('platforms/ios/Settings.bundle/Root.plist'); })
+			
+			// Remove localization resource file
+			.then(function () { return fs.unlink('platforms/ios/Settings.bundle/en.lproj/Root.strings', '/* */'); })
+			
+			// Remove directories
+			.then(function () { return fs.rmdir('platforms/ios/Settings.bundle/en.lproj'); })
+			.then(function () { return fs.rmdir('platforms/ios/Settings.bundle'); })
+			
+			// Remove Settings plist from xcodeproj
+			.then(cleanXCode)
+			
+			.then(function () { console.log('ios settings bundle was successfully cleaned'); })
+			.catch(function (err) {
+				if (err.code === 'NEXIST') {
+					console.log("Platform ios not found: skipping");
+					return;
+				}
+				
+				throw err;
+			});
+	}
+	
 	return {
 		mapConfig: mapConfig,
 		buildItems: buildItems,
-		build: build
+		
+		build: build,
+		clean: clean
 	};
 };
