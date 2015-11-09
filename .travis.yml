@@ -8,6 +8,9 @@ install:
   - rm -rf node_modules/cordova-lib
   - git clone https://github.com/apla/cordova-lib -b patch-1
   - mv cordova-lib/cordova-lib node_modules/
+  - cd node_modules/cordova-lib
+  - npm install
+  - cd ../../
   - node_modules/.bin/cordova create app-preferences-app
   - cd app-preferences-app
   - ../node_modules/.bin/cordova platform add ios android
