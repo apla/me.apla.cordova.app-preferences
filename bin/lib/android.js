@@ -138,8 +138,7 @@ module.exports = function (fs, path, ET, cordova_util, ConfigParser) {
 		var settingsDocuments = buildSettings(config),
 			preferencesDocument = settingsDocuments.preferencesDocument,
 			preferencesStringDocument = settingsDocuments.preferencesStringDocument;
-	
-		
+
 		return fs.exists('platforms/android')
 			// Write preferences xml file
 			.then(function () { return fs.mkdir('platforms/android/res/xml'); })
@@ -155,16 +154,23 @@ module.exports = function (fs, path, ET, cordova_util, ConfigParser) {
 				var projectRoot = cordova_util.isCordova(process.cwd()),
 					projectXml = cordova_util.projectConfig(projectRoot),
 					projectConfig = new ConfigParser(projectXml);
-				
-				return ('package me.apla.cordova;\n\n' +
+
+				var activityFileContent = 'package me.apla.cordova;\n\n' +
 						'import ' + projectConfig.packageName() + '.R;\n\n' +
-						tmpl);
+						tmpl;			
+				return activityFileContent;
 			})
 			.then(function (data) { 
+
 				var androidPackagePath = "me.apla.cordova".replace (/\./g, '/');
-				var activityFileName= path.join ('platforms/android/src', androidPackagePath, 'AppPreferencesActivity.java');
+				var activityFileName = path.join ('platforms/android/src', androidPackagePath, 'AppPreferencesActivity.java');
 				
-				return fs.writeFile(activityFileName, data);
+				return fs.writeFile(activityFileName, data)
+					.catch(function(err) {
+						console.log(err);
+						console.log('Please create the file with this content:\n' + data);
+						return;
+					});
 			})
 			
 			.then(function () { console.log('android preferences file was successfully generated'); })
