@@ -13,8 +13,13 @@ install:
   - cd ../../
   - node_modules/.bin/cordova create app-preferences-app
   - cd app-preferences-app
+script:
   - ../node_modules/.bin/cordova platform add ios android
   - ../node_modules/.bin/cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
   - ../node_modules/.bin/cordova prepare
-script:
-  - cordova-paramedic --platform ios --plugin plugins/me.apla.cordova.app-preferences
+  - ../node_modules/.bin/cordova platform rm android
+  - ../node_modules/.bin/cordova platform add android
+  - ../node_modules/.bin/cordova plugin rm cordova-plugin-app-preferences
+  - ../node_modules/.bin/cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
+  - ../node_modules/.bin/cordova prepare
+

@@ -149,6 +149,19 @@ module.exports = function (fs, path, ET, cordova_util, ConfigParser) {
 			.then(function () { return fs.mkdir('platforms/android/res/xml/values'); })
 			.then(function (prefs) { return fs.writeFile('platforms/android/res/xml/values/apppreferences.xml', preferencesStringDocument.write()); })
 			
+			.then(function () { console.log('android preferences file was successfully generated'); })
+			.catch(function (err) {
+				if (err.code === 'NEXIST') {
+					console.log("Platform android not found: skipping");
+					return;
+				}
+				
+				throw err;
+			});
+	}
+	
+	function afterPluginInstall () {
+		return fs.exists('platforms/android')
 			// Import preferences into native android project
 			.then(function () { return fs.readFile(path.resolve(__dirname, '../../src/android/AppPreferencesActivity.template')); })
 			.then(function (tmpl) {
@@ -167,7 +180,6 @@ module.exports = function (fs, path, ET, cordova_util, ConfigParser) {
 				return fs.writeFile(activityFileName, data);
 			})
 			
-			.then(function () { console.log('android preferences file was successfully generated'); })
 			.catch(function (err) {
 				if (err.code === 'NEXIST') {
 					console.log("Platform android not found: skipping");
@@ -176,8 +188,9 @@ module.exports = function (fs, path, ET, cordova_util, ConfigParser) {
 				
 				throw err;
 			});
+
 	}
-	
+
 	function clean(config) {
 		
 		return fs.exists('platforms/android')
@@ -211,6 +224,7 @@ module.exports = function (fs, path, ET, cordova_util, ConfigParser) {
 		buildSettings: buildSettings,
 		
 		build: build,
+		afterPluginInstall: afterPluginInstall,
 		clean: clean
 	};
 };
