@@ -22,4 +22,17 @@ script:
   - ../node_modules/.bin/cordova plugin rm cordova-plugin-app-preferences
   - ../node_modules/.bin/cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
   - ../node_modules/.bin/cordova prepare
+  - rm platforms/ios/Settings.bundle/.me.apla.apppreferences
+  - ! ../node_modules/.bin/cordova prepare
+  - touch platforms/ios/Settings.bundle/.me.apla.apppreferences
+  - ../node_modules/.bin/cordova prepare
+  - ../node_modules/.bin/cordova plugin rm cordova-plugin-app-preferences
+  - ../node_modules/.bin/cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
+  - rm platforms/ios/Settings.bundle/.me.apla.apppreferences
+  - ../node_modules/.bin/cordova plugin rm cordova-plugin-app-preferences
+  - -f platforms/ios/Settings.bundle/Root.plist
+  - ../node_modules/.bin/cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
+  - touch platforms/ios/Settings.bundle/.me.apla.apppreferences
+  - ../node_modules/.bin/cordova prepare
+
 
