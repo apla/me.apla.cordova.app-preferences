@@ -1,0 +1,12 @@
+language: objective-c
+node_js:
+  - "0.10"
+install:
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - npm install -g cordova
+  - npm install -g purplecabbage/cordova-paramedic
+  - npm install -g ios-sim
+  - npm install
+  - npm link
+script:
+  - cordova-paramedic --platform ios --plugin ../me.apla.cordova.app-preferences
