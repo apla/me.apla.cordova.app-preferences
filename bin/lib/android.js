@@ -146,8 +146,8 @@ module.exports = function (fs, path, ET, cordova_util, ConfigParser) {
 			.then(function () { return fs.writeFile('platforms/android/res/xml/apppreferences.xml', preferencesDocument.write()); })
 
 			// Write localization resource file
-			.then(function () { return fs.mkdir('platforms/android/res/xml/values'); })
-			.then(function (prefs) { return fs.writeFile('platforms/android/res/xml/values/apppreferences.xml', preferencesStringDocument.write()); })
+			.then(function () { return fs.mkdir('platforms/android/res/values'); })
+			.then(function (prefs) { return fs.writeFile('platforms/android/res/values/apppreferences.xml', preferencesStringDocument.write()); })
 			
 			// Import preferences into native android project
 			.then(function () { return fs.readFile(path.resolve(__dirname, '../../src/android/AppPreferencesActivity.template')); })
@@ -185,7 +185,7 @@ module.exports = function (fs, path, ET, cordova_util, ConfigParser) {
 			.then(function () { return fs.unlink('platforms/android/res/xml/apppreferences.xml'); })
 
 			// Remove localization resource file
-			.then(function (prefs) { return fs.unlink('platforms/android/res/xml/values/apppreferences.xml'); })
+			.then(function (prefs) { return fs.unlink('platforms/android/res/values/apppreferences.xml'); })
 			
 			// Remove preferences from native android project
 			.then(function (data) { 
