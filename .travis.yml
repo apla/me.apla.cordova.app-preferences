@@ -7,6 +7,10 @@ install:
   - npm install ./cordova-lib/cordova-lib
   - rm -rf node_modules/cordova/node_modules/cordova-lib
   - (if [ -d app-preferences-app ] ; then rm -rf app-preferences-app ; fi)
+  - pwd
+  - ls -la
+  - ls -la node_modules
+  - ls -la node_modules/.bin
   - node_modules/.bin/cordova create app-preferences-app
 script:
   - echo running jasmine test
