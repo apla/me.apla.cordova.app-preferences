@@ -40,3 +40,6 @@ bin/node_modules
 .*~
 
 platforms
+app-preferences-app/
+node_modules/
+cordova-lib/
