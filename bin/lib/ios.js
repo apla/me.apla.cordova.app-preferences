@@ -89,7 +89,7 @@ module.exports = function (Q, fs, path, plist, xcode) {
 
 			return parseXCode(projPath)
 				.then(function (proj) {
-					proj.addResourceFile('Settings.bundle');
+					proj.addResourceFile('Settings.bundle', {sourceTree: "SOURCE_ROOT"});
 					return proj.writeSync();
 				})
 				.then(function (content) {
@@ -104,7 +104,7 @@ module.exports = function (Q, fs, path, plist, xcode) {
 
 			return parseXCode(projPath)
 				.then(function (proj) {
-					proj.removeResourceFile ('Settings.bundle');
+					proj.removeResourceFile ('Settings.bundle', {sourceTree: "SOURCE_ROOT"});
 					return proj.writeSync();
 				})
 				.then(function (content) {
