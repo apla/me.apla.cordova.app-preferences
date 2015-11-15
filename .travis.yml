@@ -2,7 +2,7 @@ language: objective-c
 node_js:
   - "0.10"
 install:
-  - npm update cordova q elementtree jasmine
+  - npm install
   - (if [ ! -d cordova-lib/cordova-lib ] ; then git clone https://github.com/apla/cordova-lib -b patch-1 ; fi)
   - npm install ./cordova-lib/cordova-lib
   - rm -rf node_modules/cordova/node_modules/cordova-lib
