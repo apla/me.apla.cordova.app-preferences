@@ -26,7 +26,8 @@
     "cordova": "^5.4.0",
     "q": "^1.4.1",
     "elementtree": "^0.1.6",
-    "jasmine": "^2.3.2"
+    "jasmine": "^2.3.2",
+    "plist": "1.1.0"
   },
   "keywords": [
     "preferences",
