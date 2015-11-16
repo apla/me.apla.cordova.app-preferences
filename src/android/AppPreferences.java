@@ -23,6 +23,7 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 	//    private static final int NO_PROPERTY = 0;
 	//    private static final int NO_PREFERENCE_ACTIVITY = 1;
 	private static final int COMMIT_FAILED = 2;
+	private static final int NULL_VALUE = 3;
 	private static CordovaWebView cdvWebView;
 	private static boolean watchChanges = false;
 
@@ -227,14 +228,27 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 			Editor editor = sharedPrefs.edit();
 			// editor.putString(key, value);
 
-			JSONTokener jt = new JSONTokener(value);
 			Object nv = null;
 			try {
+				JSONTokener jt = new JSONTokener(value);
 				nv = jt.nextValue();
+			} catch (NullPointerException e) {
+				e.printStackTrace();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			if(nv == null){
+				try {
+					callbackContext.error(createErrorObj(NULL_VALUE, "Error creating/getting json token"));
+					return;
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 			String className = nv.getClass().getName();
 
 			//      Log.d("", "value is: " + nv.toString() + " js type is: " + type + " " + args.toString());
