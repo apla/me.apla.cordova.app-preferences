@@ -130,7 +130,7 @@ module.exports = function (Q, fs, path, plist, xcode) {
 			.then(function () { return fs.writeFile('platforms/ios/Settings.bundle/en.lproj/Root.strings', '/* */'); })
 
 			// Add Settings plist to xcodeproj
-			.then(buildXCode)
+			.then(buildXCode())
 
 			.then(function () { console.log('ios settings bundle was successfully generated'); })
 			.catch(function (err) {
