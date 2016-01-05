@@ -303,11 +303,14 @@ successCallback, errorCallback
  * ```
  */
 AppPreferences.prototype.watch = platform.watch || function (
-	successCallback, errorCallback
+	successCallback, errorCallback, subscribe
 ) {
+	if (typeof subscribe === "undefined") {
+		subscribe = true;
+	}
 
 	var nativeExec = function (resolve, reject) {
-		return platform.nativeExec (resolve, reject, "AppPreferences", "watch", []);
+		return platform.nativeExec (resolve, reject, "AppPreferences", "watch", [subscribe]);
 	}
 
 	nativeExec (successCallback, errorCallback);

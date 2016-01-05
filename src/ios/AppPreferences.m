@@ -38,7 +38,7 @@
 	}
 
 	if (watchChanges) {
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultsChanged) name:NSUserDefaultsDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
 	} else {
 		[[NSNotificationCenter defaultCenter] removeObserver:self];
 	}
