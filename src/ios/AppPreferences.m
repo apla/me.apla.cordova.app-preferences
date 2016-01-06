@@ -21,7 +21,12 @@
 - (void)defaultsChanged:(NSNotification *)notification {
 
 	NSString * jsCallBack = [NSString stringWithFormat:@"cordova.fireDocumentEvent('preferencesChanged');"];
+
+#ifdef __CORDOVA_4_0_0
+	[self.webViewEngine evaluateJavaScript:jsCallBack completionHandler:nil];
+#else
 	[self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+#endif
 }
 
 
@@ -38,7 +43,7 @@
 	}
 
 	if (watchChanges) {
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultsChanged) name:NSUserDefaultsDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
 	} else {
 		[[NSNotificationCenter defaultCenter] removeObserver:self];
 	}
