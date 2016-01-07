@@ -102,7 +102,9 @@
 
 		if (settingsValue != nil) {
 			if ([settingsValue isKindOfClass:[NSString class]]) {
-				returnVar = [NSString stringWithFormat:@"\"%@\"", [(NSString*)settingsValue stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""]];
+				NSString *escaped = [(NSString*)settingsValue stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+				escaped = [escaped stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+				returnVar = [NSString stringWithFormat:@"\"%@\"", escaped];
 			} else if ([settingsValue isKindOfClass:[NSNumber class]]) {
 				if ([@YES isEqual:settingsValue]) {
 					returnVar = @"true";
