@@ -106,7 +106,7 @@
 
 		if (settingsValue != nil) {
 			if ([settingsValue isKindOfClass:[NSString class]]) {
-				returnVar = [NSString stringWithFormat:@"\"%@\"", (NSString*)settingsValue];
+				returnVar = [NSString stringWithFormat:@"\"%@\"", [(NSString*)settingsValue stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""]];
 			} else if ([settingsValue isKindOfClass:[NSNumber class]]) {
 				if ((NSNumber*)settingsValue == (void*)kCFBooleanFalse || (NSNumber*)settingsValue == (void*)kCFBooleanTrue) {
 					// const char * x = [(NSNumber*)settingsValue objCType];
