@@ -127,12 +127,12 @@ You can find preliminary version of settings generator in `bin/build-app-setting
 `npm install cordova-plugin-app-preferences`
 
 1. Copy example settings JSON to your project folder:
-`cp plugins/cordova-plugin-app-preferences/app-settings.json .`
+`cp node_modules/cordova-plugin-app-preferences/app-settings.json .`
 
 2. Edit JSON to include the controls you need...
 
 3. Generate settings resources with this command:
-`node plugins/cordova-plugin-app-preferences/bin/build-app-settings.js`
+`node node_modules/.bin/cordova-app-preferences-generator`
 
 4. Add generated Settings.bundle to your iOS project.
 
