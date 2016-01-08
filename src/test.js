@@ -6,7 +6,8 @@ var tests = {
 	"int-test": 1,
 	"zero-test": 0,
 	"string-test": "xxx",
-	"empty-string-test": "xxx",
+	"empty-string-test": "",
+	"string-with-quotes-test": "xx\"xx",
 	"obj-test": {a: "b"},
 	"arr-test": ["a", "b"],
 	"empty-arr-test": []

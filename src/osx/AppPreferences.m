@@ -102,27 +102,24 @@
 
 		if (settingsValue != nil) {
 			if ([settingsValue isKindOfClass:[NSString class]]) {
-				returnVar = [NSString stringWithFormat:@"\"%@\"", (NSString*)settingsValue];
+				NSString *escaped = [(NSString*)settingsValue stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+				escaped = [escaped stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+				returnVar = [NSString stringWithFormat:@"\"%@\"", escaped];
 			} else if ([settingsValue isKindOfClass:[NSNumber class]]) {
-				if ((NSNumber*)settingsValue == (void*)kCFBooleanFalse || (NSNumber*)settingsValue == (void*)kCFBooleanTrue) {
-					// const char * x = [(NSNumber*)settingsValue objCType];
-					// NSLog(@"boolean %@", [(NSNumber*)settingsValue boolValue] == NO ? @"false" : @"true");
-					returnVar = [NSString stringWithFormat:@"%@", [(NSNumber*)settingsValue boolValue] ? @"true": @"false"];
+				if ([@YES isEqual:settingsValue]) {
+					returnVar = @"true";
+				} else if ([@NO isEqual:settingsValue]) {
+					returnVar = @"false";
 				} else {
 					// TODO: int, float
-					// NSLog(@"number");
 					returnVar = [NSString stringWithFormat:@"%@", (NSNumber*)settingsValue];
 				}
-
 			} else if ([settingsValue isKindOfClass:[NSData class]]) { // NSData
 				returnVar = [[NSString alloc] initWithData:(NSData*)settingsValue encoding:NSUTF8StringEncoding];
 			}
 		} else {
 			// TODO: also submit dict
 			returnVar = [self getSettingFromBundle:settingsName]; //Parsing Root.plist
-
-			// if (returnVar == nil)
-			// @throw [NSException exceptionWithName:nil reason:@"Key not found" userInfo:nil];;
 		}
 
 		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnVar];
