@@ -136,8 +136,12 @@ for (var testK in tests) {
 }
 
 setTimeout (function () {
-	console.log (pass + ' tests passed');
-	if (fail && fail.length)
-		console.error ('tests failed:', fail);
+	var prompt = 'AppPreferences plugin tests';
+
+	if (fail && fail.length) {
+		console.error ('%s passed: %d, failed: %d', prompt, pass, fail);
+	} else {
+		console.log ('%s all passed: %d', pass);
+	}
 }, 1000);
 }

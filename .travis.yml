@@ -3,9 +3,9 @@ node_js:
   - "0.10"
 install:
   - npm install
-  - (if [ ! -d cordova-lib/cordova-lib ] ; then git clone https://github.com/apla/cordova-lib -b patch-1 ; fi)
-  - npm install ./cordova-lib/cordova-lib
-  - rm -rf node_modules/cordova/node_modules/cordova-lib
+#  - (if [ ! -d cordova-lib/cordova-lib ] ; then git clone https://github.com/apla/cordova-lib -b patch-1 ; fi)
+#  - npm install ./cordova-lib/cordova-lib
+#  - rm -rf node_modules/cordova/node_modules/cordova-lib
   - (if [ -d app-preferences-app ] ; then rm -rf app-preferences-app ; fi)
   - pwd
   - ls -la
@@ -47,8 +47,16 @@ script:
   - ../node_modules/.bin/cordova plugin rm cordova-plugin-app-preferences
   - (if [ -f platforms/ios/Settings.bundle/Root.plist ]; then exit 0 ; fi)
   - ../node_modules/.bin/cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
+  - ../node_modules/.bin/cordova plugin add cordova-plugin-console
   - touch platforms/ios/Settings.bundle/.me.apla.apppreferences
-  - ../node_modules/.bin/cordova prepare
+  - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
+  - echo 'document.addEventListener("deviceready", testPlugin, false);' >> www/js/apppreferences-test.js
+  - perl -i -pe 's/\Qindex.js"><\/script>\E/index.js" data-processed><\/script>\n        <script type="text\/javascript" src="js\/apppreferences-test.js"><\/script>/i' www/index.html
+  - ../node_modules/.bin/cordova build --debug --emulator ios
+  - (if [ -f ./console.log ]; then rm ./console.log ; fi)
+  - ios-sim launch ./platforms/ios/build/emulator/HelloCordova.app --log ./console.log --devicetypeid iPhone-6
+  - sleep 10
+  - grep 'AppPreferences plugin tests all passed' ./console.log
 after_script:
   - cd ..
   - echo rm -rf node_modules
