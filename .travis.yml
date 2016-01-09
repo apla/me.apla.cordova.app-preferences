@@ -63,8 +63,10 @@ script:
   - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
   - echo 'document.addEventListener("deviceready", testPlugin, false);' >> www/js/apppreferences-test.js
   - perl -i -pe 's/\Qindex.js"><\/script>\E/index.js" data-processed><\/script>\n        <script type="text\/javascript" src="js\/apppreferences-test.js"><\/script>/i' www/index.html
-  - cordova build --debug --emulator ios
+  - cordova -d build --debug --emulator ios
   - (if [ -f ./console.log ]; then rm ./console.log ; fi)
+  - ls -la ./platforms/ios/build/
+  - ls -la ./platforms/ios/build/emulator
   - ios-sim launch ./platforms/ios/build/emulator/HelloCordova.app --log ./console.log --devicetypeid iPhone-6
   - sleep 10
   - grep 'AppPreferences plugin tests all passed' ./console.log
