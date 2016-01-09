@@ -54,7 +54,7 @@ script:
   - perl -i -pe 's/\Qindex.js"><\/script>\E/index.js" data-processed><\/script>\n        <script type="text\/javascript" src="js\/apppreferences-test.js"><\/script>/i' www/index.html
   - ../node_modules/.bin/cordova build --debug --emulator ios
   - (if [ -f ./console.log ]; then rm ./console.log ; fi)
-  - ios-sim launch ./platforms/ios/build/emulator/HelloCordova.app --log ./console.log --devicetypeid iPhone-6
+  - ../node_modules/.bin/ios-sim launch ./platforms/ios/build/emulator/HelloCordova.app --log ./console.log --devicetypeid iPhone-6
   - sleep 10
   - grep 'AppPreferences plugin tests all passed' ./console.log
 after_script:
