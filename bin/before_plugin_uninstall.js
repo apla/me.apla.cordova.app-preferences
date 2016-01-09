@@ -2,16 +2,16 @@
 
 module.exports = function (context) {
 	var req = context.requireCordovaModule,
-		
+
 		Q = req('q'),
 		path = req('path'),
 		fs = require("./lib/filesystem")(Q, req('fs'), path),
 		settings = require("./lib/settings")(fs, path),
-		
-		android = require("./lib/android")(fs, path, req('elementtree'), req('cordova-lib/src/cordova/util'), req('cordova-lib').configparser),
+
+		android = require("./lib/android")(context),
 		ios = require("./lib/ios")(Q, fs, path, req('plist'), req('xcode'));
-	
-    return settings.get()
+
+	return settings.get()
 		.then(function (config) {
 			return Q.all([
 				android.clean(config),
@@ -24,7 +24,7 @@ module.exports = function (context) {
 				console.log("app-settings.json not found: skipping clean");
 				return;
 			}
-			
+
 			throw err;
 		});
 };

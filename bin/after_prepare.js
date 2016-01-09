@@ -4,11 +4,15 @@ module.exports = function (context) {
 	var req = context.requireCordovaModule,
 		Q = req('q'),
 		path = req('path'),
+		ET = req('elementtree'),
+		cordova = req('cordova'),
+		cordova_lib = cordova.cordova_lib,
+		cordova_lib_util = req('cordova-lib/src/cordova/util'),
 		fs = require("./lib/filesystem")(Q, req('fs'), path),
 		settings = require("./lib/settings")(fs, path),
 		platforms = {};
 
-	platforms.android = require("./lib/android")(fs, path, req('elementtree'), req('cordova-lib/src/cordova/util'), req('cordova-lib').configparser);
+	platforms.android = require("./lib/android")(context);
 	platforms.ios = require("./lib/ios")(Q, fs, path, req('plist'), req('xcode'));
 
 	return settings.get()
