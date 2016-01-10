@@ -20,7 +20,6 @@ module.exports = function (context) {
 			var promises = [];
 			context.opts.platforms.forEach (function (platformName) {
 				if (platforms[platformName] && platforms[platformName].build) {
-					console.log ("added %s", platformName);
 					promises.push (platforms[platformName].build (config));
 				}
 			});
@@ -31,8 +30,6 @@ module.exports = function (context) {
 				console.log("app-settings.json not found: skipping build");
 				return;
 			}
-
-			console.log ('unhandled exception', err);
 
 			throw err;
 		});
