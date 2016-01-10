@@ -74,16 +74,13 @@ module.exports = function (Q, fs, path, plist, xcode) {
 		var defer = Q.defer(),
 			proj = xcode.project(projPath);
 
-		console.log ("before xcodeproj parse");
+		try {
+			proj.parseSync();
+		} catch (err) {
+			return Q.reject(new Error('An error occured during parsing of project.pbxproj. Start weeping. Output: ' + err));
+		}
 
-		proj.parse(function (err) {
-			console.log ("xcodeproj parse err", err);
-			err ?
-				defer.reject(err) :
-				defer.resolve(proj);
-		});
-
-		return defer.promise;
+		return Q();
 	}
 
 	function buildXCode() {
