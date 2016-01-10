@@ -71,16 +71,11 @@ module.exports = function (Q, fs, path, plist, xcode) {
 	}
 
 	function parseXCode(projPath) {
-		var defer = Q.defer(),
-			proj = xcode.project(projPath);
+		var proj = xcode.project(projPath);
 
-		try {
-			proj.parseSync();
-		} catch (err) {
-			return Q.reject(new Error('An error occured during parsing of project.pbxproj. Start weeping. Output: ' + err));
-		}
+		proj.parseSync();
 
-		return Q();
+		return proj;
 	}
 
 	function buildXCode() {
@@ -88,20 +83,12 @@ module.exports = function (Q, fs, path, plist, xcode) {
 		return fs.find(platformDir, xcodeprojRegex).then(function(projPath) {
 			projPath = path.join(projPath, "project.pbxproj");
 
-			console.log ('found project file:', projPath);
+			var xcproj = parseXCode (projPath);
+			xcproj.addResourceFile('Settings.bundle', {sourceTree: "SOURCE_ROOT"});
+			var contents = xcproj.writeSync();
 
-			return parseXCode(projPath)
-				.then(function (proj) {
-					console.log ('project file parsed');
-					proj.addResourceFile('Settings.bundle', {sourceTree: "SOURCE_ROOT"});
-					return proj.writeSync();
-				})
-				.then(function (content) {
-					console.log ('project file updated');
-					return fs.writeFile(projPath, content);
-				}).catch (function (err) {
-					console.log ('something went wrong with xcodeproj');
-				});
+			return fs.writeFile(projPath, contents);
+
 		});
 	}
 
@@ -109,14 +96,12 @@ module.exports = function (Q, fs, path, plist, xcode) {
 		return fs.find(platformDir, xcodeprojRegex).then(function(projPath) {
 			projPath = path.join(projPath, "project.pbxproj");
 
-			return parseXCode(projPath)
-				.then(function (proj) {
-					proj.removeResourceFile ('Settings.bundle', {sourceTree: "SOURCE_ROOT"});
-					return proj.writeSync();
-				})
-				.then(function (content) {
-					return fs.writeFile(projPath, content);
-				});
+			var xcproj = parseXCode (projPath);
+			xcproj.removeResourceFile ('Settings.bundle', {sourceTree: "SOURCE_ROOT"});
+			var contents = xcproj.writeSync();
+
+			return fs.writeFile(projPath, contents);
+
 		});
 	}
 
