@@ -1,6 +1,6 @@
 language: objective-c
-# trying to fix "Invalid Device State"
-# osx_image: xcode7
+# xcode 6 still "Invalid Device State"
+osx_image: xcode7
 node_js:
   - "0.10"
 before_install:
@@ -14,6 +14,9 @@ before_install:
 # TODO: install android sdk
 install:
   - (if [ ! -d node_modules ] ; then npm install ; fi)
+# xcode version 0.8.0 is not compatible with node 4.x and later
+  - rm -rf node_modules/xcode
+  - npm install xcode
 #  - (if [ ! -d cordova-lib/cordova-lib ] ; then git clone https://github.com/apla/cordova-lib -b patch-1 ; fi)
 #  - npm install ./cordova-lib/cordova-lib
 #  - rm -rf node_modules/cordova/node_modules/cordova-lib
@@ -35,6 +38,7 @@ script:
   - cd app-preferences-app
   - cordova platform add ios android
   - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
+  - (if [ ! -f app-settings.json ]; then exit 0; fi)
   - cordova prepare
   - echo plugin must be ok without platforms installed
   - cordova platform rm android
@@ -67,13 +71,12 @@ script:
   - cordova -d prepare
   - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
   - echo 'document.addEventListener("deviceready", testPlugin, false);' >> www/js/apppreferences-test.js
-  - patch -p0 <plugins/cordova-plugin-app-preferences/src/test.patch
+  - patch -p0 -i plugins/cordova-plugin-app-preferences/src/test.patch
   - cordova -d prepare
   - cordova -d build --debug --emulator ios
   - (if [ -f ./console.log ]; then rm ./console.log ; fi)
-  - ls -la ./platforms/ios/build/
-  - ls -la ./platforms/ios/build/emulator
-  - ios-sim launch ./platforms/ios/build/emulator/HelloCordova.app --log ./console.log --devicetypeid iPhone-6
+#  - (killall Simulator; sleep 1)
+  - ios-sim launch ./platforms/ios/build/emulator/HelloCordova.app --log ./console.log --devicetypeid iPhone-6 --exit
   - sleep 10
   - grep 'AppPreferences plugin tests all passed' ./console.log
 after_script:
