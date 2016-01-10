@@ -18,8 +18,8 @@ var serveMe = ServeMe ({
 
 serveMe.start(50000, function(){
 	exec(cmd, function callback(error, stdout, stderr){
-		console.log ("command done");
-		// setTimeout (function () {process.exit(1)}, 20000);
+		console.log ("cmd done: ", cmd);
+		setTimeout (function () {process.exit(1)}, 20000);
 	});
 });
 
