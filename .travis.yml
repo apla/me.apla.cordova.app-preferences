@@ -15,7 +15,8 @@ before_install:
 install:
   - (if [ ! -d node_modules ] ; then npm install ; fi)
 # xcode version 0.8.0 is not compatible with node 4.x and later
-  - rm -rf node_modules/xcode
+  - find node_modules -type d -name xcode
+  - find node_modules -type d -name xcode | grep node_modules/xcode | xargs rm -rf
   - npm install xcode
 #  - (if [ ! -d cordova-lib/cordova-lib ] ; then git clone https://github.com/apla/cordova-lib -b patch-1 ; fi)
 #  - npm install ./cordova-lib/cordova-lib
