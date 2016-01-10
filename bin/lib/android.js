@@ -207,6 +207,9 @@ module.exports = function (context) {
 
 	function clean(config) {
 
+		var androidPackagePath = "me.apla.cordova".replace (/\./g, '/');
+		var activityFileName = path.join ('platforms/android/src', androidPackagePath, 'AppPreferencesActivity.java');
+
 		return fs.exists('platforms/android')
 			// Remove preferences xml file
 			.then(function () { return fs.unlink('platforms/android/res/xml/apppreferences.xml'); })
@@ -216,9 +219,6 @@ module.exports = function (context) {
 
 			// Remove preferences from native android project
 			.then(function (data) {
-				var androidPackagePath = "me.apla.cordova".replace (/\./g, '/');
-				var activityFileName= path.join ('platforms/android/src', androidPackagePath, 'AppPreferencesActivity.java');
-
 				return fs.unlink(activityFileName);
 			})
 
@@ -226,6 +226,9 @@ module.exports = function (context) {
 			.catch(function (err) {
 				if (err.code === 'NEXIST') {
 					console.log("Platform android not found: skipping");
+					return;
+				} else if (err.code === 'ENOENT' && err.path === activityFileName) {
+					// Activity not generated, that's fine
 					return;
 				}
 

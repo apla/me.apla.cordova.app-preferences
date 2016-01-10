@@ -61,9 +61,11 @@ script:
   - cordova plugin add cordova-plugin-console
   - touch platforms/ios/Settings.bundle/.me.apla.apppreferences
 # prepare and launch ios simulator to test preferences access on ios
+  - cordova -d prepare
   - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
   - echo 'document.addEventListener("deviceready", testPlugin, false);' >> www/js/apppreferences-test.js
   - patch -p0 <plugins/cordova-plugin-app-preferences/src/test.patch
+  - cordova -d prepare
   - cordova -d build --debug --emulator ios
   - (if [ -f ./console.log ]; then rm ./console.log ; fi)
   - ls -la ./platforms/ios/build/
