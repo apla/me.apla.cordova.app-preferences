@@ -84,16 +84,23 @@ module.exports = function (Q, fs, path, plist, xcode) {
 	}
 
 	function buildXCode() {
+		console.log ('searching for xcodeproj:', process.cwd(), platformDir, xcodeprojRegex);
 		return fs.find(platformDir, xcodeprojRegex).then(function(projPath) {
 			projPath = path.join(projPath, "project.pbxproj");
 
+			console.log ('found project file:', projPath);
+
 			return parseXCode(projPath)
 				.then(function (proj) {
+					console.log ('project file parsed');
 					proj.addResourceFile('Settings.bundle', {sourceTree: "SOURCE_ROOT"});
 					return proj.writeSync();
 				})
 				.then(function (content) {
+					console.log ('project file updated');
 					return fs.writeFile(projPath, content);
+				}).catch (function (err) {
+					console.log ('something went wrong with xcodeproj');
 				});
 		});
 	}
