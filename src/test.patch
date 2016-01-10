@@ -1,0 +1,11 @@
+--- www/index.html	2016-01-10 02:46:31.000000000 +0300
++++ www/index.html	2016-01-10 02:46:05.000000000 +0300
+@@ -44,6 +44,7 @@
+             </div>
+         </div>
+         <script type="text/javascript" src="cordova.js"></script>
+-        <script type="text/javascript" src="js/index.js"></script>
++        <script type="text/javascript" src="js/index.js" data-processed></script>
++        <script type="text/javascript" src="js/apppreferences-test.js"></script>
+     </body>
+ </html>

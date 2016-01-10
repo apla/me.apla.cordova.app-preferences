@@ -1,9 +1,7 @@
-var commonHelper = require("./helpers/common");
-var fs = require("../lib/filesystem")(require("q"), require("fs"));
-var android = require("../lib/android")(fs, require("path"), require("elementtree"), commonHelper.createCordovaUtil());
+var android = require("../lib/android")();
 
 describe("android functions", function() {
-	
+
 	it("exists", function() {
 		expect(android).not.toBeNull();
 	});
