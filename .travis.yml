@@ -40,7 +40,12 @@ script:
   - cordova platform add ios android
   - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
   - (if [ ! -f app-settings.json ]; then exit 0; fi)
+  - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
+  - echo 'document.addEventListener("deviceready", testPluginAndCallback, false);' >> www/js/apppreferences-test.js
+  - patch -p0 -i plugins/cordova-plugin-app-preferences/src/test.patch
   - cordova prepare
+  - cordova -d build --debug --emulator ios
+  - node ../bin/test-server.js ios
   - echo plugin must be ok without platforms installed
   - cordova platform rm android
   - cordova prepare
@@ -70,16 +75,6 @@ script:
   - touch platforms/ios/Settings.bundle/.me.apla.apppreferences
 # prepare and launch ios simulator to test preferences access on ios
   - cordova -d prepare
-  - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
-  - echo 'document.addEventListener("deviceready", testPlugin, false);' >> www/js/apppreferences-test.js
-  - patch -p0 -i plugins/cordova-plugin-app-preferences/src/test.patch
-  - cordova -d prepare
-  - cordova -d build --debug --emulator ios
-  - (if [ -f ./console.log ]; then rm ./console.log ; fi)
-#  - (killall Simulator; sleep 1)
-  - ios-sim launch ./platforms/ios/build/emulator/HelloCordova.app --log ./console.log --devicetypeid iPhone-6 --exit
-  - sleep 10
-  - grep 'AppPreferences plugin tests all passed' ./console.log
 after_script:
   - cd ..
   - echo rm -rf node_modules

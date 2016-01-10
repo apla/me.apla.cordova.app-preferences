@@ -1,4 +1,4 @@
-function testPlugin () {
+function testPlugin (cb) {
 var tests = {
 	"bool-test": true,
 	"false-test": false,
@@ -143,5 +143,17 @@ setTimeout (function () {
 	} else {
 		console.log ('%s all passed: %d', pass);
 	}
+
+	cb && cb (pass, fail);
 }, 1000);
+}
+
+function testPluginAndCallback () {
+	testPlugin (function (pass, fail) {
+		if (fail) {
+			location.href = "/test/fail";
+		} else {
+			location.href = "/test/success";
+		}
+	});
 }

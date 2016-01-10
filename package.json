@@ -23,12 +23,13 @@
     "cordova-app-preferences-generator": "bin/build-app-settings.js"
   },
   "devDependencies": {
-    "ios-sim": ">=5.0.5",
     "cordova": ">=5.4.1",
-    "q": "^1.4.1",
     "elementtree": "^0.1.6",
+    "ios-sim": ">=5.0.5",
     "jasmine": "^2.3.2",
-    "plist": "1.1.0"
+    "plist": "1.1.0",
+    "q": "^1.4.1",
+    "serve-me": "^0.8.2"
   },
   "keywords": [
     "preferences",

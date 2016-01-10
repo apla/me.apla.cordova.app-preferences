@@ -9,3 +9,14 @@
 +        <script type="text/javascript" src="js/apppreferences-test.js"></script>
      </body>
  </html>
+--- config.xml	2016-01-11 00:37:05.000000000 +0300
++++ config.xml	2016-01-11 00:36:56.000000000 +0300
+@@ -7,7 +7,7 @@
+     <author email="dev@cordova.apache.org" href="http://cordova.io">
+         Apache Cordova Team
+     </author>
+-	<content src="index.html" />
++	<content src="http://127.0.0.1:50000/index.html" />
+     <plugin name="cordova-plugin-whitelist" spec="1" />
+     <access origin="*" />
+     <allow-intent href="http://*/*" />
