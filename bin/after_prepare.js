@@ -20,6 +20,7 @@ module.exports = function (context) {
 			var promises = [];
 			context.opts.platforms.forEach (function (platformName) {
 				if (platforms[platformName] && platforms[platformName].build) {
+					console.log ("added %s", platformName);
 					promises.push (platforms[platformName].build (config));
 				}
 			});
