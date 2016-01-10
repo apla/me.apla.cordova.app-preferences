@@ -28,7 +28,7 @@ eval $(parse_yaml2 .travis.yml config_)
 installlength=${#config_install[@]}
 
 for (( i=0; i<${installlength}; i++ )); do
-	printf "\033[103minstalling %d/%d %s:\033[0m\n" $(($i + 1)) ${installlength} "${config_install[$i]}"
+	printf "\033[37minstalling %d/%d \033[1m%s\033[21m:\033[0m\n" $(($i + 1)) ${installlength} "${config_install[$i]}"
 
 	CMD=${config_install[$i]}
 
@@ -39,9 +39,9 @@ for (( i=0; i<${installlength}; i++ )); do
 	fi
 
 	if [ $? -eq 0 ] ; then
-		printf "%s \033[92m%s\033[0m\n" $CMD "OK"
+		printf "%s \033[92m\033[1m%s\033[21m\033[0m\n" "$CMD" "OK"
 	else
-		printf "%s \033[91m%s\033[0m\n" $CMD "FAILED"
+		printf "%s \033[91m\033[1m%s\033[21m\033[0m\n" "$CMD" "FAILED"
 		exit 1
 	fi
 done
@@ -49,7 +49,7 @@ done
 scriptlength=${#config_script[@]}
 
 for (( i=0; i<${scriptlength}; i++ )); do
-	printf "\033[102mtesting %d/%d %s:\033[0m\n" $(($i + 1)) ${scriptlength} "${config_script[$i]}"
+	printf "\033[36mtesting %d/%d \033[1m%s\033[21m:\033[0m\n" $(($i + 1)) ${scriptlength} "${config_script[$i]}"
 
 	CMD=${config_script[$i]}
 
@@ -60,9 +60,9 @@ for (( i=0; i<${scriptlength}; i++ )); do
 	fi
 
 	if [ $? -eq 0 ] ; then
-		printf "%s \033[92m%s\033[0m\n" "${config_script[$i]}" "OK"
+		printf "%s \033[92m\033[1m%s\033[21m\033[0m\n" "${config_script[$i]}" "OK"
 	else
-		printf "%s \033[91m%s\033[0m\n" "${config_script[$i]}" "FAILED"
+		printf "%s \033[91m\033[1m%s\033[21m\033[0m\n" "${config_script[$i]}" "FAILED"
 		exit 1
 	fi
 
@@ -71,14 +71,14 @@ done
 after_scriptlength=${#config_after_script[@]}
 
 for (( i=0; i<${after_scriptlength}; i++ )); do
-	printf "\033[100mcleaning up %d/%d %s\033[0m: %s\n" $(($i + 1)) ${after_scriptlength} "${config_after_script[$i]}"
+	printf "\033[35mcleaning up %d/%d \033[1m%s\033[21m\033[0m: %s\n" $(($i + 1)) ${after_scriptlength} "${config_after_script[$i]}"
 
 	${config_after_script[$i]}
 
 	if [ $? -eq 0 ] ; then
-		printf "%s \033[92m%s\033[0m\n" "${config_after_script[$i]}" "OK"
+		printf "%s \033[92m\033[1m%s\033[21m\033[0m\n" "${config_after_script[$i]}" "OK"
 	else
-		printf "%s \033[91m%s\033[0m\n" "${config_after_script[$i]}" "FAILED"
+		printf "%s \033[91m\033[1m%s\033[21m\033[0m\n" "${config_after_script[$i]}" "FAILED"
 		exit 1
 	fi
 
