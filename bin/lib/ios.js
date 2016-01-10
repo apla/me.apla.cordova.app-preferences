@@ -74,7 +74,10 @@ module.exports = function (Q, fs, path, plist, xcode) {
 		var defer = Q.defer(),
 			proj = xcode.project(projPath);
 
+		console.log ("before xcodeproj parse");
+
 		proj.parse(function (err) {
+			console.log ("xcodeproj parse err", err);
 			err ?
 				defer.reject(err) :
 				defer.resolve(proj);
