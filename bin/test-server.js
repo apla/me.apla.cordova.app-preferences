@@ -12,20 +12,27 @@ if (process.argv[2] === 'ios') {
 var serveMe = ServeMe ({
 	debug: true,
 	log: true,
-	directory: "./www",
+	directory: dir,
 	secure: false
 });
 
 serveMe.start(50000, function(){
 	exec(cmd, function callback(error, stdout, stderr){
-		setTimeout (function () {process.exit(1)}, 20000);
+		console.log ("command done");
+		// setTimeout (function () {process.exit(1)}, 20000);
 	});
 });
 
+serveMe.on("http_request", function(data){
+	// console.log("http request", data);
+});
+
 serveMe.get ("/test/success", function(){
+	console.log ("test success");
 	process.exit ();
 });
 
-serveMe.get ("/test/fail", function(){
+serveMe.get ("/test/fail", function (req, res){
+	console.log ("test failures: ", req.url);
 	process.exit (1);
 });

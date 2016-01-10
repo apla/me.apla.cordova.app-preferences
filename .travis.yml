@@ -41,7 +41,6 @@ script:
   - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
   - (if [ ! -f app-settings.json ]; then exit 0; fi)
   - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
-  - echo 'document.addEventListener("deviceready", testPluginAndCallback, false);' >> www/js/apppreferences-test.js
   - patch -p0 -i plugins/cordova-plugin-app-preferences/src/test.patch
   - cordova prepare
   - cordova -d build --debug --emulator ios

@@ -141,7 +141,7 @@ setTimeout (function () {
 	if (fail && fail.length) {
 		console.error ('%s passed: %d, failed: %d', prompt, pass, fail);
 	} else {
-		console.log ('%s all passed: %d', pass);
+		console.log ('%s — all %d passed', prompt, pass);
 	}
 
 	cb && cb (pass, fail);
@@ -150,8 +150,8 @@ setTimeout (function () {
 
 function testPluginAndCallback () {
 	testPlugin (function (pass, fail) {
-		if (fail) {
-			location.href = "/test/fail";
+		if (fail.length) {
+			location.href = "/test/fail?" + fail.join (';');
 		} else {
 			location.href = "/test/success";
 		}
