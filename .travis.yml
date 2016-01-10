@@ -8,6 +8,7 @@ before_install:
 #  - export ANDROID_SDK=$ANDROID_HOME
 #  - export PATH=$(pwd)/node_modules/.bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${PATH}
   - export PATH=$(pwd)/node_modules/.bin:${PATH}
+  - export NODE_PATH=$(pwd)/node_modules:$(pwd)/node_modules/cordova/node_modules:$NODE_PATH
 # TODO: install android sdk
 install:
   - (if [ ! -d node_modules ] ; then npm install ; fi)
