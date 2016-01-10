@@ -22,6 +22,8 @@ module.exports = function (context) {
 				return settings.create();
 			}
 
+			console.log ('unhandled exception', err);
+
 			throw err;
 		});
 };
