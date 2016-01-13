@@ -4,6 +4,7 @@
 
 machine:
   environment:
+    ANDROID_HOME: /usr/local/android-sdk-linux
     ANDROID_NDK_HOME: $ANDROID_NDK
     NODE_ENV: test
     NODE_PATH: $NODE_PATH:$HOME/$CIRCLE_PROJECT_REPONAME/node_modules:$HOME/$CIRCLE_PROJECT_REPONAME/node_modules/cordova/node_modules
@@ -13,10 +14,6 @@ dependencies:
   override:
     - npm install
     - cordova create app-preferences-app
-
-machine:
-  environment:
-    ANDROID_HOME: /usr/local/android-sdk-linux
 
 #dependencies:
 #  override:
