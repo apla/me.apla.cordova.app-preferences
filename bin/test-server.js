@@ -7,7 +7,8 @@ var dir = './www';
 var cmd = '';
 var cmdPrepare = '';
 var host = '';
-var confFile = 'config.xml';
+// var confFile = 'config.xml';
+var confFile   = 'www/js/apppreferences-test.js'
 
 if (process.argv[2] === 'ios') {
 	dir        = './platforms/ios/www';
