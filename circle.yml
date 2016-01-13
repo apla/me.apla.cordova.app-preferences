@@ -24,21 +24,21 @@ test:
   override:
     - echo running jasmine test
     - jasmine:
-      pwd: $HOME/$CIRCLE_PROJECT_REPONAME/bin
+        pwd: $HOME/$CIRCLE_PROJECT_REPONAME/bin
     - echo test plugin within cordova app
     - cordova platform add android:
-      pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
+        pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
     - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences:
-      pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
+        pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
     - (if [ ! -f app-settings.json ]; then exit 0; fi):
-      pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
+        pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
     - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js:
-      pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
+        pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
     - patch -p0 -i plugins/cordova-plugin-app-preferences/src/test.patch:
-      pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
+        pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
     - cordova prepare:
-      pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
+        pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
     - cordova -d build --debug --emulator android:
-      pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
+        pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
     - node ../bin/test-server.js android:
-      pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
+        pwd: $HOME/$CIRCLE_PROJECT_REPONAME/app-preferences-app
