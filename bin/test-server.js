@@ -26,7 +26,7 @@ if (process.argv[2] === 'ios') {
 	}
 } else if (process.argv[2] === 'windows') {
 	dir        = './platforms/windows/www';
-	cmd        = 'cordova emulate windows';
+	cmd        = 'runas /trustlevel:0x20000 "cordova emulate windows"';
 	cmdPrepare = 'cordova prepare windows';
 	host       = '127.0.0.1';
 	confFile   = 'www/windows.html'
