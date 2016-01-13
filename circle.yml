@@ -21,6 +21,11 @@ dependencies:
 #    - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
 
 test:
+  pre:
+    - emulator -avd circleci-android22 -no-audio -no-window:
+        background: true
+        parallel: true
+    - circle-android wait-for-boot
   override:
     - echo running jasmine test
     - jasmine:
@@ -40,5 +45,5 @@ test:
         pwd: app-preferences-app
     - cordova -d build --debug --emulator android:
         pwd: app-preferences-app
-#    - node ../bin/test-server.js android:
-#        pwd: app-preferences-app
+    - node ../bin/test-server.js android circleci-android22:
+        pwd: app-preferences-app

@@ -8,6 +8,7 @@
 install:
   - SET PATH=%CD%\node_modules\.bin;%PATH%
   - SET NODE_PATH=%CD%\node_modules;%CD%\node_modules\cordova\node_modules;%NODE_PATH%
+  - SET __COMPAT_LAYER=RunAsInvoker
   - npm install
   - cordova create app-preferences-app
 

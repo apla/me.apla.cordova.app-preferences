@@ -20,6 +20,10 @@ if (process.argv[2] === 'ios') {
 	cmd        = 'cordova emulate android';
 	cmdPrepare = 'cordova prepare android';
 	host       = '10.0.2.2';
+
+	if (process.argv[3]) {
+		cmdPrepare += "--target=" + process.argv[3];
+	}
 } else if (process.argv[2] === 'windows') {
 	dir        = './platforms/windows/www';
 	cmd        = 'cordova emulate windows';
