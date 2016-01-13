@@ -13,7 +13,9 @@ Why you should use this plugin?
 
 For Cordova 3+
 
-![Build status](https://travis-ci.org/apla/me.apla.cordova.app-preferences.svg)
+![iOS status](https://travis-ci.org/apla/me.apla.cordova.app-preferences.svg)
+![Android status](https://circleci.com/gh/apla/me.apla.cordova.app-preferences.svg?&style=shield&circle-token=f3e5e46c1a698c62f0450bf1d25a3694d4f714c6)
+![Windows status](https://ci.appveyor.com/api/projects/status/gl3qxq2o728sqbev?svg=true)
 
 Upgrade
 ---
@@ -109,7 +111,11 @@ Tests
 ---
 Tests are available in `src/test.js`. After installing plugin you can add test code from this file and then launch `testPlugin()` function.
 
-iOS, Android, BlackBerry 10 and Windows Phone 8 tests pass ok at the moment.
+ * iOS pass locally, Travis: ![iOS status](https://travis-ci.org/apla/me.apla.cordova.app-preferences.svg)
+ * Android pass locally, CircleCI: ![Android status](https://circleci.com/gh/apla/me.apla.cordova.app-preferences.svg?&style=shield&circle-token=f3e5e46c1a698c62f0450bf1d25a3694d4f714c6)
+ * BlackBerry 10 pass locally
+ * Windows Phone 8 tests pass locally, Appveyor: ![Windows status](https://ci.appveyor.com/api/projects/status/gl3qxq2o728sqbev?svg=true)
+ * Browser pass locally
 
 Show Preference pane
 ---
