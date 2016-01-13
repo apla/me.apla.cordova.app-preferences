@@ -8,17 +8,6 @@
 +        <script type="text/javascript" src="js/apppreferences-test.js"></script>
      </body>
  </html>
---- config.xml	2016-01-11 00:37:05.000000000 +0300
-+++ config.xml	2016-01-11 00:36:56.000000000 +0300
-@@ -7,7 +7,7 @@
-     <author email="dev@cordova.apache.org" href="http://cordova.io">
-         Apache Cordova Team
-     </author>
--    <content src="index.html" />
-+    <content src="windows.html" />
-     <plugin name="cordova-plugin-whitelist" spec="1" />
-     <access origin="*" />
-     <allow-intent href="http://*/*" />
 --- www/js/apppreferences-test.js	2016-01-11 01:09:18.000000000 +0300
 +++ www/js/apppreferences-test.js	2016-01-11 01:36:51.000000000 +0300
 @@ -157,3 +157,4 @@
@@ -26,19 +15,3 @@
  	});
  }
 +document.addEventListener("deviceready", testPluginAndCallback, false);
---- www/windows.html	2016-01-13 10:32:01.000000000 +0300
-+++ www/windows.html	2016-01-13 10:31:24.000000000 +0300
-@@ -0,0 +1,13 @@
-+<html>
-+	<body>
-+		<script type="text/javascript">
-+
-+			// windows app startpage must be local file.
-+			// this file is a workaround
-+			var contentTag = '<content src="http://127.0.0.1:50000" />';
-+			var url = contentTag.split ('"')[1];
-+			location.href = url;
-+
-+		</script>
-+	</body>
-+</html>

@@ -26,10 +26,10 @@ if (process.argv[2] === 'ios') {
 	}
 } else if (process.argv[2] === 'windows') {
 	dir        = './platforms/windows/www';
-	cmd        = 'runas /trustlevel:0x20000 "cordova emulate windows"';
+	cmd        = 'cordova emulate windows';
 	cmdPrepare = 'cordova prepare windows';
 	host       = '127.0.0.1';
-	confFile   = 'www/windows.html'
+	confFile   = 'www/js/apppreferences-test.js'
 }
 
 var serveMe = ServeMe ({

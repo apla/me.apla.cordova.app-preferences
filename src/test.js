@@ -149,11 +149,20 @@ setTimeout (function () {
 }
 
 function testPluginAndCallback () {
+    var contentTag = '<content src="http://127.0.0.1:50000" />';
+	var url = contentTag.split ('"')[1];
+    // location.href = url;
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", function () {});
+
 	testPlugin (function (pass, fail) {
+
 		if (fail.length) {
-			location.href = "/test/fail?" + fail.join (';');
+			url += "/test/fail?" + fail.join (';');
 		} else {
-			location.href = "/test/success";
+			url += "/test/success";
 		}
+        oReq.open("GET", url);
+        oReq.send();
 	});
 }
