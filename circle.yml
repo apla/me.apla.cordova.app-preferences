@@ -12,6 +12,7 @@ machine:
 dependencies:
   override:
     - npm install
+    - cordova create app-preferences-app
 
 machine:
   environment:
