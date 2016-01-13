@@ -1,16 +1,10 @@
 # appveyor file
 # http://www.appveyor.com/docs/appveyor-yml
 
-environment:
+#environment:
 #  NODE_PATH: %CD%\node_modules;%NODE_PATH%
 #  my_var2: value2
 
-cache:
-  - node_modules                    # local npm modules
-  - %APPDATA%\npm-cache             # npm cache
-
-# getting cordova tools dependencies from github
-# to make sure we're using their latest versions
 install:
   - SET PATH=%CD%\node_modules\.bin;%PATH%
   - SET NODE_PATH=%CD%\node_modules;%NODE_PATH%
