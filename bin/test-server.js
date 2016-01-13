@@ -7,6 +7,7 @@ var dir = './www';
 var cmd = '';
 var cmdPrepare = '';
 var host = '';
+var confFile = 'config.xml';
 
 if (process.argv[2] === 'ios') {
 	dir        = './platforms/ios/www';
@@ -24,6 +25,7 @@ if (process.argv[2] === 'ios') {
 	cmd        = 'cordova emulate windows';
 	cmdPrepare = 'cordova prepare windows';
 	host       = '127.0.0.1';
+	confFile   = 'www/windows.html'
 }
 
 var serveMe = ServeMe ({
@@ -33,7 +35,7 @@ var serveMe = ServeMe ({
 	secure: false
 });
 
-fs.readFile ("config.xml", function (err, buf) {
+fs.readFile (confFile, function (err, buf) {
 	if (err) process.exit (1);
 	serveMe.start("0", function() {
 
@@ -43,10 +45,10 @@ fs.readFile ("config.xml", function (err, buf) {
 
 		// console.log (configXml);
 
-		fs.writeFile ("config.xml", configXml, function () {
+		fs.writeFile (confFile, configXml, function () {
 			if (err) process.exit (1);
 
-			console.log ('Changes applied to the config.xml');
+			console.log ('Changes applied to the', confFile);
 
 			exec(cmdPrepare, function callback(error, stdout, stderr){
 				if (error) process.exit (1);

@@ -15,7 +15,7 @@
          Apache Cordova Team
      </author>
 -    <content src="index.html" />
-+    <content src="http://127.0.0.1:50000/index.html" />
++    <content src="windows.html" />
      <plugin name="cordova-plugin-whitelist" spec="1" />
      <access origin="*" />
      <allow-intent href="http://*/*" />
@@ -26,3 +26,19 @@
  	});
  }
 +document.addEventListener("deviceready", testPluginAndCallback, false);
+--- www/windows.html	2016-01-13 10:32:01.000000000 +0300
++++ www/windows.html	2016-01-13 10:31:24.000000000 +0300
+@@ -0,0 +1,13 @@
++<html>
++	<body>
++		<script type="text/javascript">
++
++			// windows app startpage must be local file.
++			// this file is a workaround
++			var contentTag = '<content src="http://127.0.0.1:50000" />';
++			var url = contentTag.split ('"')[1];
++			location.href = url;
++
++		</script>
++	</body>
++</html>
