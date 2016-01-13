@@ -35,8 +35,17 @@ var serveMe = ServeMe ({
 	secure: false
 });
 
+function handleError (err, stdout, stderr) {
+	if (err) {
+		if (stdout) console.log (stdout);
+		if (stderr) console.error (stderr);
+		process.exit (1);
+	}
+}
+
 fs.readFile (confFile, function (err, buf) {
-	if (err) process.exit (1);
+	handleError (err, null, err);
+
 	serveMe.start("0", function() {
 
 		var port = serveMe.server.server.address().port;
@@ -45,17 +54,17 @@ fs.readFile (confFile, function (err, buf) {
 
 		// console.log (configXml);
 
-		fs.writeFile (confFile, configXml, function () {
-			if (err) process.exit (1);
+		fs.writeFile (confFile, configXml, function (err) {
+			handleError (err, null, err);
 
 			console.log ('Changes applied to the', confFile);
 
 			exec(cmdPrepare, function callback(error, stdout, stderr){
-				if (error) process.exit (1);
+				handleError (error, stdout, stderr);
 
 				console.log ('Prepare completed');
 				exec(cmd, function callback(error, stdout, stderr){
-					if (error) process.exit (1);
+					handleError (error, stdout, stderr);
 
 					console.log ('Emulator running');
 					setTimeout (function () {process.exit(1)}, 30000);
