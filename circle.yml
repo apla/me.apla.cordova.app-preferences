@@ -2,9 +2,16 @@
 # Build configuration for Circle CI
 #
 
-general:
-  artifacts:
-    - /home/ubuntu/your-app-name/app/build/outputs/apk/
+machine:
+  environment:
+    ANDROID_NDK_HOME: $ANDROID_NDK
+    NODE_ENV: test
+    NODE_PATH: $NODE_PATH:$HOME/$CIRCLE_PROJECT_REPONAME/node_modules:$HOME/$CIRCLE_PROJECT_REPONAME/node_modules/cordova/node_modules
+    PATH: $PATH:$HOME/$CIRCLE_PROJECT_REPONAME/node_modules/.bin
+
+dependencies:
+  override:
+    - npm install
 
 machine:
   environment:
@@ -17,6 +24,17 @@ machine:
 
 test:
   override:
-    - npm install cordova
-    - (./gradlew assemble):
-      timeout: 360
+    - echo running jasmine test
+    - cd bin
+    - jasmine
+    - cd ..
+    - echo test plugin within cordova app
+    - cd app-preferences-app
+    - cordova platform add android
+    - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
+    - (if [ ! -f app-settings.json ]; then exit 0; fi)
+    - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
+    - patch -p0 -i plugins/cordova-plugin-app-preferences/src/test.patch
+    - cordova prepare
+    - cordova -d build --debug --emulator android
+    - node ../bin/test-server.js android
