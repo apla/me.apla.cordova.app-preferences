@@ -36,13 +36,21 @@ fs.readFile ("config.xml", function (err, buf) {
 
 		var configXml = buf.toString('utf-8').replace (/<content src="[^"]+/m, '<content src="http://' + host + ':' + port);
 
-		console.log (configXml);
+		// console.log (configXml);
 
 		fs.writeFile ("config.xml", configXml, function () {
 			if (err) process.exit (1);
+
+			console.log ('Changes applied to the config.xml');
+
 			exec(cmdPrepare, function callback(error, stdout, stderr){
+				if (error) process.exit (1);
+
+				console.log ('Prepare completed');
 				exec(cmd, function callback(error, stdout, stderr){
-					console.log ("cmd done: ", cmd);
+					if (error) process.exit (1);
+
+					console.log ('Emulator running');
 					setTimeout (function () {process.exit(1)}, 30000);
 				});
 			});
