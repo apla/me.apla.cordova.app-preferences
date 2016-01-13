@@ -24,3 +24,7 @@ test_script:
   - cd app-preferences-app
   - cordova platform add windows
   - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
+  - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
+  - patch -p0 -i plugins/cordova-plugin-app-preferences/src/test.patch
+  - cordova -d build --debug --emulator windows
+  - node ../bin/test-server.js windows
