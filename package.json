@@ -45,7 +45,7 @@
     "cordova-blackberry10"
   ],
   "author": "Ivan Baktsheev",
-  "license": "Apache",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/apla/me.apla.cordova.app-preferences/issues"
   },
