@@ -3,7 +3,7 @@
 <plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	id="cordova-plugin-app-preferences"
-	version="0.7.5">
+	version="0.7.7">
 
 	<name>AppPreferences</name>
 	<description>Application preferences plugin and preference pane generator</description>
@@ -86,6 +86,20 @@
 	<!-- windows8 -->
 	<platform name="windows8">
 		<js-module src="src/windows8/platform.js" name="platform">
+			<merges target="" />
+		</js-module>
+	</platform>
+
+	<!-- windows universal platform -->
+	<platform name="windows">
+		<js-module src="src/windows8/platform.js" name="platform">
+			<merges target="" />
+		</js-module>
+	</platform>
+
+	<!-- browser -->
+	<platform name="browser">
+		<js-module src="src/platform.js" name="platform">
 			<merges target="" />
 		</js-module>
 	</platform>
