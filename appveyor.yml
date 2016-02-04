@@ -28,5 +28,5 @@ test_script:
   - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
   - patch -p0 -i plugins/cordova-plugin-app-preferences/src/test.patch
   - cordova -d build --debug --emulator windows
-# cannot emulate on appveyor, need too much work
+# cannot emulate on appveyor, need too much work https://github.com/appveyor/ci/issues/201
 #  - node ../bin/test-server.js windows
