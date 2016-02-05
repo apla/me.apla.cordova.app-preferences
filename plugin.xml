@@ -15,6 +15,8 @@
 	<js-module src="www/apppreferences.js">
 		<clobbers target="plugins.appPreferences" />
 	</js-module>
+	<js-module src="src/platform.js">
+	</js-module>
 
 	<asset src="www/task/AppPreferences.js" target="task/AppPreferences.js" />
 
