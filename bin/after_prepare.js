@@ -31,6 +31,8 @@ module.exports = function (context) {
 				return;
 			}
 
+			console.log ('unhandled exception', err);
+
 			throw err;
 		});
 };
