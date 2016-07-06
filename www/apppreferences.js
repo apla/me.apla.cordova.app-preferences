@@ -246,6 +246,11 @@ AppPreferences.prototype.clearAll = platform.clearAll || function (
 	var promise = promiseCheck.apply (this, [argCount].concat ([].slice.call(arguments)));
 
 	var nativeExec = function (resolve, reject) {
+
+		if (platform.nativeClearAll) {
+			return platform.nativeClearAll (resolve, reject, args);
+		}
+
 		return platform.nativeExec (resolve, reject, "AppPreferences", "clearAll", []);
 	}
 

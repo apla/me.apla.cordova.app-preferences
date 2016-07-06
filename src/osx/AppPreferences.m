@@ -199,20 +199,59 @@
 
 - (void)clearAll:(CDVInvokedUrlCommand*)command
 {
-	__block CDVPluginResult* result;
+	__block CDVPluginResult* result = nil;
 
-	result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not implemented"];
+	NSDictionary* options = [[command arguments] objectAtIndex:0];
 
-	[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+	if (!options) {
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"no options given"];
+		[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+		return;
+	}
 
+	NSString *settingsDict = [options objectForKey:@"dict"];
+	NSString *suiteName    = [options objectForKey:@"iosSuiteName"];
+
+	//[self.commandDelegate runInBackground:^{
+
+	@try {
+
+		NSString *returnVar;
+
+		NSUserDefaults *defaults;
+		NSString *appDomain;
+
+		if (suiteName != nil) {
+			appDomain = suiteName;
+			defaults = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
+		} else {
+			appDomain = [[NSBundle mainBundle] bundleIdentifier];
+			defaults = [NSUserDefaults standardUserDefaults];
+		}
+
+		[defaults removePersistentDomainForName:appDomain];
+
+		[defaults synchronize];
+
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnVar];
+
+	} @catch (NSException * e) {
+
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT messageAsString:[e reason]];
+
+	} @finally {
+
+		[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+	}
+
+	//}];
 }
-
 
 - (void)show:(CDVInvokedUrlCommand*)command
 {
 	__block CDVPluginResult* result;
-    NSLog(@"OSX version of this plugin does not support show() yet.");
-    result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"switching to preferences not supported"];
+	NSLog(@"OSX version of this plugin does not support show() yet.");
+	result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"switching to preferences not supported"];
 	[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
 
 }
