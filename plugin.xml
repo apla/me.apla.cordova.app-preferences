@@ -15,6 +15,8 @@
 	<js-module src="www/apppreferences.js">
 		<clobbers target="plugins.appPreferences" />
 	</js-module>
+	<js-module src="src/platform.js">
+	</js-module>
 
 	<asset src="www/task/AppPreferences.js" target="task/AppPreferences.js" />
 
@@ -87,14 +89,14 @@
 
 	<!-- windows8 -->
 	<platform name="windows8">
-		<js-module src="src/windows8/platform.js" name="platform">
+		<js-module src="src/windows8/platform.js" name="platform.w8">
 			<merges target="" />
 		</js-module>
 	</platform>
 
 	<!-- windows universal platform -->
 	<platform name="windows">
-		<js-module src="src/windows8/platform.js" name="platform">
+		<js-module src="src/windows8/platform.js" name="platform.windows">
 			<merges target="" />
 		</js-module>
 	</platform>

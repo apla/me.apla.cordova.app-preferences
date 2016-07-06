@@ -12,7 +12,8 @@ module.exports = function(fs, path) {
 	function get() {
 		return fs.exists(appSettingsPath)
 			.then(function() { return fs.readFile(appSettingsPath); })
-			.then(JSON.parse);
+			.then(JSON.parse)
+			.then(validateFormat);
 	}
 	
 	function create() {
@@ -30,6 +31,14 @@ module.exports = function(fs, path) {
 			});
 	}
 	
+	function validateFormat(config) {
+		if(Array.isArray(config) && Object.keys(config[0]).length) {
+			return config;
+		}
+		var err = "app-settings.json not valid: is empty or is not an array";
+		throw err;
+	}
+
 	return {
 		get: get,
 		create: create,
