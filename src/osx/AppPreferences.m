@@ -22,7 +22,17 @@
 - (void)defaultsChanged:(NSNotification *)notification {
 
 	NSString * jsCallBack = [NSString stringWithFormat:@"cordova.fireDocumentEvent('preferencesChanged');"];
-	[self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+
+	// https://github.com/EddyVerbruggen/cordova-plugin-3dtouch/blob/master/src/ios/app/AppDelegate+threedeetouch.m
+	if ([self.webView respondsToSelector:@selector(stringByEvaluatingJavaScriptFromString:)]) {
+		// UIWebView
+		[self.webView performSelectorOnMainThread:@selector(stringByEvaluatingJavaScriptFromString:) withObject:jsCallBack waitUntilDone:NO];
+	} else if ([self.webView respondsToSelector:@selector(evaluateJavaScript:completionHandler:)]) {
+		// WKWebView
+		[self.webView performSelector:@selector(evaluateJavaScript:completionHandler:) withObject:jsCallBack withObject:nil];
+	} else {
+		NSLog(@"No compatible method found to send notification to the webview. Please notify the plugin author.");
+	}
 }
 
 
