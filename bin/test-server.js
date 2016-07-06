@@ -7,6 +7,7 @@ var dir = './www';
 var cmd = '';
 var cmdPrepare = '';
 var host = '';
+var preferredTarget = '';
 // var confFile = 'config.xml';
 var confFile   = 'www/js/apppreferences-test.js'
 
@@ -16,6 +17,7 @@ if (process.argv[2] === 'ios') {
 	cmd        = 'cordova emulate ios';
 	cmdPrepare = 'cordova prepare ios';
 	host       = '127.0.0.1';
+	preferredTarget = 'iPhone-5s'
 } else if (process.argv[2] === 'android') {
 	dir        = './platforms/android/assets/www';
 	cmd        = 'cordova emulate android';
@@ -64,15 +66,41 @@ fs.readFile (confFile, function (err, buf) {
 
 			console.log ('Changes applied to the', confFile);
 
-			exec(cmdPrepare, {}, function callback(error, stdout, stderr){
+			exec(cmd + " --list", {}, function callback(error, stdout, stderr){
 				handleError (error, stdout, stderr);
 
-				console.log ('Prepare completed');
-				exec(cmd, {}, function callback(error, stdout, stderr){
+				var targets = stdout.split (/\n/m).filter (function (t) {
+					return t[0] === "\t";
+				}).map (function (t) {
+					return t.substr (1);
+				});
+
+				// console.log ('Existing targets:', targets);
+				console.log ('Preferred target:', preferredTarget);
+
+				if (preferredTarget && targets.length) {
+					var tList = targets.filter (function (t) {return t.match (preferredTarget)});
+					if (tList && tList.length) {
+						cmd += ' --target="' + tList[0] + '"';
+						console.log ('Found target %s', tList[0]);
+					}
+				}
+
+				console.log ('Executing prepare %s', cmdPrepare);
+
+				exec(cmdPrepare, {}, function callback(error, stdout, stderr){
 					handleError (error, stdout, stderr);
 
-					console.log ('Emulator running');
-					setTimeout (function () {process.exit(1)}, 30000);
+					console.log ('Prepare completed');
+
+					console.log ('Executing emulator %s', cmd);
+
+					exec(cmd, {}, function callback(error, stdout, stderr){
+						handleError (error, stdout, stderr);
+
+						console.log ('Emulator running');
+						setTimeout (function () {process.exit(1)}, 30000);
+					});
 				});
 			});
 		});

@@ -6,6 +6,7 @@ node_js:
 before_install:
   - xcrun simctl list
   - instruments -s devices
+#  - export EMU_TARGET=$(cordova emulate ios --list | grep iPhone-5s | cut -f 2 | head -n 1)
 #  - export ANDROID_HOME=$PWD/android-sdk-macosx
 #  - export ANDROID_SDK=$ANDROID_HOME
 #  - export PATH=$(pwd)/node_modules/.bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${PATH}
@@ -43,14 +44,18 @@ script:
   - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
   - patch -p0 -i plugins/cordova-plugin-app-preferences/src/test.patch
   - cordova prepare
-  - cordova -d build --debug --emulator ios
+  - cordova build --emulator ios
   - node ../bin/test-server.js ios
   - echo plugin must be ok without platforms installed
   - cordova platform rm android
   - cordova prepare
   - cordova platform rm ios
   - cordova -d platform add android
-  - cordova platform add ios
+  - echo check for UIWebView
+  - cordova platform add ios@3.9.2
+  - cordova prepare
+  - cordova build --emulator ios
+  - node ../bin/test-server.js ios
   - echo plugin can be uninstalled
   - cordova plugin rm cordova-plugin-app-preferences
   - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
