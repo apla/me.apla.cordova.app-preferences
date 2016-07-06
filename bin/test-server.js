@@ -64,11 +64,11 @@ fs.readFile (confFile, function (err, buf) {
 
 			console.log ('Changes applied to the', confFile);
 
-			exec(cmdPrepare, function callback(error, stdout, stderr){
+			exec(cmdPrepare, {}, function callback(error, stdout, stderr){
 				handleError (error, stdout, stderr);
 
 				console.log ('Prepare completed');
-				exec(cmd, function callback(error, stdout, stderr){
+				exec(cmd, {}, function callback(error, stdout, stderr){
 					handleError (error, stdout, stderr);
 
 					console.log ('Emulator running');
