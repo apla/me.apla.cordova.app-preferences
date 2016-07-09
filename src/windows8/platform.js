@@ -29,6 +29,19 @@ function getContainer (settings, dict, create) {
 
 }
 
+AppPreferencesW8.prototype.nativeWatch = function () {
+	// Occurs when roaming application data is synchronized.
+	// https://msdn.microsoft.com/en-us/magazine/dn857358.aspx
+	var applicationData = Windows.Storage.ApplicationData.current;
+	applicationData.addEventListener ("datachanged", function (event) {
+
+		if (typeof cordova !== "undefined" && this.watchChanges) {
+			cordova.fireDocumentEvent('preferencesChanged', {});
+		}
+
+	});
+}
+
 AppPreferencesW8.prototype.nativeFetch = function(successCallback, errorCallback, args) {
 
 	var self = this;
