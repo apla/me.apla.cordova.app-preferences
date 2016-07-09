@@ -33,8 +33,7 @@ AppPreferencesW8.prototype.nativeFetch = function(successCallback, errorCallback
 
 	var self = this;
 
-	// no support for windows phone 8
-	var settings = Windows.Storage.ApplicationData.current.localSettings;
+	var settings = Windows.Storage.ApplicationData.current[args.cloudSync ? 'roamingSettings' : 'localSettings'];
 
 	var container = getContainer (settings, args.dict);
 
@@ -68,8 +67,7 @@ AppPreferencesW8.prototype.nativeStore = function(successCallback, errorCallback
 
 	args.value = JSON.stringify(args.value);
 
-	// no support for windows phone 8
-	var settings = Windows.Storage.ApplicationData.current.localSettings;
+	var settings = Windows.Storage.ApplicationData.current[args.cloudSync ? 'roamingSettings' : 'localSettings'];
 
 	var container = getContainer (settings, args.dict, true);
 
@@ -91,8 +89,7 @@ AppPreferencesW8.prototype.nativeRemove = function (successCallback, errorCallba
 
 	var self = this;
 
-	// no support for windows phone 8
-	var settings = Windows.Storage.ApplicationData.current.localSettings;
+	var settings = Windows.Storage.ApplicationData.current[args.cloudSync ? 'roamingSettings' : 'localSettings'];
 
 	var container = getContainer (settings, args.dict);
 
@@ -116,8 +113,7 @@ AppPreferencesW8.prototype.nativeClearAll = function (successCallback, errorCall
 
 	var self = this;
 
-	// no support for windows phone 8
-	var settings = Windows.Storage.ApplicationData.current.localSettings;
+	var settings = Windows.Storage.ApplicationData.current[args.cloudSync ? 'roamingSettings' : 'localSettings'];
 
 	var container = getContainer (settings, args.dict);
 

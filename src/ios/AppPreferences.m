@@ -5,7 +5,7 @@
 //  Created by Tue Topholm on 31/01/11.
 //  Copyright 2011 Sugee. All rights reserved.
 //
-//  Modified by Ivan Baktsheev, 2012-2015
+//  Modified by Ivan Baktsheev, 2012-2016
 //
 // THIS HAVEN'T BEEN TESTED WITH CHILD PANELS YET.
 
@@ -18,9 +18,33 @@
 
 }
 
+// http://useyourloaf.com/blog/sync-preference-data-with-icloud/
 - (void)defaultsChanged:(NSNotification *)notification {
 
 	NSString * jsCallBack = [NSString stringWithFormat:@"cordova.fireDocumentEvent('preferencesChanged');"];
+
+	//	if ([notification.name isEqualToString:NSUserDefaultsDidChangeNotification])
+	//	else
+	if ([notification.name isEqualToString:NSUbiquitousKeyValueStoreDidChangeExternallyNotification]) {
+
+		NSNumber *changeReasonNumber = notification.userInfo[NSUbiquitousKeyValueStoreChangeReasonKey];
+		if (changeReasonNumber) {
+			NSInteger changeReason = [changeReasonNumber intValue];
+
+			// preference store can be synchronized with cloud
+			/*
+
+			if (changeReason == NSUbiquitousKeyValueStoreServerChange || changeReason == NSUbiquitousKeyValueStoreInitialSyncChange || changeReason == NSUbiquitousKeyValueStoreAccountChange) {
+				//id localStore = [self _storeForLocation:CQSettingsLocationDevice];
+				//id cloudStore = [self _storeForLocation:CQSettingsLocationCloud];
+
+				for (NSString *key in notification.userInfo[NSUbiquitousKeyValueStoreChangedKeysKey])
+					localStore[key] = cloudStore[key];
+			}
+
+			*/
+		}
+	}
 
 	// https://github.com/EddyVerbruggen/cordova-plugin-3dtouch/blob/master/src/ios/app/AppDelegate+threedeetouch.m
 	if ([self.webView respondsToSelector:@selector(stringByEvaluatingJavaScriptFromString:)]) {
@@ -49,8 +73,10 @@
 
 	if (watchChanges) {
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultsChanged:) name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification object:nil];
 	} else {
-		[[NSNotificationCenter defaultCenter] removeObserver:self];
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification object:nil];
 	}
 
 	[self.commandDelegate runInBackground:^{
@@ -58,94 +84,112 @@
 	}];
 }
 
+- (NSDictionary*)validateOptions:(CDVInvokedUrlCommand*)command
+{
+	NSDictionary* options = [[command arguments] objectAtIndex:0];
 
+	if (!options) {
+		CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"no options given"];
+		[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+		return nil;
+	}
+
+	return options;
+}
+
+- (id)getStoreForOptions:(NSDictionary*)options
+{
+	NSString *suiteName    = [options objectForKey:@"iosSuiteName"];
+	NSString *cloudSync    = [options objectForKey:@"cloudSync"];
+
+	id dataStore = nil;
+
+	if (suiteName != nil) {
+		dataStore = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
+	} else if (cloudSync != nil) {
+		dataStore = [NSUbiquitousKeyValueStore defaultStore];
+	} else {
+		dataStore = [NSUserDefaults standardUserDefaults];
+	}
+
+	return dataStore;
+}
 
 - (void)fetch:(CDVInvokedUrlCommand*)command
 {
 
 	__block CDVPluginResult* result = nil;
 
-	NSDictionary* options = [[command arguments] objectAtIndex:0];
+	NSDictionary* options = [self validateOptions:command];
 
-	if (!options) {
-		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"no options given"];
-		[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+	if (!options)
 		return;
-	}
 
 	NSString *settingsDict = [options objectForKey:@"dict"];
 	NSString *settingsName = [options objectForKey:@"key"];
-	NSString *suiteName    = [options objectForKey:@"iosSuiteName"];
+
+	id dataStore = [self getStoreForOptions:options];
+
+	__block id target = dataStore;
 
 	[self.commandDelegate runInBackground:^{
 
-	NSUserDefaults *defaults;
+		// NSMutableDictionary *mutable = [[dict mutableCopy] autorelease];
+		// NSDictionary *dict = [[mutable copy] autorelease];
 
-	if (suiteName != nil) {
-		defaults = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
-	} else {
-		defaults = [NSUserDefaults standardUserDefaults];
-	}
+		@try {
 
+			NSString *returnVar;
+			id settingsValue = nil;
 
-	id target = defaults;
-
-	// NSMutableDictionary *mutable = [[dict mutableCopy] autorelease];
-	// NSDictionary *dict = [[mutable copy] autorelease];
-
-	@try {
-
-		NSString *returnVar;
-		id settingsValue = nil;
-
-		if (settingsDict) {
-			target = [defaults dictionaryForKey:settingsDict];
-			if (target == nil) {
-				returnVar = nil;
-			}
-		}
-
-		if (target != nil) {
-			settingsValue = [target objectForKey:settingsName];
-		}
-
-		if (settingsValue != nil) {
-			if ([settingsValue isKindOfClass:[NSString class]]) {
-				NSString *escaped = [(NSString*)settingsValue stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
-				escaped = [escaped stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-				returnVar = [NSString stringWithFormat:@"\"%@\"", escaped];
-			} else if ([settingsValue isKindOfClass:[NSNumber class]]) {
-				if ((NSNumber*)settingsValue == (void*)kCFBooleanFalse || (NSNumber*)settingsValue == (void*)kCFBooleanTrue) {
-					// const char * x = [(NSNumber*)settingsValue objCType];
-					// NSLog(@"boolean %@", [(NSNumber*)settingsValue boolValue] == NO ? @"false" : @"true");
-					returnVar = [NSString stringWithFormat:@"%@", [(NSNumber*)settingsValue boolValue] == YES ? @"true": @"false"];
-				} else {
-					// TODO: int, float
-					// NSLog(@"number");
-					returnVar = [NSString stringWithFormat:@"%@", (NSNumber*)settingsValue];
+			if (settingsDict) {
+				target = [dataStore dictionaryForKey:settingsDict];
+				if (target == nil) {
+					returnVar = nil;
 				}
-
-			} else if ([settingsValue isKindOfClass:[NSData class]]) { // NSData
-				returnVar = [[NSString alloc] initWithData:(NSData*)settingsValue encoding:NSUTF8StringEncoding];
 			}
-		} else {
-			// TODO: also submit dict
-			returnVar = [self getSettingFromBundle:settingsName]; //Parsing Root.plist
 
-			// if (returnVar == nil)
-			// @throw [NSException exceptionWithName:nil reason:@"Key not found" userInfo:nil];;
+			if (target != nil) {
+				settingsValue = [target objectForKey:settingsName];
+			}
+
+			if (settingsValue != nil) {
+				if ([settingsValue isKindOfClass:[NSString class]]) {
+					NSString *escaped = [(NSString*)settingsValue stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+					escaped = [escaped stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+					returnVar = [NSString stringWithFormat:@"\"%@\"", escaped];
+				} else if ([settingsValue isKindOfClass:[NSNumber class]]) {
+					if ((NSNumber*)settingsValue == (void*)kCFBooleanFalse || (NSNumber*)settingsValue == (void*)kCFBooleanTrue) {
+						// const char * x = [(NSNumber*)settingsValue objCType];
+						// NSLog(@"boolean %@", [(NSNumber*)settingsValue boolValue] == NO ? @"false" : @"true");
+						returnVar = [NSString stringWithFormat:@"%@", [(NSNumber*)settingsValue boolValue] == YES ? @"true": @"false"];
+					} else {
+						// TODO: int, float
+						// NSLog(@"number");
+						returnVar = [NSString stringWithFormat:@"%@", (NSNumber*)settingsValue];
+					}
+
+				} else if ([settingsValue isKindOfClass:[NSData class]]) { // NSData
+					returnVar = [[NSString alloc] initWithData:(NSData*)settingsValue encoding:NSUTF8StringEncoding];
+				}
+			} else {
+				// TODO: also submit dict
+				returnVar = [self getSettingFromBundle:settingsName]; //Parsing Root.plist
+
+				// if (returnVar == nil)
+				// @throw [NSException exceptionWithName:nil reason:@"Key not found" userInfo:nil];;
+			}
+
+			result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnVar];
+
+		} @catch (NSException * e) {
+
+			result = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT messageAsString:[e reason]];
+
+		} @finally {
+
+			[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
 		}
-
-		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnVar];
-
-	} @catch (NSException * e) {
-
-		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT messageAsString:[e reason]];
-
-	} @finally {
-
-		[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
-	}
 	}];
 }
 
@@ -154,48 +198,35 @@
 
 	__block CDVPluginResult* result = nil;
 
-	NSDictionary* options = [[command arguments] objectAtIndex:0];
+	NSDictionary* options = [self validateOptions:command];
 
-	if (!options) {
-		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"no options given"];
-		[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+	if (!options)
 		return;
-	}
 
 	NSString *settingsDict = [options objectForKey:@"dict"];
 	NSString *settingsName = [options objectForKey:@"key"];
-	NSString *suiteName    = [options objectForKey:@"iosSuiteName"];
+
+	id dataStore = [self getStoreForOptions:options];
+
+	__block id target = dataStore;
 
 	//[self.commandDelegate runInBackground:^{
-
-	NSUserDefaults *defaults;
-
-	if (suiteName != nil) {
-		defaults = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
-	} else {
-		defaults = [NSUserDefaults standardUserDefaults];
-	}
-
-	id target = defaults;
-
-	// NSMutableDictionary *mutable = [[dict mutableCopy] autorelease];
-	// NSDictionary *dict = [[mutable copy] autorelease];
 
 	@try {
 
 		NSString *returnVar;
 
 		if (settingsDict) {
-			target = [defaults dictionaryForKey:settingsDict];
+			target = [dataStore dictionaryForKey:settingsDict];
 			if (target)
 				target = [target mutableCopy];
 		}
 
 		if (target != nil) {
 			[target removeObjectForKey:settingsName];
-			if (target != defaults)
-				[defaults setObject:(NSMutableDictionary*)target forKey:settingsDict];
-			[defaults synchronize];
+			if (target != dataStore)
+				[dataStore setObject:(NSMutableDictionary*)target forKey:settingsDict];
+			[dataStore synchronize];
 		}
 
 		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnVar];
@@ -215,39 +246,40 @@
 {
 	__block CDVPluginResult* result = nil;
 
-	NSDictionary* options = [[command arguments] objectAtIndex:0];
+	NSDictionary* options = [self validateOptions:command];
 
-	if (!options) {
-		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"no options given"];
-		[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+	if (!options)
 		return;
-	}
 
-	NSString *settingsDict = [options objectForKey:@"dict"];
-	NSString *suiteName    = [options objectForKey:@"iosSuiteName"];
+	NSString *settingsDict  = [options objectForKey:@"dict"];
+	NSString *suiteName     = [options objectForKey:@"iosSuiteName"];
+	NSString *cloudSync     = [options objectForKey:@"cloudSync"];
+
+	id dataStore = [self getStoreForOptions:options];
+
+	__block id target = dataStore;
 
 	//[self.commandDelegate runInBackground:^{
 
 	@try {
 
-		NSString *returnVar;
-
-		NSUserDefaults *defaults;
 		NSString *appDomain;
 
 		if (suiteName != nil) {
 			appDomain = suiteName;
-			defaults = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
+			[dataStore removePersistentDomainForName:appDomain];
+		} else if (cloudSync) {
+			for (NSString *key in [dataStore allKeys]) {
+				[dataStore removeObjectForKey:key];
+			}
 		} else {
 			appDomain = [[NSBundle mainBundle] bundleIdentifier];
-			defaults = [NSUserDefaults standardUserDefaults];
+			[dataStore removePersistentDomainForName:appDomain];
 		}
 
-		[defaults removePersistentDomainForName:appDomain];
+		[dataStore synchronize];
 
-		[defaults synchronize];
-
-		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnVar];
+		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
 
 	} @catch (NSException * e) {
 
@@ -283,38 +315,28 @@
 {
 	__block CDVPluginResult* result;
 
-	NSDictionary* options = [[command arguments] objectAtIndex:0];
+	NSDictionary* options = [self validateOptions:command];
 
-	if (!options) {
-		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"no options given"];
-		[self.commandDelegate sendPluginResult:result callbackId:[command callbackId]];
+	if (!options)
 		return;
-	}
 
 	NSString *settingsDict  = [options objectForKey:@"dict"];
 	NSString *settingsName  = [options objectForKey:@"key"];
 	NSString *settingsValue = [options objectForKey:@"value"];
 	NSString *settingsType  = [options objectForKey:@"type"];
-	NSString *suiteName     = [options objectForKey:@"iosSuiteName"];
 
 	//	NSLog(@"%@ = %@ (%@)", settingsName, settingsValue, settingsType);
 
 	//[self.commandDelegate runInBackground:^{
-	NSUserDefaults *defaults;
+	id dataStore = [self getStoreForOptions:options];
 
-	if (suiteName != nil) {
-		defaults = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
-	} else {
-		defaults = [NSUserDefaults standardUserDefaults];
-	}
-
-	id target = defaults;
+	id target = dataStore;
 
 	// NSMutableDictionary *mutable = [[dict mutableCopy] autorelease];
 	// NSDictionary *dict = [[mutable copy] autorelease];
 
 	if (settingsDict) {
-		target = [[defaults dictionaryForKey:settingsDict] mutableCopy];
+		target = [[dataStore dictionaryForKey:settingsDict] mutableCopy];
 		if (!target) {
 			target = [[NSMutableDictionary alloc] init];
 			#if !__has_feature(objc_arc)
@@ -325,10 +347,10 @@
 
 	NSError* error = nil;
 	id JSONObj = [NSJSONSerialization
-		JSONObjectWithData:[settingsValue dataUsingEncoding:NSUTF8StringEncoding]
-		options:NSJSONReadingAllowFragments
-		error:&error
-	];
+				  JSONObjectWithData:[settingsValue dataUsingEncoding:NSUTF8StringEncoding]
+				  options:NSJSONReadingAllowFragments
+				  error:&error
+				 ];
 
 	if (error != nil) {
 		NSLog(@"NSString JSONObject error: %@", [error localizedDescription]);
@@ -348,9 +370,9 @@
 			[target setObject:[settingsValue dataUsingEncoding:NSUTF8StringEncoding] forKey:settingsName];
 		}
 
-		if (target != defaults)
-			[defaults setObject:(NSMutableDictionary*)target forKey:settingsDict];
-		[defaults synchronize];
+		if (target != dataStore)
+			[dataStore setObject:(NSMutableDictionary*)target forKey:settingsDict];
+		[dataStore synchronize];
 
 		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
 
