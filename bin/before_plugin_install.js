@@ -4,9 +4,9 @@ module.exports = function (context) {
   var req = context.requireCordovaModule,
 
       path = req ('path'),
-      pathParse = req ('path-parse');
+      pathParse = req ('./lib/path-parse');
 
-  path.parse = pathParse;
+  path.parse = path.parse || pathParse;
 
   return true;
 };

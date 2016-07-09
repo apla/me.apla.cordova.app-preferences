@@ -29,8 +29,7 @@
     "jasmine": "^2.3.2",
     "plist": "1.1.0",
     "q": "^1.4.1",
-    "serve-me": "^0.8.2",
-    "path-parse": "^1.0.5"
+    "serve-me": "^0.8.2"
   },
   "keywords": [
     "preferences",
