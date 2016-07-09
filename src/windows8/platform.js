@@ -93,9 +93,6 @@ AppPreferencesW8.prototype.nativeStore = function(successCallback, errorCallback
 	container.values[args.key] = args.value;
 
 	successCallback ();
-
-	// argscheck.checkArgs('fF', 'Device.getInfo', arguments);
-	// exec(successCallback, errorCallback, "Device", "getDeviceInfo", []);
 };
 
 AppPreferencesW8.prototype.nativeRemove = function (successCallback, errorCallback, args) {
@@ -117,9 +114,6 @@ AppPreferencesW8.prototype.nativeRemove = function (successCallback, errorCallba
 	}
 
 	successCallback();
-
-	// argscheck.checkArgs('fF', 'Device.getInfo', arguments);
-	// exec(successCallback, errorCallback, "Device", "getDeviceInfo", []);
 };
 
 AppPreferencesW8.prototype.nativeClearAll = function (successCallback, errorCallback, args) {
@@ -139,14 +133,11 @@ AppPreferencesW8.prototype.nativeClearAll = function (successCallback, errorCall
 	container.clear ();
 
 	successCallback();
-
-	// argscheck.checkArgs('fF', 'Device.getInfo', arguments);
-	// exec(successCallback, errorCallback, "Device", "getDeviceInfo", []);
 };
 
 AppPreferencesW8.prototype.show = function (successCallback, errorCallback, args) {
 
-    var self = this;
+	var self = this;
 
 //    The Show method raises an exception if one of the following is true:
 //  •It is called from a snapped app.
