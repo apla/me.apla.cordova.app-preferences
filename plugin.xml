@@ -15,8 +15,6 @@
 	<js-module src="www/apppreferences.js">
 		<clobbers target="plugins.appPreferences" />
 	</js-module>
-	<js-module src="src/platform.js">
-	</js-module>
 
 	<asset src="www/task/AppPreferences.js" target="task/AppPreferences.js" />
 
@@ -111,7 +109,8 @@
 	<!-- blackberry10 -->
 	<!-- using localStorage fallback -->
 	<platform name="blackberry10">
-		<js-module src="src/blackberry10/platform.js">
+		<js-module src="src/blackberry10/platform.js" name="platform">
+			<merges target="" />
 		</js-module>
 	</platform>
 
