@@ -27,9 +27,15 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 	private static CordovaWebView cdvWebView;
 	private static boolean watchChanges = false;
 
+	// useful info about default values: http://codetheory.in/saving-user-settings-with-android-preferences/
 	@Override
 	protected void pluginInitialize() {
 		cdvWebView = this.webView;
+
+		if (R.xml.apppreferences != null) {
+			Context context = cordova.getActivity().getApplicationContext();
+			PreferenceManager.setDefaultValues(context, R.xml.apppreferences, false);
+		}
 	}
 
 	public void onSharedPreferenceChanged (SharedPreferences sharedPreferences, final String key) {
