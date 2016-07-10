@@ -108,7 +108,7 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 
 		String key    = options.getString("key");
 		String dict   = options.optString("dict");
-		String type   = options.optString("type");
+
 		if (!"".equals(dict))
 			key = dict + '.' + key;
 		// Log.d ("", "key is " + key);
@@ -118,6 +118,7 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 			return this.fetchValueByKey(sharedPrefs, key, callbackContext);
 		} else if (action.equals("store")) {
 			String value  = options.getString("value");
+			String type   = options.optString("type");
 			return this.storeValueByKey(sharedPrefs, key, type, value, callbackContext);
 		} else if (action.equals("remove")) {
 			return this.removeValueByKey(sharedPrefs, key, callbackContext);
