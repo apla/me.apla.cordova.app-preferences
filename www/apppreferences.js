@@ -245,13 +245,19 @@ AppPreferences.prototype.clearAll = platform.clearAll || function (
 	var argCount = 0;
 	var promise = promiseCheck.apply (this, [argCount].concat ([].slice.call(arguments)));
 
+	var args = {};
+
+	for (var k in this.defaultArgs) {
+		args[k] = this.defaultArgs[k];
+	}
+
 	var nativeExec = function (resolve, reject) {
 
 		if (platform.nativeClearAll) {
 			return platform.nativeClearAll (resolve, reject, args);
 		}
 
-		return platform.nativeExec (resolve, reject, "AppPreferences", "clearAll", []);
+		return platform.nativeExec (resolve, reject, "AppPreferences", "clearAll", [args]);
 	}
 
 	if (promise) {
@@ -335,16 +341,49 @@ AppPreferences.prototype.watch = platform.watch || function (
 };
 
 /**
- * Return iOS Suite configuration context
+ * Return named configuration context
+ * In iOS you'll get a suite configuration, on Android — named file
+ * Supports: Android, iOS
  * @param   {String}         suiteName suite name
  * @returns {AppPreferences} AppPreferences object, bound to that suite
  */
 
-AppPreferences.prototype.iosSuite = function (suiteName) {
-	var appPrefsSuite = new AppPreferences ({iosSuiteName: suiteName});
+AppPreferences.prototype.iosSuite =
+AppPreferences.prototype.suite =
+	function (suiteName) {
 
-	return appPrefsSuite;
+	var appPrefs = new AppPreferences ({
+		iosSuiteName: suiteName, // deprecated, remove when ios code is ready
+		suiteName: suiteName,
+	});
+
+	return appPrefs;
 }
+
+/**
+ * Return cloud synchronized configuration context
+ * Currently supports Windows and iOS/macOS
+ * @returns {AppPreferences} AppPreferences object, bound to that suite
+ */
+
+AppPreferences.prototype.cloudSync = function () {
+	var appPrefs = new AppPreferences ({cloudSync: true});
+
+	return appPrefs;
+}
+
+/**
+ * Return default configuration context
+ * Currently supports Windows and iOS/macOS
+ * @returns {AppPreferences} AppPreferences object, bound to that suite
+ */
+
+AppPreferences.prototype.defaults = function () {
+	var appPrefs = new AppPreferences ();
+
+	return appPrefs;
+}
+
 
 // WIP: functions to bind selected preferences to the form
 

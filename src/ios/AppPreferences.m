@@ -106,8 +106,8 @@
 
 - (id)getStoreForOptions:(NSDictionary*)options
 {
-	NSString *suiteName    = [options objectForKey:@"iosSuiteName"];
-	NSString *cloudSync    = [options objectForKey:@"cloudSync"];
+	NSString *suiteName = [options objectForKey:@"suiteName"];
+	NSString *cloudSync = [options objectForKey:@"cloudSync"];
 
 	id dataStore = nil;
 
@@ -259,7 +259,7 @@
 		return;
 
 	NSString *settingsDict  = [options objectForKey:@"dict"];
-	NSString *suiteName     = [options objectForKey:@"iosSuiteName"];
+	NSString *suiteName     = [options objectForKey:@"suiteName"];
 	NSString *cloudSync     = [options objectForKey:@"cloudSync"];
 
 	id dataStore = [self getStoreForOptions:options];
