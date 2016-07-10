@@ -32,9 +32,14 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 	protected void pluginInitialize() {
 		cdvWebView = this.webView;
 
-		if (R.xml.apppreferences != null) {
-			Context context = cordova.getActivity().getApplicationContext();
-			PreferenceManager.setDefaultValues(context, R.xml.apppreferences, false);
+		Context context = cordova.getActivity().getApplicationContext();
+
+		String packageName = context.getPackageName();
+
+		int resId = context.getResources().getIdentifier("apppreferences", "xml", packageName);
+
+		if (resId > 0) {
+			PreferenceManager.setDefaultValues(context, resId, false);
 		}
 	}
 
