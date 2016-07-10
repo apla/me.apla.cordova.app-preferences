@@ -39,6 +39,7 @@ script:
   - echo test plugin within cordova app
   - cd app-preferences-app
   - cordova platform add ios@3.9.2 android
+  - cordova plugin add cordova-plugin-device
   - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
   - (if [ ! -f app-settings.json ]; then exit 0; fi)
   - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js

@@ -35,6 +35,8 @@ test:
         pwd: app-preferences-app
     - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences:
         pwd: app-preferences-app
+    - cordova plugin add cordova-plugin-device:
+        pwd: app-preferences-app
     - (if [ ! -f app-settings.json ]; then exit 0; fi):
         pwd: app-preferences-app
     - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js:

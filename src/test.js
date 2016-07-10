@@ -20,6 +20,12 @@ var nonExistingKeyName = 'test-key-must-not-exists';
 
 var appp = (typeof AppPreferences !== "undefined") ? new AppPreferences () : plugins.appPreferences;
 
+var nativePlatforms = {
+	iOS: true,
+	Android: true,
+	// Windows: true // TODO
+};
+
 function fetchIncrementStore (keyName) {
 	var testRunCount;
 	appp.fetch (keyName).then (function (value) {
@@ -108,6 +114,19 @@ for (var testK in tests) {
 				console.error ('fetch value failed for ' + testName + ' and value ' + testValue);
 				fail.push ('store>fetch '+testName);
 			}, testName);
+			if ('device' in window && device.platform && nativePlatforms[device.platform]) {
+				// TODO: replace by localStorage fallback module
+				var lsValue = localStorage.getItem (testName);
+				if (lsValue === null) {
+					pass ++;
+				} else if (lsValue === testValue) {
+					fail.push ('store>fetch (localStorage) '+testName);
+				} else {
+					console.error ('localStorage contains unexpected value');
+					pass ++;
+				}
+			}
+
 		}, function (err) {
 			console.error ('store value failed for ' + testName + ' and value ' + testValue);
 			fail.push ('store '+testName);
