@@ -23,6 +23,7 @@
 
 	NSString * jsCallBack = [NSString stringWithFormat:@"cordova.fireDocumentEvent('preferencesChanged');"];
 
+
 	//	if ([notification.name isEqualToString:NSUserDefaultsDidChangeNotification])
 	//	else
 	if ([notification.name isEqualToString:NSUbiquitousKeyValueStoreDidChangeExternallyNotification]) {
@@ -32,6 +33,8 @@
 			NSInteger changeReason = [changeReasonNumber intValue];
 
 			// preference store can be synchronized with cloud
+			// Good sync example: https://github.com/Relfos/TERRA-Engine/blob/7ef17e6b67968a40212fbb678135af0000246097/Engine/OS/iOS/ObjectiveC/TERRA_iCloudSync.m
+			// Another one: http://useyourloaf.com/blog/sync-preference-data-with-icloud/
 			/*
 
 			if (changeReason == NSUbiquitousKeyValueStoreServerChange || changeReason == NSUbiquitousKeyValueStoreInitialSyncChange || changeReason == NSUbiquitousKeyValueStoreAccountChange) {

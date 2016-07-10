@@ -53,6 +53,10 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 		//});
 	}
 
+	// TODO:
+	// cloud sync example: https://developers.google.com/games/services/android/savedgames
+	// real project: https://github.com/takahirom/WearSharedPreferences/blob/master/wear-shared-preferences/src/main/java/com/kogitune/wearsharedpreference/PreferencesSaveService.java
+
 	@Override
 	public void onResume(boolean multitasking) {
 		if (this.watchChanges)
@@ -66,6 +70,9 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 			PreferenceManager.getDefaultSharedPreferences(cordova.getActivity())
 			.unregisterOnSharedPreferenceChangeListener(this);
 	}
+
+	// TODO: use custom shared preference like in ios suite
+	// SharedPreferences sharedPrefs = cordova.getActivity().getSharedPreferences(PREF_UNIQUE_ID, Context.MODE_PRIVATE);
 
 	@Override
 	public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
@@ -249,7 +256,7 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			if(nv == null){
 				try {
 					callbackContext.error(createErrorObj(NULL_VALUE, "Error creating/getting json token"));
