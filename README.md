@@ -4,12 +4,12 @@ Application preferences Cordova plugin.
 Why you should use this plugin?
 
  * Cordova + Promise interface out of the box
- * Supports many platforms (Android, iOS, Windows and local storage fallback)
+ * Supports many platforms (Android, iOS/macOS, Windows and local storage fallback)
  * Have tests
  * Supports simple and complex data structures
  * Supports removal of the keys
  * Have preference pane generator for application (for Android and iOS) and can show native preferences
- * (Alpha) preference change notification #37
+ * (Alpha) preference change notification [#37](https://github.com/apla/me.apla.cordova.app-preferences/issues/37)
 
 For Cordova 3+
 
@@ -94,18 +94,18 @@ suitePrefs.store (...);
 
 Platforms
 ---
-1. Native execution on iOS / OSX using `NSUserDefaults`
-1. Native execution on Android using `android.content.SharedPreferences`
-1. Native execution on Windows Phone using `IsolatedStorageSettings.ApplicationSettings`
-1. Native execution on Windows 8 using `IsolatedStorageSettings.ApplicationSettings`
+1. Native execution on iOS/macOS using `NSUserDefaults` — docs for [iOS](https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSUserDefaults_Class/index.html) / [macOS](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSUserDefaults_Class/index.html)
+1. Native execution on Android using `android.content.SharedPreferences` — [docs](https://developer.android.com/reference/android/content/SharedPreferences.html)
+1. Native execution on Windows Universal Platform using `Windows.Storage.ApplicationData` — [docs](https://msdn.microsoft.com/en-us/windows.storage.applicationdata)
+1. Native execution on Windows Phone 7 using `IsolatedStorageSettings.ApplicationSettings` — [docs](https://msdn.microsoft.com/library/system.io.isolatedstorage.isolatedstoragesettings.applicationsettings\(vs.95\).aspx)
 1. Execution on BlackBerry10 fallback using `localStorage`
 
 Notes
 ---
-1. iOS, OSX, Android and Windows Phone basic values (`string`, `number`, `boolean`) are stored using typed fields.
+1. iOS, macOS, Android and Windows Phone basic values (`string`, `number`, `boolean`) are stored using typed fields.
 1. Complex values, such as arrays and objects, are always stored using JSON notation.
 1. Dictionaries are supported on iOS and Windows 8 only, so on other platforms instead of using the real dictionary a composite key will be written like `<dict>.<key>`
-1. On iOS/OSX dictionaries just a key, so appPrefs.store ('dict', 'key', value) and appPrefs.store ('dict', {'key': value}) have same meaning (but different result).
+1. On iOS/macOS dictionaries just a key, so appPrefs.store ('dict', 'key', value) and appPrefs.store ('dict', {'key': value}) have same meaning (but different result).
 
 Tests
 ---
