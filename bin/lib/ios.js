@@ -79,7 +79,7 @@ module.exports = function (Q, fs, path, plist, xcode) {
 	}
 
 	function buildXCode() {
-		console.log ('searching for xcodeproj:', process.cwd(), platformDir, xcodeprojRegex);
+		// console.log ('searching for xcodeproj:', process.cwd(), platformDir, xcodeprojRegex);
 		return fs.find(platformDir, xcodeprojRegex).then(function(projPath) {
 			projPath = path.join(projPath, "project.pbxproj");
 
