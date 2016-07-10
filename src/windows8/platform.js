@@ -29,17 +29,24 @@ function getContainer (settings, dict, create) {
 
 }
 
-AppPreferencesW8.prototype.nativeWatch = function () {
+function watchEventHandler (event) {
+	if (typeof cordova !== "undefined" && this.watchChanges) {
+		cordova.fireDocumentEvent('preferencesChanged', {});
+	}
+}
+
+AppPreferencesW8.prototype.nativeWatch = function (args) {
 	// Occurs when roaming application data is synchronized.
 	// https://msdn.microsoft.com/en-us/magazine/dn857358.aspx
 	var applicationData = Windows.Storage.ApplicationData.current;
-	applicationData.addEventListener ("datachanged", function (event) {
+	var eventHandler = watchEventHandler.bind (this);
 
-		if (typeof cordova !== "undefined" && this.watchChanges) {
-			cordova.fireDocumentEvent('preferencesChanged', {});
-		}
 
-	});
+	if (args.subscribe) {
+		applicationData.addEventListener ("datachanged", eventHandler);
+	} else {
+		applicationData.removeEventListener ("datachanged", eventHandler);
+	}
 }
 
 AppPreferencesW8.prototype.nativeFetch = function(successCallback, errorCallback, args) {

@@ -314,8 +314,21 @@ AppPreferences.prototype.watch = platform.watch || function (
 		subscribe = true;
 	}
 
+	var args = {};
+
+	for (var k in this.defaultArgs) {
+		args[k] = this.defaultArgs[k];
+	}
+
+	args.subscribe = subscribe;
+
 	var nativeExec = function (resolve, reject) {
-		return platform.nativeExec (resolve, reject, "AppPreferences", "watch", [subscribe]);
+
+		if (platform.nativeWatch) {
+			return platform.nativeWatch (resolve, reject, args);
+		}
+
+		return platform.nativeExec (resolve, reject, "AppPreferences", "watch", [args]);
 	}
 
 	nativeExec (successCallback, errorCallback);

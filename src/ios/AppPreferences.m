@@ -68,10 +68,14 @@
 
 	__block CDVPluginResult* result = nil;
 
-	NSNumber *option = [[command arguments] objectAtIndex:0];
+	NSDictionary* options = [self validateOptions:command];
+
+	if (!options)
+		return;
+
 	bool watchChanges = true;
 	if (option) {
-		watchChanges = [option boolValue];
+		watchChanges = [options boolForKey:@"subscribe"];
 	}
 
 	if (watchChanges) {

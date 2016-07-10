@@ -83,16 +83,14 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 		} else if (action.equals("clearAll")) {
 			return this.clearAll(callbackContext);
 		} else if (action.equals("watch")) {
-			if (args.length() == 1) {
-				watchChanges = args.getBoolean(0);
-				if (!watchChanges) {
-					this.onPause(false);
-				} else {
-					this.onResume(false);
-				}
+			watchChanges = options.optBoolean("subscribe", true);
+
+			if (!watchChanges) {
+				this.onPause(false);
 			} else {
-				watchChanges = true;
+				this.onResume(false);
 			}
+
 			callbackContext.success();
 			return true;
 		}
