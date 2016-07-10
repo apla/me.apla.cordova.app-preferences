@@ -23,7 +23,6 @@
 
 	NSString * jsCallBack = [NSString stringWithFormat:@"cordova.fireDocumentEvent('preferencesChanged');"];
 
-
 	//	if ([notification.name isEqualToString:NSUserDefaultsDidChangeNotification])
 	//	else
 	if ([notification.name isEqualToString:NSUbiquitousKeyValueStoreDidChangeExternallyNotification]) {
@@ -74,8 +73,9 @@
 		return;
 
 	bool watchChanges = true;
-	if (option) {
-		watchChanges = [options boolForKey:@"subscribe"];
+	NSNumber *subscribe = [options objectForKey:@"subscribe"];
+	if (subscribe != nil) {
+		watchChanges = [subscribe boolValue];
 	}
 
 	if (watchChanges) {
