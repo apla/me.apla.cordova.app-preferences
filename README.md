@@ -1,4 +1,4 @@
-Application preferences Cordova plugin.
+Application preferences plugin for Cordova 3+
 -----------------------
 
 Why you should use this plugin?
@@ -6,25 +6,15 @@ Why you should use this plugin?
  * Cordova + Promise interface out of the box
  * Supports many platforms (Android, iOS/macOS, Windows and local storage fallback)
  * Have tests
+ (iOS: [![iOS status](https://travis-ci.org/apla/me.apla.cordova.app-preferences.svg)](https://travis-ci.org/apla/me.apla.cordova.app-preferences),
+ Android: [![Android status](https://circleci.com/gh/apla/me.apla.cordova.app-preferences.svg?&style=shield&circle-token=f3e5e46c1a698c62f0450bf1d25a3694d4f714c6)](https://circleci.com/gh/apla/me.apla.cordova.app-preferences),
+ Windows: [![Windows status](https://ci.appveyor.com/api/projects/status/gl3qxq2o728sqbev?svg=true)](https://ci.appveyor.com/project/apla/me-apla-cordova-app-preferences))
  * Supports simple and complex data structures
  * Supports removal of the keys
  * Have preference pane generator for application (for Android and iOS) and can show native preferences
- * (Alpha) preference change notification [#37](https://github.com/apla/me.apla.cordova.app-preferences/issues/37)
-
-For Cordova 3+
-
-[![iOS status](https://travis-ci.org/apla/me.apla.cordova.app-preferences.svg)](https://travis-ci.org/apla/me.apla.cordova.app-preferences)
-[![Android status](https://circleci.com/gh/apla/me.apla.cordova.app-preferences.svg?&style=shield&circle-token=f3e5e46c1a698c62f0450bf1d25a3694d4f714c6)](https://circleci.com/gh/apla/me.apla.cordova.app-preferences)
-[![Windows status](https://ci.appveyor.com/api/projects/status/gl3qxq2o728sqbev?svg=true)](https://ci.appveyor.com/project/apla/me-apla-cordova-app-preferences)
-
-Upgrade
----
-
-Please note that plugin id is changed for npm publishing, so if you used
-this plugin before cordova@5.0.0, you'll have to reinstall it:
-
-	$ cordova plugin rm me.apla.cordova.app-preferences
-	$ cordova plugin add cordova-plugin-app-preferences
+ * (Untested) reference change notification [#37](apla/me.apla.cordova.app-preferences#37)
+ * (Untested) named preferences files for android and iOS suites [#97](apla/me.apla.cordova.app-preferences#97)
+ * (Untested) synchronized preferences via iCloud or windows roaming [#75](apla/me.apla.cordova.app-preferences#75)
 
 Installing
 ---
@@ -41,6 +31,8 @@ From a local clone:
 
 	$ cordova plugin add /path/to/me.apla.cordova.app-preferences/folder
 
+
+https://github.com/apla/me.apla.cordova.app-preferences/issues/97
 
 More information:
 [Command-line Interface Guide](http://cordova.apache.org/docs/en/edge/guide_cli_index.md.html#The%20Command-line%20Interface).
@@ -85,10 +77,15 @@ prefs.show (ok, fail);
 // fetch the value for a key using promise
 prefs.fetch ('key').then (ok, fail);
 
-// support for iOS suites (untested)
-var suitePrefs = prefs.iosSuite ("suiteName");
+// support for iOS suites or android named preference files (untested)
+var suitePrefs = prefs.suite ("suiteName");
 suitePrefs.fetch (...);
 suitePrefs.store (...);
+
+// store preferences in synchronized cloud storage for iOS and windows
+var cloudSyncedPrefs = prefs.cloudSync ();
+cloudSyncedPrefs.fetch (...);
+cloudSyncedPrefs.store (...);
 
 ```
 
@@ -116,6 +113,16 @@ Tests are available in `src/test.js`. After installing plugin you can add test c
  * BlackBerry 10 pass locally
  * Windows Phone 8 tests pass locally, Appveyor: ![Windows status](https://ci.appveyor.com/api/projects/status/gl3qxq2o728sqbev?svg=true)
  * Browser pass locally
+
+Module update for cordova < 5.x
+---
+
+Please note that plugin id is changed for npm publishing, so if you used
+this plugin before cordova@5.0.0, you'll have to reinstall it:
+
+$ cordova plugin rm me.apla.cordova.app-preferences
+$ cordova plugin add cordova-plugin-app-preferences
+
 
 Show Preference pane
 ---
@@ -153,7 +160,7 @@ if it came from previous version of plugin.
 * switch - not tested
 * textfield - not tested
 
-TODO: Windows Phone ([guide](http://blogs.msdn.com/b/glengordon/archive/2012/09/17/managing-settings-in-windows-phone-and-windows-8-store-apps.aspx), [docs](https://msdn.microsoft.com/en-US/library/windows/apps/ff769510\(v=vs.105\).aspx))
+TODO: Preferences UI for Windows Phone ([guide](http://blogs.msdn.com/b/glengordon/archive/2012/09/17/managing-settings-in-windows-phone-and-windows-8-store-apps.aspx), [docs](https://msdn.microsoft.com/en-US/library/windows/apps/ff769510\(v=vs.105\).aspx))
 
 Credits
 ---
