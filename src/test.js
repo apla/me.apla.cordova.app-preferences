@@ -178,7 +178,7 @@ function testPluginAndCallback () {
 	var appNode = document.querySelector ('div.app');
 	if (appNode) appNode.style.cssText = "top: 150px;";
 
-	var deviceReadyNode = document.querySelector ('div.deviceready');
+	var deviceReadyNode = document.querySelector ('div#deviceready');
 	if (deviceReadyNode) deviceReadyNode.classList.remove ('blink');
 
 	if (deviceReadyNode) {
