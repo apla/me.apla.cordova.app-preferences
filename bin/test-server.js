@@ -1,4 +1,5 @@
 var fs = require ('fs');
+var os = require ('os');
 var exec    = require('child_process').exec;
 
 var ServeMe = require("serve-me");
@@ -36,6 +37,8 @@ if (process.argv[2] === 'ios') {
 } else if (process.argv[2] === 'browser') {
 	dir        = './platforms/browser/www';
 	cmd        = 'cordova emulate browser';
+	if (os.platform () === 'darwin')
+		cmd += ' --target=Safari';
 	cmdPrepare = 'cordova prepare browser';
 	host       = '127.0.0.1';
 
