@@ -1,4 +1,4 @@
-function testPlugin (cb) {
+function testPlugin (cb, logger) {
 var tests = {
 	"bool-test": true,
 	"false-test": false,
@@ -168,20 +168,50 @@ setTimeout (function () {
 }
 
 function testPluginAndCallback () {
-    var contentTag = '<content src="http://127.0.0.1:50000" />';
+	var contentTag = '<content src="http://127.0.0.1:50000" />';
 	var url = contentTag.split ('"')[1];
-    // location.href = url;
-    var oReq = new XMLHttpRequest();
-    oReq.addEventListener("load", function () {});
+	// location.href = url;
+	var oReq = new XMLHttpRequest();
+	oReq.addEventListener("load", function () {});
+
+	// some css fixes
+	var appNode = document.querySelector ('div.app');
+	if (appNode) appNode.style.cssText = "top: 150px;";
+
+	var deviceReadyNode = document.querySelector ('div.deviceready');
+	if (deviceReadyNode) deviceReadyNode.classList.remove ('blink');
+
+	if (deviceReadyNode) {
+		var statusNode = document.createElement ('p');
+		statusNode.className = 'event test';
+		statusNode.style.cssText = 'display: none';
+		deviceReadyNode.parentNode.appendChild (statusNode);
+	}
+
+	// end css fixes
 
 	testPlugin (function (pass, fail) {
 
+		var statusColor;
+		var statusMessage;
+
 		if (fail.length) {
 			url += "/test/fail?" + fail.join (';');
+			statusColor = '#ba4848';
+			statusMessage = 'Tests failed: ' + fail + '/' + (fail + pass);
 		} else {
 			url += "/test/success";
+			statusColor = '#48bab5';
+			statusMessage = 'All tests passed';
 		}
-        oReq.open("GET", url);
-        oReq.send();
+
+		if (deviceReadyNode) {
+			statusNode.textContent = statusMessage;
+			statusNode.style.cssText = 'display: block; background-color: '+statusColor+';';
+			deviceReadyNode.querySelector ('.received').style.cssText = 'display: none;';
+		}
+
+		oReq.open("GET", url);
+		oReq.send();
 	});
 }

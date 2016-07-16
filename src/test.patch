@@ -11,7 +11,7 @@
 --- www/js/apppreferences-test.js	2016-01-11 01:09:18.000000000 +0300
 +++ www/js/apppreferences-test.js	2016-01-11 01:36:51.000000000 +0300
 @@ -157,3 +157,4 @@
- 		}
+ 		oReq.send();
  	});
  }
 +document.addEventListener("deviceready", testPluginAndCallback, false);
