@@ -59,6 +59,10 @@ script:
   - node ../bin/test-server.js ios
   - (android list avd && cordova build --emulator android || exit 0)
   - (android list avd && node ../bin/test-server.js android circleci-android22 || exit 0)
+  - cordova platform add browser
+  - cordova prepare
+  - cordova build --emulator browser
+  - node ../bin/test-server.js browser
   - echo plugin can be uninstalled
   - cordova plugin rm cordova-plugin-app-preferences
   - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences

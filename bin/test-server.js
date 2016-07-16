@@ -32,7 +32,13 @@ if (process.argv[2] === 'ios') {
 	cmd        = 'cordova emulate windows';
 	cmdPrepare = 'cordova prepare windows';
 	host       = '127.0.0.1';
-	confFile   = 'www/js/apppreferences-test.js'
+
+} else if (process.argv[2] === 'browser') {
+	dir        = './platforms/browser/www';
+	cmd        = 'cordova emulate browser';
+	cmdPrepare = 'cordova prepare browser';
+	host       = '127.0.0.1';
+
 }
 
 var serveMe = ServeMe ({
