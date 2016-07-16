@@ -23,7 +23,7 @@ var appp = (typeof AppPreferences !== "undefined") ? new AppPreferences () : plu
 var nativePlatforms = {
 	iOS: true,
 	Android: true,
-	// Windows: true // TODO
+	windows: true
 };
 
 function fetchIncrementStore (keyName) {
