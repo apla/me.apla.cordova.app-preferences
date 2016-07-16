@@ -147,6 +147,36 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 		return true;
 	}
 
+	/*
+	private boolean getKeys (final SharedPreferences sharedPrefs, final CallbackContext callbackContext) {
+		cordova.getThreadPool().execute(new Runnable() {public void run() {
+
+			Map<String,?> keys = prefs.getAll();
+
+			String keysJSONArray = null;
+			try {
+				JSONStringer jsonArray = new JSONStringer ().array ();
+
+				for (Map.Entry<String,?> entry : keys.entrySet ()) {
+					jsonArray.value (entry.getKey ());
+				}
+
+				String keysJSONArray = jsonArray.endArray ().toString ();
+
+			} catch (JSONException e) {
+
+				e.printStackTrace ();
+				callbackContext.error (0);
+				return;
+			}
+
+			callbackContext.success(keysJSONArray);
+
+		}});
+		return true;
+	}
+	*/
+
 	private boolean showPreferencesActivity (final CallbackContext callbackContext) {
 		cordova.getThreadPool().execute(new Runnable() {public void run() {
 			Class preferenceActivity;
