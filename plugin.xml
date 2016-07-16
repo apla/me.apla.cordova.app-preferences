@@ -12,7 +12,7 @@
 	<repo>https://github.com/apla/me.apla.cordova.app-preferences</repo>
 	<issue>https://github.com/apla/me.apla.cordova.app-preferences/issues</issue>
 
-	<js-module src="www/apppreferences.js">
+	<js-module src="www/apppreferences.js" name="apppreferences">
 		<clobbers target="plugins.appPreferences" />
 	</js-module>
 
@@ -87,21 +87,22 @@
 
 	<!-- windows8 -->
 	<platform name="windows8">
-		<js-module src="src/windows8/platform.js" name="platform.w8">
+		<js-module src="src/windows8/platform.js" name="platform">
 			<merges target="" />
 		</js-module>
 	</platform>
 
 	<!-- windows universal platform -->
 	<platform name="windows">
-		<js-module src="src/windows8/platform.js" name="platform.windows">
+		<js-module src="src/windows8/platform.js" name="platform">
 			<merges target="" />
 		</js-module>
 	</platform>
 
 	<!-- browser -->
+	<!-- using localStorage -->
 	<platform name="browser">
-		<js-module src="src/platform.js" name="platform">
+		<js-module src="src/browser/platform.js" name="platform">
 			<merges target="" />
 		</js-module>
 	</platform>
