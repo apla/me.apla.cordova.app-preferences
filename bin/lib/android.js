@@ -90,7 +90,7 @@ module.exports = function (context) {
 
 		var newNode = new ET.SubElement(parent, config.tagname);
 		newNode.attrib = config.attrs;
-		replaceI18n(newNode);
+		replaceI18nNode(newNode);
 
 		if (config.strings) {
 			console.log("will push strings array "+JSON.stringify(config.strings));
@@ -245,7 +245,7 @@ module.exports = function (context) {
 		return text;
 	}
 
-	function replaceI18n(node) {
+	function replaceI18nNode(node) {
 		['android:title', 'android:summary'].forEach(function (attribute) {
 			if(node.attrib[attribute]) {
 				node.attrib[attribute] = replaceI18nString(node.attrib[attribute]);
