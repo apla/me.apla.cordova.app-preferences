@@ -111,7 +111,7 @@
 
 	id dataStore = nil;
 
-	if (suiteName != nil) {
+	if (suiteName != nil && ![@"" isEqualToString:suiteName]) {
 		dataStore = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
 	} else if (cloudSync != nil) {
 		dataStore = [NSUbiquitousKeyValueStore defaultStore];

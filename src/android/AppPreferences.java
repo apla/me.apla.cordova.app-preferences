@@ -80,10 +80,10 @@ public class AppPreferences extends CordovaPlugin implements OnSharedPreferenceC
 		if (args.length() > 0)
 			options = args.optJSONObject (0);
 
-		String suiteName = options.optString("suiteName");
+		String suiteName = options.optString("suiteName", null);
 
 		SharedPreferences sharedPrefs;
-		if (suiteName != null) {
+		if (suiteName != null && suiteName != "") {
 			sharedPrefs = cordova.getActivity().getSharedPreferences(suiteName, Context.MODE_PRIVATE);
 		} else {
 			sharedPrefs = PreferenceManager.getDefaultSharedPreferences(cordova.getActivity());
