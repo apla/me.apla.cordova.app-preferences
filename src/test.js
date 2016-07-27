@@ -186,6 +186,13 @@ function testPluginAndCallback () {
 		statusNode.className = 'event test';
 		statusNode.style.cssText = 'display: none';
 		deviceReadyNode.parentNode.appendChild (statusNode);
+
+		var showPrefsNode = document.createElement ('p');
+		showPrefsNode.className = 'event prefs';
+		showPrefsNode.style.cssText = 'display: block';
+		deviceReadyNode.parentNode.appendChild (showPrefsNode);
+
+
 	}
 
 	// end css fixes

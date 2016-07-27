@@ -183,9 +183,13 @@ module.exports = function (context) {
 					projectXml = cordova_util.projectConfig(projectRoot),
 					projectConfig = new ConfigParser(projectXml);
 
-				return ('package me.apla.cordova;\n\n' +
-						'import ' + (projectConfig.android_packageName() || projectConfig.packageName()) + '.R;\n\n' +
-						tmpl);
+				var packageName = projectConfig.android_packageName() || projectConfig.packageName();
+
+				return (
+					//'package me.apla.cordova;\n\n' +
+					//'import ' + packageName + '.R;\n\n' +
+					tmpl.replace (/ANDROID_PACKAGE_NAME/g, packageName)
+				);
 			})
 			.then(function (data) {
 				var androidPackagePath = "me.apla.cordova".replace (/\./g, '/');
