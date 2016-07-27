@@ -1,4 +1,8 @@
-Please specify your environment :
+Issue:
+_____
+
+
+Please specify your environment
 
 Plugin version:
   - [ ] released version: _____
@@ -22,6 +26,7 @@ What the scope of your problem:
   - [ ] General functionality (store/fetch/remove/clearAll)
   - [ ] Suites
   - [ ] Cloud synchronization and events
+  - [ ] Preferences pane generation and display
 
-Please describe the issue:
+
 
