@@ -188,7 +188,7 @@ module.exports = function (context) {
 				return (
 					//'package me.apla.cordova;\n\n' +
 					//'import ' + packageName + '.R;\n\n' +
-					tmpl.replace (/ANDROID_PACKAGE_NAME/g, packageName)
+					tmpl.toString ('utf8').replace (/ANDROID_PACKAGE_NAME/g, packageName)
 				);
 			})
 			.then(function (data) {
