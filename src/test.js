@@ -122,7 +122,7 @@ for (var testK in tests) {
 				} else if (lsValue === testValue) {
 					fail.push ('store>fetch (localStorage) '+testName);
 				} else {
-					console.error ('localStorage contains unexpected value');
+					console.error ('localStorage contains unexpected value: "' + lsValue + '" / "' + testValue + '"');
 					pass ++;
 				}
 			}
