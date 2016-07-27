@@ -1,5 +1,6 @@
 package me.apla.cordova;
 
+// this is not needed anymore
 // import ANDROID_PACKAGE_NAME.R;
 
 import android.app.Activity;
@@ -20,21 +21,21 @@ public class AppPreferencesActivity extends PreferenceActivity {
 
 	public static class AppPFragment extends PreferenceFragment
 	{
-		Activity activity;
-		Context context;
+		Activity app_activity;
+		Context app_context;
 
 		@Override
 		public void onCreate(final Bundle savedInstanceState)
 		{
 			super.onCreate(savedInstanceState);
 
-			if (this.context == null) {
-				this.context = this.activity.getApplicationContext();
+			if (app_context == null) {
+				app_context = app_activity.getApplicationContext();
 			}
 
-			String packageName = this.context.getPackageName();
+			String packageName = app_context.getPackageName();
 
-			int resId = this.context.getResources().getIdentifier("apppreferences", "xml", packageName);
+			int resId = app_context.getResources().getIdentifier("apppreferences", "xml", packageName);
 
 			if (resId > 0) {
 				addPreferencesFromResource(resId);
@@ -44,18 +45,21 @@ public class AppPreferencesActivity extends PreferenceActivity {
 
 		@Override
 		public void onAttach(Activity act) {
-			this.activity = act;
+			super.onAttach(act);
+			app_activity = act;
 		}
 
 		@Override
 		public void onAttach(Context ctx) {
-			this.context = ctx;
+			super.onAttach(ctx);
+			app_context = ctx;
 		}
 
 		@Override
 		public void onDetach() {
-			this.context  = null;
-			this.activity = null;
+			super.onDetach();
+			app_context  = null;
+			app_activity = null;
 		}
 	}
 

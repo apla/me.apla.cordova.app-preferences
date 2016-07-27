@@ -174,6 +174,8 @@ function testPluginAndCallback () {
 	var oReq = new XMLHttpRequest();
 	oReq.addEventListener("load", function () {});
 
+	var appp = (typeof AppPreferences !== "undefined") ? new AppPreferences () : plugins.appPreferences;
+
 	// some css fixes
 	var appNode = document.querySelector ('div.app');
 	if (appNode) appNode.style.cssText = "top: 150px;";
@@ -187,11 +189,14 @@ function testPluginAndCallback () {
 		statusNode.style.cssText = 'display: none';
 		deviceReadyNode.parentNode.appendChild (statusNode);
 
+		deviceReadyNode.parentNode.appendChild (document.createElement ('p'));
+
 		var showPrefsNode = document.createElement ('p');
 		showPrefsNode.className = 'event prefs';
 		showPrefsNode.style.cssText = 'display: block';
 		deviceReadyNode.parentNode.appendChild (showPrefsNode);
 
+		showPrefsNode.addEventListener ('click', function () {appp.show()}, false);
 
 	}
 
@@ -216,6 +221,9 @@ function testPluginAndCallback () {
 			statusNode.textContent = statusMessage;
 			statusNode.style.cssText = 'display: block; background-color: '+statusColor+';';
 			deviceReadyNode.querySelector ('.received').style.cssText = 'display: none;';
+
+			showPrefsNode.textContent = 'Show preference pane';
+			showPrefsNode.style.cssText = 'display: block; background-color: #2d2d90';
 		}
 
 		oReq.open("GET", url);
