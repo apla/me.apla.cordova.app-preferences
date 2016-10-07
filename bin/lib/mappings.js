@@ -43,7 +43,7 @@ module.exports = {
 		}
 	},
 	radio: {
-		ios: "PSRadioGroupSpecifier",
+		ios: "PSMultiValueSpecifier",
 		android: "ListPreference",
 		required: ["title", "key", "default"],
 		attrs: {
