@@ -134,7 +134,7 @@ module.exports = {
 		// title is currently supported on iOS only
 		ios: "PSTitleValueSpecifier",
 		// android: "EditTextPreference",
-		// "read only" on Android requires android:editable="false"
+		// "read only" on Android requires the android:editable="false" attribute be added somehow
 		// see: http://stackoverflow.com/questions/6384004/make-edittext-readonly
 		types: "string",
 		required: ["title", "key", "default"],
