@@ -130,11 +130,18 @@ module.exports = {
 		//MinimumValue
 		//MaximumValue
 	},
-	titleNotSupported: {
-		// please use group for this, ios only
-		// TODO: probably it is good idea to add title automatically:
-		// 1. if you want to show wide text input without title
-		// 2. for a slider
-		// 3. to simulate android summary for fields
+	title: {
+		// title is currently supported on iOS only
+		ios: "PSTitleValueSpecifier",
+		// android: "EditTextPreference",
+		// "read only" on Android requires android:editable="false"
+		// see: http://stackoverflow.com/questions/6384004/make-edittext-readonly
+		types: "string",
+		required: ["title", "key", "default"],
+		attrs: {
+			key:     commonMappings.key,
+			title:   commonMappings.title,
+			default: commonMappings.default,
+		}
 	}
 };
