@@ -130,11 +130,14 @@ module.exports = {
 		//MinimumValue
 		//MaximumValue
 	},
-	titleNotSupported: {
-		// please use group for this, ios only
-		// TODO: probably it is good idea to add title automatically:
-		// 1. if you want to show wide text input without title
-		// 2. for a slider
-		// 3. to simulate android summary for fields
+	title: {
+		ios: "PSTitleValueSpecifier",
+		types: "string",
+		required: ["key", "default"],
+		attrs: {
+			key:     commonMappings.key,
+			title:   commonMappings.title,
+			default: commonMappings.default,
+		}
 	}
 };
