@@ -15,6 +15,10 @@ machine:
     PATH: $PATH:$HOME/$CIRCLE_PROJECT_REPONAME/node_modules/.bin
 
 dependencies:
+  cache_directories:
+    - ~/.android
+    - ~/android
+    - ~/.gradle
   override:
     - npm install
     - cordova create app-preferences-app
@@ -24,6 +28,8 @@ dependencies:
     - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences:
         pwd: app-preferences-app
     - cordova plugin add cordova-plugin-device:
+        pwd: app-preferences-app
+    - cordova -d prepare:
         pwd: app-preferences-app
     - cordova -d build --debug --emulator android:
         pwd: app-preferences-app
