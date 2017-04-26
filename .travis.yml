@@ -2,7 +2,7 @@ language: objective-c
 # xcode 6 still "Invalid Device State"
 osx_image: xcode7
 node_js:
-  - "0.10"
+  - "6"
 before_install:
   - xcrun simctl list
   - instruments -s devices
@@ -38,14 +38,15 @@ script:
 # let's create cordova app, add and remove plugin a few times
   - echo test plugin within cordova app
   - cd app-preferences-app
-  - cordova platform add ios@3.9.2 android
+#  - cordova platform add ios@3.9.2 android
+  - cordova platform add ios android
   - cordova plugin add cordova-plugin-device
   - cordova plugin add https://github.com/apla/me.apla.cordova.app-preferences
   - (if [ ! -f app-settings.json ]; then exit 0; fi)
   - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
   - patch -p0 -i plugins/cordova-plugin-app-preferences/src/test.patch
   - cordova prepare
-  - cordova build --emulator ios
+  - (cordova build --emulator ios > /dev/null)
   - node ../bin/test-server.js ios
   - echo plugin must be ok without platforms installed
   - cordova platform rm android
@@ -55,9 +56,9 @@ script:
   - echo check for UIWebView
   - cordova platform add ios
   - cordova prepare
-  - cordova build --emulator ios
+  - (cordova build --emulator ios > /dev/null)
   - node ../bin/test-server.js ios
-  - (android list avd && cordova build --emulator android || exit 0)
+  - (android list avd && cordova build --emulator android > /dev/null || exit 0)
   - (android list avd && node ../bin/test-server.js android circleci-android22 || exit 0)
   - cordova platform add browser
   - cordova prepare
