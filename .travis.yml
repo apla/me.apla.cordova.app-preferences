@@ -46,13 +46,15 @@ script:
   - cp plugins/cordova-plugin-app-preferences/src/test.js www/js/apppreferences-test.js
   - patch -p0 -i plugins/cordova-plugin-app-preferences/src/test.patch
   - cordova prepare
-  - (cordova build --emulator ios > /dev/null)
-  - node ../bin/test-server.js ios
+#  - (cordova build --emulator ios > /dev/null)
+#  - node ../bin/test-server.js ios
   - echo plugin must be ok without platforms installed
   - cordova platform rm android
   - cordova prepare
   - cordova platform rm ios
   - cordova -d platform add android
+  - echo patch cordova android emulator
+  - (patch -p0 -i ../src/platform-android-emulator.patch || exit 0)
   - echo check for UIWebView
   - cordova platform add ios
   - cordova prepare
