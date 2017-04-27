@@ -4,7 +4,7 @@
  *
  */
 'use strict';
-	
+
 var commonMappings = {
 	title: {
 		ios: "Title",
@@ -90,6 +90,7 @@ module.exports = {
 			key:     commonMappings.key,
 			title:   commonMappings.title,
 			default: commonMappings.default,
+			description: commonMappings.description,
 		}
 	},
 	textfield: {

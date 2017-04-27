@@ -90,6 +90,7 @@ module.exports = function (context) {
 
 		var newNode = new ET.SubElement(parent, config.tagname);
 		newNode.attrib = config.attrs;
+		replaceI18nNode(newNode);
 
 		if (config.strings) {
 			console.log("will push strings array "+JSON.stringify(config.strings));
@@ -137,7 +138,7 @@ module.exports = function (context) {
 				var titleItemXml = new ET.SubElement(titlesXml, "item"),
 					valueItemXml = new ET.SubElement(valuesXml, "item");
 
-				titleItemXml.text = stringsArray.titles[i];
+				titleItemXml.text = replaceI18nString(stringsArray.titles[i]);
 				valueItemXml.text = stringsArray.values[i];
 			}
 		});
@@ -238,6 +239,22 @@ module.exports = function (context) {
 
 				throw err;
 			});
+	}
+
+
+	function replaceI18nString(text) {
+		if(text.startsWith('_@')) {
+			text = '@string/' + text.slice(2, text.length);
+		}
+		return text;
+	}
+
+	function replaceI18nNode(node) {
+		['android:title', 'android:summary'].forEach(function (attribute) {
+			if(node.attrib[attribute]) {
+				node.attrib[attribute] = replaceI18nString(node.attrib[attribute]);
+			}
+		});
 	}
 
 	return {
