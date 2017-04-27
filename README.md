@@ -159,6 +159,7 @@ if it came from previous version of plugin.
 * combo
 * switch
 * textfield
+* title (a read-only textfield)
 
 ### Supported controls for Android:
 
