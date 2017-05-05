@@ -50,12 +50,6 @@ public class AppPreferencesActivity extends PreferenceActivity {
 		}
 
 		@Override
-		public void onAttach(Context ctx) {
-			super.onAttach(ctx);
-			app_context = ctx;
-		}
-
-		@Override
 		public void onDetach() {
 			super.onDetach();
 			app_context  = null;
