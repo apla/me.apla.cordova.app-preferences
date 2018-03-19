@@ -12,10 +12,26 @@ module.exports = function (context) {
 		cordova_lib = cordova.cordova_lib,
 		ConfigParser = cordova_lib.configparser,
 		cordova_util = req('cordova-lib/src/cordova/util'),
+		ofs = req("fs"),
 		fs = require("./filesystem")(Q, req('fs'), path),
 		platforms = {};
 
 	// fs, path, ET, cordova_util, ConfigParser
+
+	// Check the currente platform version and map the path of resources
+	function getResPath(){
+		return cordova_util
+				.getInstalledPlatformsWithVersions(context.opts.projectRoot)
+				.then(function(platformMap){
+					if ( typeof platformMap == 'object' && platformMap.android ){
+						var majorVersion = parseInt( platformMap.android[0] );
+						if ( majorVersion != NaN && majorVersion >= 7 ){
+							return path.join('platforms','android','app','src','main','res');
+						}
+					}
+					return path.join('platforms','android','res');
+				});
+	}
 
 	function mapConfig(config) {
 		var element = {
@@ -153,15 +169,24 @@ module.exports = function (context) {
 			preferencesDocument = settingsDocuments.preferencesDocument,
 			preferencesStringDocument = settingsDocuments.preferencesStringDocument;
 
-
+		var pathXml    = null;
+		var pathValues = null;
 		return fs.exists('platforms/android')
+			// Check version Platfom installed
+			.then(function () {
+				return getResPath();
+			})
 			// Write preferences xml file
-			.then(function () { return fs.mkdir('platforms/android/res/xml'); })
-			.then(function () { return fs.writeFile('platforms/android/res/xml/apppreferences.xml', preferencesDocument.write()); })
+			.then(function (pathRes) {
+				pathXml    = path.join(pathRes, 'xml');
+				pathValues = path.join(pathRes, 'values');
+				return fs.mkdir(pathXml);
+			})
+			.then(function () { return fs.writeFile( path.join(pathXml,'apppreferences.xml'), preferencesDocument.write()); })
 
 			// Write localization resource file
-			.then(function () { return fs.mkdir('platforms/android/res/values'); })
-			.then(function (prefs) { return fs.writeFile('platforms/android/res/values/apppreferences.xml', preferencesStringDocument.write()); })
+			.then(function () { return fs.mkdir(pathValues); })
+			.then(function (prefs) { return fs.writeFile( path.join(pathValues,'apppreferences.xml'), preferencesStringDocument.write()); })
 
 			.then(function () { console.log('android preferences file was successfully generated'); })
 			.catch(function (err) {
@@ -214,12 +239,25 @@ module.exports = function (context) {
 		var androidPackagePath = "me.apla.cordova".replace (/\./g, '/');
 		var activityFileName = path.join ('platforms/android/src', androidPackagePath, 'AppPreferencesActivity.java');
 
+		var pathXml    = null;
+		var pathValues = null;
 		return fs.exists('platforms/android')
+			// Check version Platfom installed
+			.then(function () {
+				return getResPath();
+			})
+
 			// Remove preferences xml file
-			.then(function () { return fs.unlink('platforms/android/res/xml/apppreferences.xml'); })
+			.then(function (pathRes) {
+				pathXml    = path.join(pathRes, 'xml');
+				pathValues = path.join(pathRes, 'values');
+				return fs.unlink( path.join(pathXml,'apppreferences.xml') );
+			})
 
 			// Remove localization resource file
-			.then(function (prefs) { return fs.unlink('platforms/android/res/values/apppreferences.xml'); })
+			.then(function (prefs) {
+				return fs.unlink( path.join(pathValues,'values','apppreferences.xml') );
+			})
 
 			// Remove preferences from native android project
 			.then(function (data) {
