@@ -33,6 +33,21 @@ module.exports = function (context) {
 				});
 	}
 
+	// Check the currente platform version and map the path of Java
+	function getJavaPath(){
+		return cordova_util
+				.getInstalledPlatformsWithVersions(context.opts.projectRoot)
+				.then(function(platformMap){
+					if ( typeof platformMap == 'object' && platformMap.android ){
+						var majorVersion = parseInt( platformMap.android[0] );
+						if ( majorVersion != NaN && majorVersion >= 7 ){
+							return path.join('platforms','android','app','src','main','java');
+						}
+					}
+					return path.join('platforms','android','src');
+				});
+	}
+
 	function mapConfig(config) {
 		var element = {
 			attrs: {},
@@ -200,9 +215,17 @@ module.exports = function (context) {
 	}
 
 	function afterPluginInstall () {
+		var pathJava = null;
 		return fs.exists('platforms/android')
+			// Check version Platfom installed
+			.then(function () {
+				return getJavaPath();
+			})
 			// Import preferences into native android project
-			.then(function () { return fs.readFile(path.resolve(__dirname, '../../src/android/AppPreferencesActivity.template')); })
+			.then(function (pathJ) {
+				pathJava = pathJ;
+				return fs.readFile(path.resolve(__dirname, '../../src/android/AppPreferencesActivity.template'));
+			})
 			.then(function (tmpl) {
 				var projectRoot = cordova_lib.cordova.findProjectRoot(process.cwd()),
 					projectXml = cordova_util.projectConfig(projectRoot),
@@ -218,8 +241,7 @@ module.exports = function (context) {
 			})
 			.then(function (data) {
 				var androidPackagePath = "me.apla.cordova".replace (/\./g, '/');
-				var activityFileName= path.join ('platforms/android/src', androidPackagePath, 'AppPreferencesActivity.java');
-
+				var activityFileName= path.join (pathJava, androidPackagePath, 'AppPreferencesActivity.java');
 				return fs.writeFile(activityFileName, data);
 			})
 
@@ -237,7 +259,7 @@ module.exports = function (context) {
 	function clean(config) {
 
 		var androidPackagePath = "me.apla.cordova".replace (/\./g, '/');
-		var activityFileName = path.join ('platforms/android/src', androidPackagePath, 'AppPreferencesActivity.java');
+		var activityFileName = null;
 
 		var pathXml    = null;
 		var pathValues = null;
@@ -256,11 +278,17 @@ module.exports = function (context) {
 
 			// Remove localization resource file
 			.then(function (prefs) {
-				return fs.unlink( path.join(pathValues,'values','apppreferences.xml') );
+				return fs.unlink( path.join(pathValues,'apppreferences.xml') );
+			})
+
+			// Check version Platfom installed
+			.then(function () {
+				return getJavaPath();
 			})
 
 			// Remove preferences from native android project
-			.then(function (data) {
+			.then(function (pathJava) {
+				activityFileName = path.join (pathJava, androidPackagePath, 'AppPreferencesActivity.java');
 				return fs.unlink(activityFileName);
 			})
 
