@@ -4,7 +4,7 @@
  *
  */
 'use strict';
-	
+
 var commonMappings = {
 	title: {
 		ios: "Title",
@@ -98,6 +98,7 @@ module.exports = {
 		types: "string",
 		required: ["key"],
 		attrs: {
+			description: commonMappings.description,
 			keyboard: {
 				android: "@android:inputType",
 				ios: "KeyboardType",
