@@ -4,7 +4,7 @@
 
 machine:
   node:
-    version: 6 
+    version: 6
   java:
     version: 'oraclejdk8'
   environment:
@@ -42,7 +42,7 @@ dependencies:
 
 test:
   pre:
-    - emulator -avd circleci-android26 -no-audio -no-window:
+    - emulator -avd circleci-android22 -no-audio -no-window:
         background: true
         parallel: true
     - circle-android wait-for-boot
