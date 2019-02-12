@@ -156,12 +156,12 @@ module.exports = function (context) {
 
 		return fs.exists('platforms/android')
 			// Write preferences xml file
-			.then(function () { return fs.mkdir('platforms/android/res/xml'); })
-			.then(function () { return fs.writeFile('platforms/android/res/xml/apppreferences.xml', preferencesDocument.write()); })
+			.then(function () { return fs.mkdir('platforms/android/app/src/main/res/xml'); })
+			.then(function () { return fs.writeFile('platforms/android/app/src/main/res/xml/apppreferences.xml', preferencesDocument.write()); })
 
 			// Write localization resource file
-			.then(function () { return fs.mkdir('platforms/android/res/values'); })
-			.then(function (prefs) { return fs.writeFile('platforms/android/res/values/apppreferences.xml', preferencesStringDocument.write()); })
+			.then(function () { return fs.mkdir('platforms/android/app/src/main/res/values'); })
+			.then(function (prefs) { return fs.writeFile('platforms/android/app/src/main/res/values/apppreferences.xml', preferencesStringDocument.write()); })
 
 			.then(function () { console.log('android preferences file was successfully generated'); })
 			.catch(function (err) {
@@ -193,7 +193,7 @@ module.exports = function (context) {
 			})
 			.then(function (data) {
 				var androidPackagePath = "me.apla.cordova".replace (/\./g, '/');
-				var activityFileName= path.join ('platforms/android/src', androidPackagePath, 'AppPreferencesActivity.java');
+				var activityFileName= path.join ('platforms/android/app/src/main/java/', androidPackagePath, 'AppPreferencesActivity.java');
 
 				return fs.writeFile(activityFileName, data);
 			})
@@ -212,14 +212,14 @@ module.exports = function (context) {
 	function clean(config) {
 
 		var androidPackagePath = "me.apla.cordova".replace (/\./g, '/');
-		var activityFileName = path.join ('platforms/android/src', androidPackagePath, 'AppPreferencesActivity.java');
+		var activityFileName = path.join ('platforms/android/app/src/main/java/', androidPackagePath, 'AppPreferencesActivity.java');
 
 		return fs.exists('platforms/android')
 			// Remove preferences xml file
-			.then(function () { return fs.unlink('platforms/android/res/xml/apppreferences.xml'); })
+			.then(function () { return fs.unlink('platforms/android/app/src/main/res/xml/apppreferences.xml'); })
 
 			// Remove localization resource file
-			.then(function (prefs) { return fs.unlink('platforms/android/res/values/apppreferences.xml'); })
+			.then(function (prefs) { return fs.unlink('platforms/android/app/src/main/res/values/apppreferences.xml'); })
 
 			// Remove preferences from native android project
 			.then(function (data) {
@@ -249,3 +249,4 @@ module.exports = function (context) {
 		clean: clean
 	};
 };
+
