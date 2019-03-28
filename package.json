@@ -49,5 +49,8 @@
   "bugs": {
     "url": "https://github.com/apla/me.apla.cordova.app-preferences/issues"
   },
-  "homepage": "https://github.com/apla/me.apla.cordova.app-preferences"
+  "homepage": "https://github.com/apla/me.apla.cordova.app-preferences",
+  "dependencies": {
+    "cordova-lib": "^9.0.0"
+  }
 }
