@@ -22,6 +22,9 @@
   "bin": {
     "cordova-app-preferences-generator": "bin/build-app-settings.js"
   },
+  "dependencies": {
+    "cordova-lib": "^9.0.0"
+  },
   "devDependencies": {
     "cordova": ">=5.4.1",
     "elementtree": "^0.1.6",
